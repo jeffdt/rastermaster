@@ -44,7 +44,7 @@ describe('generatePreviewSVG', () => {
 })
 
 describe('dimension labels', () => {
-  test('includes arrow marker definitions', () => {
+  test('includes width dimension text', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
@@ -52,24 +52,11 @@ describe('dimension labels', () => {
     const toolpath = calculateToolpath(params)
     const svg = generatePreviewSVG(toolpath, 400, 300)
 
-    expect(svg).toContain('<defs>')
-    expect(svg).toContain('<marker')
-    expect(svg).toContain('id="arrow"')
-  })
-
-  test('includes bottom dimension line for width', () => {
-    const params = mergeWithDefaults({
-      stockWidth: 10,
-      stockHeight: 5,
-    })
-    const toolpath = calculateToolpath(params)
-    const svg = generatePreviewSVG(toolpath, 400, 300)
-
-    expect(svg).toContain('class="dimension"')
+    expect(svg).toContain('class="dimension-text"')
     expect(svg).toContain('10"')
   })
 
-  test('includes left dimension line for height', () => {
+  test('includes height dimension text', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
@@ -90,5 +77,24 @@ describe('dimension labels', () => {
 
     expect(svg).toContain('10.5"')
     expect(svg).toContain('8.13"')
+  })
+
+  test('places dimension text inside stock boundary', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+    })
+    const toolpath = calculateToolpath(params)
+    const svg = generatePreviewSVG(toolpath, 400, 300)
+
+    // Should not contain dimension lines or arrow markers
+    expect(svg).not.toContain('<defs>')
+    expect(svg).not.toContain('<marker')
+    expect(svg).not.toContain('marker-start')
+    expect(svg).not.toContain('marker-end')
+
+    // Should contain dimension text
+    expect(svg).toContain('text-anchor="middle"')  // Width label centered
+    expect(svg).toContain('text-anchor="start"')   // Height label left-aligned
   })
 })
