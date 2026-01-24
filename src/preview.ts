@@ -57,8 +57,8 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
 
   // Left dimension (height)
   const leftX = tx(0) - dimOffset
-  const leftY1 = ty(0)
-  const leftY2 = ty(params.stockHeight)
+  const leftY1 = ty(params.stockHeight)  // Top in SVG (smaller Y value)
+  const leftY2 = ty(0)                   // Bottom in SVG (larger Y value)
   const leftTextY = (leftY1 + leftY2) / 2
   lines.push(`<line class="dimension" x1="${leftX}" y1="${leftY1}" x2="${leftX}" y2="${leftY2}" marker-start="url(#arrow)" marker-end="url(#arrow)" />`)
   lines.push(`<text class="dimension-text" x="${leftX + 5}" y="${leftTextY}" text-anchor="middle" transform="rotate(-90,${leftX + 5},${leftTextY})">${formatDimension(params.stockHeight)}</text>`)
