@@ -35,3 +35,7 @@ For future sessions.
 # Add a favicon
 
 # When you open a new project, only display dimensions + raster direction. Once you enter those, the rest of the form should animate in to the right.
+
+# Rename "Safe Z" to "Retract Height"
+
+# Bug: Raster background effect disappears after about 18-19 lines rather than continuing to end of screen

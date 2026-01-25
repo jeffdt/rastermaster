@@ -12,7 +12,10 @@
       "Skill(superpowers:writing-plans)",
       "Skill(superpowers:subagent-driven-development)",
       "Skill(superpowers:requesting-code-review)",
-      "Bash(bun run dev)"
+      "Bash(bun run dev)",
+      "Bash(bun -e:*)",
+      "Bash(bun run:*)",
+      "Bash(bun:*)"
     ]
   }
 }
