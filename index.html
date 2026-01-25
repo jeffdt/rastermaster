@@ -1,30 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RasterMaster</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polyline points='6,8 26,8 26,13 6,13 6,18 26,18 26,23 6,23' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='6' cy='8' r='2.5' fill='%23f59e0b'/></svg>">
   <style>
-    * { box-sizing: border-box; }
-    html, body {
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&family=Rajdhani:wght@700&display=swap');
+
+    :root {
+      --color-bg: #0a0e14;
+      --color-surface: #151b24;
+      --color-surface-elevated: #1a2230;
+      --color-border: #2a3544;
+      --color-text-primary: #f5f7fa;
+      --color-text-secondary: #b4bfce;
+      --color-text-muted: #6b7280;
+      --color-accent-amber: #f59e0b;
+      --color-accent-amber-glow: rgba(245, 158, 11, 0.15);
+      --color-steel-blue: #3b82f6;
+      --color-steel-blue-glow: rgba(59, 130, 246, 0.12);
+      --color-success: #10b981;
+      --color-error: #ef4444;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
       height: 100%;
       margin: 0;
+      overscroll-behavior: none;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      padding: 20px;
-      background: #f5f5f5;
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      padding: 0;
+      position: relative;
     }
-    h1 { margin: 0 0 20px; flex-shrink: 0; }
+
+    /* Subtle grid pattern background */
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Animated raster tracer with trail */
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 4px;
+      background: var(--color-accent-amber);
+      border-radius: 50%;
+      box-shadow:
+        0 0 12px 4px var(--color-accent-amber),
+        0 0 24px 8px rgba(245, 158, 11, 0.4),
+        -8px 0 0 0 rgba(245, 158, 11, 0.5),
+        -8px 0 8px 3px rgba(245, 158, 11, 0.3),
+        -16px 0 0 0 rgba(245, 158, 11, 0.35),
+        -16px 0 6px 2px rgba(245, 158, 11, 0.2),
+        -24px 0 0 0 rgba(245, 158, 11, 0.25),
+        -24px 0 4px 2px rgba(245, 158, 11, 0.15),
+        -32px 0 0 0 rgba(245, 158, 11, 0.15),
+        -32px 0 3px 1px rgba(245, 158, 11, 0.1),
+        -40px 0 0 0 rgba(245, 158, 11, 0.1),
+        -48px 0 0 0 rgba(245, 158, 11, 0.07),
+        -56px 0 0 0 rgba(245, 158, 11, 0.05),
+        -64px 0 0 0 rgba(245, 158, 11, 0.03);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+      animation: rasterTrace 60s linear infinite;
+    }
+
+    @keyframes rasterTrace {
+      0% {
+        transform: translate(-2px, -2px) scaleX(1);
+        opacity: 0;
+      }
+
+      1% {
+        opacity: 0.6;
+      }
+
+      4.5% {
+        transform: translate(calc(100vw - 2px), -2px) scaleX(1);
+      }
+
+      5% {
+        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
+      }
+
+      9.5% {
+        transform: translate(-2px, 30px) scaleX(-1);
+      }
+
+      10% {
+        transform: translate(-2px, 62px) scaleX(1);
+      }
+
+      14.5% {
+        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
+      }
+
+      15% {
+        transform: translate(calc(100vw - 2px), 94px) scaleX(-1);
+      }
+
+      19.5% {
+        transform: translate(-2px, 94px) scaleX(-1);
+      }
+
+      20% {
+        transform: translate(-2px, 126px) scaleX(1);
+      }
+
+      24.5% {
+        transform: translate(calc(100vw - 2px), 126px) scaleX(1);
+      }
+
+      25% {
+        transform: translate(calc(100vw - 2px), 158px) scaleX(-1);
+      }
+
+      29.5% {
+        transform: translate(-2px, 158px) scaleX(-1);
+      }
+
+      30% {
+        transform: translate(-2px, 190px) scaleX(1);
+      }
+
+      34.5% {
+        transform: translate(calc(100vw - 2px), 190px) scaleX(1);
+      }
+
+      35% {
+        transform: translate(calc(100vw - 2px), 222px) scaleX(-1);
+      }
+
+      39.5% {
+        transform: translate(-2px, 222px) scaleX(-1);
+      }
+
+      40% {
+        transform: translate(-2px, 254px) scaleX(1);
+      }
+
+      44.5% {
+        transform: translate(calc(100vw - 2px), 254px) scaleX(1);
+      }
+
+      45% {
+        transform: translate(calc(100vw - 2px), 286px) scaleX(-1);
+      }
+
+      49.5% {
+        transform: translate(-2px, 286px) scaleX(-1);
+      }
+
+      50% {
+        transform: translate(-2px, 318px) scaleX(1);
+      }
+
+      54.5% {
+        transform: translate(calc(100vw - 2px), 318px) scaleX(1);
+      }
+
+      55% {
+        transform: translate(calc(100vw - 2px), 350px) scaleX(-1);
+      }
+
+      59.5% {
+        transform: translate(-2px, 350px) scaleX(-1);
+      }
+
+      60% {
+        transform: translate(-2px, 382px) scaleX(1);
+      }
+
+      64.5% {
+        transform: translate(calc(100vw - 2px), 382px) scaleX(1);
+      }
+
+      65% {
+        transform: translate(calc(100vw - 2px), 414px) scaleX(-1);
+      }
+
+      69.5% {
+        transform: translate(-2px, 414px) scaleX(-1);
+      }
+
+      70% {
+        transform: translate(-2px, 446px) scaleX(1);
+      }
+
+      74.5% {
+        transform: translate(calc(100vw - 2px), 446px) scaleX(1);
+      }
+
+      75% {
+        transform: translate(calc(100vw - 2px), 478px) scaleX(-1);
+      }
+
+      79.5% {
+        transform: translate(-2px, 478px) scaleX(-1);
+      }
+
+      80% {
+        transform: translate(-2px, 510px) scaleX(1);
+      }
+
+      84.5% {
+        transform: translate(calc(100vw - 2px), 510px) scaleX(1);
+      }
+
+      85% {
+        transform: translate(calc(100vw - 2px), 542px) scaleX(-1);
+      }
+
+      89.5% {
+        transform: translate(-2px, 542px) scaleX(-1);
+      }
+
+      90% {
+        transform: translate(-2px, 574px) scaleX(1);
+      }
+
+      94.5% {
+        transform: translate(calc(100vw - 2px), 574px) scaleX(1);
+      }
+
+      95% {
+        transform: translate(calc(100vw - 2px), 606px) scaleX(-1);
+        opacity: 0.6;
+      }
+
+      99% {
+        transform: translate(-2px, 606px) scaleX(-1);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-2px, -2px) scaleX(1);
+        opacity: 0;
+      }
+    }
+
     #app {
       display: flex;
       flex-direction: column;
       flex: 1;
       min-height: 0;
+      position: relative;
+      z-index: 1;
     }
+
+    /* Header */
+
+    h1 {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Rajdhani', var(--font-sans);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent-amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex-shrink: 0;
+      text-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+    }
+
     .container {
       max-width: 1400px;
       margin: 0 auto;
@@ -33,132 +310,503 @@
       flex-direction: column;
       flex: 1;
       min-height: 0;
-    }
-    .form-container {
-      background: white;
-      border-radius: 8px;
       padding: 20px;
-      margin-bottom: 30px;
-      flex-shrink: 0;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 30px;
-    }
-    .form-column {
-      border-right: 1px solid #e0e0e0;
-      padding-right: 30px;
-    }
-    .form-column:last-child {
-      border-right: none;
-      padding-right: 0;
-    }
-    .form-column h3 {
-      margin: 0 0 15px;
-      font-size: 14px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .tool-subgrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-    .tool-subcolumn {
-      display: flex;
-      flex-direction: column;
+
+    /* Form Container */
+
+    .form-container {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 0;
+      flex-shrink: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
-    .form-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
     }
-    .form-row:last-child { margin-bottom: 0; }
-    label {
-      flex: 0 0 140px;
-      font-size: 14px;
+
+    .form-column {
+      padding: 24px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      transition: background 0.2s ease;
     }
-    input[type="number"] {
-      width: 100px;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
+
+    .form-column:last-child {
+      border-bottom: none;
     }
-    input[type="number"]:focus {
-      outline: none;
-      border-color: #2196F3;
-    }
-    .unit { margin-left: 8px; color: #666; font-size: 14px; }
-    .radio-group {
-      display: flex;
-      gap: 15px;
-    }
-    .radio-group label {
-      flex: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-    input[type="radio"], input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-    .checkbox-row {
+
+    .form-column h3 {
+      margin: 0 0 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-accent-amber);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .preview-container {
-      background: white;
+
+    .form-column h3::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      background: var(--color-accent-amber);
+      border-radius: 2px;
+    }
+
+    .tool-subgrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .tool-subcolumn {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .form-row:has(.radio-group) {
+      grid-template-columns: auto 1fr;
+    }
+
+    .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .form-row>label {
+      min-width: 100px;
+    }
+
+    .tool-subcolumn .form-row>label {
+      min-width: 80px;
+      font-size: 12px;
+    }
+
+    .tool-subcolumn input[type="number"] {
+      width: 95px;
+    }
+
+    .tool-subcolumn .unit {
+      width: 60px;
+      font-size: 11px;
+    }
+
+    input[type="number"] {
+      width: 110px;
+      padding: 10px 12px;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      transition: all 0.2s ease;
+      text-align: right;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--color-steel-blue);
+      background: var(--color-bg);
+      box-shadow: 0 0 0 3px var(--color-steel-blue-glow);
+    }
+
+    input[type="number"]:hover:not(:focus) {
+      border-color: var(--color-text-muted);
+    }
+
+    .unit {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      width: 70px;
+      text-align: left;
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      background: var(--color-surface-elevated);
+      padding: 4px;
       border-radius: 8px;
-      padding: 20px;
+      border: 1px solid var(--color-border);
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .radio-group label:has(input:checked) {
+      background: var(--color-accent-amber);
+      color: var(--color-bg);
+      font-weight: 600;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      appearance: none;
+      background: var(--color-surface-elevated);
+      border: 2px solid var(--color-border);
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    input[type="checkbox"]:checked {
+      background: var(--color-accent-amber);
+      border-color: var(--color-accent-amber);
+    }
+
+    input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--color-bg);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .checkbox-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .checkbox-row label {
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    /* Preview Container */
+
+    .preview-container {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 24px;
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
+      min-height: 400px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
+
     #preview {
       width: 100%;
-      flex: 1 1 0;
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-radius: 4px;
+      flex: 1;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
       min-height: 300px;
       overflow: hidden;
+      position: relative;
     }
-    #preview svg { width: 100%; height: 100%; }
+
+    #preview::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    #preview svg {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Generate Button */
+
     .generate-btn {
       display: block;
       width: 100%;
-      padding: 15px;
+      padding: 16px;
       margin-top: 20px;
-      background: #2196F3;
-      color: white;
+      background: linear-gradient(135deg, var(--color-accent-amber), #fb923c);
+      color: var(--color-bg);
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
     }
-    .generate-btn:hover { background: #1976D2; }
-    .generate-btn:active { background: #1565C0; }
+
+    .generate-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .generate-btn:hover::before {
+      left: 100%;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .generate-btn:disabled {
+      background: var(--color-surface-elevated);
+      color: var(--color-text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .generate-btn:disabled::before {
+      display: none;
+    }
+
     input:invalid {
-      border-color: #f44336;
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
     }
+
     .validation-error {
-      color: #f44336;
+      color: var(--color-error);
       font-size: 12px;
       margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* Tablet breakpoint */
+
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 36px;
+        padding: 24px;
+      }
+
+      .container {
+        padding: 24px;
+        gap: 24px;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .form-column {
+        padding: 28px;
+        border-bottom: none;
+        border-right: 1px solid var(--color-border);
+      }
+
+      .form-column:nth-child(2n) {
+        border-right: none;
+      }
+
+      .form-column:nth-last-child(-n+2) {
+        border-bottom: none;
+      }
+
+      .tool-subgrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .preview-container {
+        min-height: 500px;
+      }
+    }
+
+    /* Desktop breakpoint */
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 32px;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .form-column {
+        padding: 32px;
+        border-right: 1px solid var(--color-border);
+        border-bottom: none;
+      }
+
+      .form-column:nth-child(2n) {
+        border-right: 1px solid var(--color-border);
+      }
+
+      .form-column:last-child {
+        border-right: none;
+      }
+    }
+
+    /* Mobile optimizations */
+
+    @media (max-width: 767px) {
+      h1 {
+        font-size: 24px;
+        padding: 16px;
+      }
+
+      .container {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .form-container,
+      .preview-container {
+        border-radius: 8px;
+      }
+
+      .form-column {
+        padding: 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr auto auto;
+      }
+
+      input[type="number"] {
+        width: 100px;
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .unit {
+        width: 65px;
+      }
+
+      .generate-btn {
+        padding: 14px;
+        font-size: 14px;
+      }
+
+      /* Sticky preview on mobile for better UX */
+      .preview-container {
+        position: sticky;
+        bottom: 0;
+        min-height: 350px;
+        margin-top: auto;
+      }
+
+      #preview {
+        min-height: 250px;
+      }
+    }
+
+    /* Animations */
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-column {
+      animation: fadeIn 0.4s ease backwards;
+    }
+
+    .form-column:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .form-column:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .form-column:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .preview-container {
+      animation: fadeIn 0.5s ease backwards;
+      animation-delay: 0.2s;
     }
   </style>
-  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))r(n);new MutationObserver(n=>{for(const s of n)if(s.type==="childList")for(const o of s.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(n){const s={};return n.integrity&&(s.integrity=n.integrity),n.referrerPolicy&&(s.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?s.credentials="include":n.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function r(n){if(n.ep)return;n.ep=!0;const s=i(n);fetch(n.href,s)}})();const m={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function S(e){return{...m,...e}}function L(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
+  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))r(n);new MutationObserver(n=>{for(const s of n)if(s.type==="childList")for(const o of s.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(n){const s={};return n.integrity&&(s.integrity=n.integrity),n.referrerPolicy&&(s.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?s.credentials="include":n.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function r(n){if(n.ep)return;n.ep=!0;const s=i(n);fetch(n.href,s)}})();const m={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function S(e){return{...m,...e}}function Z(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
@@ -185,21 +833,22 @@
         <h3>Job</h3>
         <div class="form-row checkbox-row">
           <input type="checkbox" id="skimPass">
-          <label for="skimPass">Skim pass (Z=0 first)</label>
+          <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
-          <label for="numPasses">Number of Passes</label>
+          <label for="numPasses"># Passes</label>
           <input type="number" id="numPasses" value="${m.numPasses}" step="1" min="1">
+          <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="number" id="depthPerPass" value="${m.depthPerPass}" step="0.005" min="0.001">
+          <input type="number" id="depthPerPass" value="${m.depthPerPass}" step="0.005" min="0">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
           <input type="number" id="pauseInterval" value="${m.pauseInterval}" step="1" min="0">
-          <span class="unit">pass(es)</span>
+          <span class="unit">passes</span>
         </div>
       </div>
 
@@ -219,7 +868,7 @@
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="number" id="feedRate" value="${m.feedRate}" step="5" min="1">
+              <input type="number" id="feedRate" value="${m.feedRate}" step="5" min="0">
               <span class="unit">in/min</span>
             </div>
           </div>
@@ -230,12 +879,13 @@
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
-              <label for="spindleRpm">Spindle RPM</label>
+              <label for="spindleRpm">Spindle Speed</label>
               <input type="number" id="spindleRpm" value="${m.spindleRpm}" step="500" min="1000">
+              <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
-              <input type="number" id="safeZ" value="${m.safeZ}" step="0.125" min="0.01">
+              <input type="number" id="safeZ" value="${m.safeZ}" step="0.125" min="0">
               <span class="unit">in</span>
             </div>
           </div>
@@ -243,7 +893,7 @@
       </div>
     </div>
   `,t.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>e(R(t))),r.addEventListener("change",()=>e(R(t)))}),t}function R(e){const t=n=>{const s=e.querySelector(`#${n}`);return parseFloat(s.value)},i=n=>e.querySelector(`#${n}`).checked,r=n=>e.querySelector(`input[name="${n}"]:checked`)?.value||"";return{stockWidth:t("stockWidth"),stockHeight:t("stockHeight"),bitDiameter:t("bitDiameter"),stepoverPercent:t("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:t("numPasses"),depthPerPass:t("depthPerPass"),pauseInterval:t("pauseInterval"),feedRate:t("feedRate"),plungeRate:t("plungeRate"),spindleRpm:t("spindleRpm"),safeZ:t("safeZ")}}function M(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function D(e){const t=e.bitDiameter*(e.stepoverPercent/100),i=e.bitDiameter/2,r=i-t;let n,s,o,c;e.rasterDirection==="x"?(n=-i,s=e.stockWidth+i,o=-r,c=e.stockHeight+r):(n=-r,s=e.stockWidth+r,o=-i,c=e.stockHeight+i);let d=[];if(e.rasterDirection==="x"){let a=o;for(;a<=c;)d.push(a),a+=t;d[d.length-1]<c&&d.push(c)}else{let a=n;for(;a<=s;)d.push(a),a+=t;d[d.length-1]<s&&d.push(s)}const v=[],h=e.numPasses+(e.skimPass?1:0);for(let a=0;a<h;a++){const p=e.skimPass&&a===0,l=e.skimPass?a:a+1,y=p?0:-(l*e.depthPerPass),g=d.map(($,k)=>{const x=k%2===0;return e.rasterDirection==="x"?{y:$,xStart:x?n:s,xEnd:x?s:n,direction:x?"positive":"negative"}:{x:$,yStart:x?o:c,yEnd:x?c:o,direction:x?"positive":"negative"}}),P=e.pauseInterval>0&&(a+1)%e.pauseInterval===0&&a<h-1;v.push({z:y,lines:g,pauseAfter:P})}return{passes:v,bounds:{xMin:n,xMax:s,yMin:o,yMax:c},params:e}}function F(e){const{params:t}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${t.stockWidth}" x ${t.stockHeight}"`),i.push(`; Bit: ${t.bitDiameter}" fly cutter`),i.push(`; Stepover: ${t.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${t.spindleRpm} ; Spindle on`),i.push(`G0 Z${u(t.safeZ)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],n=t.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,s=t.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${u(n)} Y${u(s)} ; Move to start`),i.push(""),e.passes.forEach((o,c)=>{i.push(`; Pass ${c+1} at Z=${u(o.z)}`),i.push(...W(o,t.safeZ,t.feedRate,t.plungeRate,t.rasterDirection)),o.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${u(t.safeZ)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
-`)}function W(e,t,i,r,n){const s=[];return e.lines.forEach((o,c)=>{n==="x"?(c===0?(s.push(`G0 Y${u(o.y)}`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 Y${u(o.y)} ; Stepover`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 X${u(o.xEnd)} F${i} ; Cut`)):(c===0?(s.push(`G0 X${u(o.x)}`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 X${u(o.x)} ; Stepover`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 Y${u(o.yEnd)} F${i} ; Cut`))}),s.push(`G0 Z${u(t)} ; Retract after pass`),s}function u(e){return e.toFixed(4).replace(/\.?0+$/,"")}function G(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function X(e,t,i){const{bounds:r,params:n}=e,s=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,d=(t-2*s)/o,v=(i-2*s)/c,h=Math.min(d,v),a=b=>s+(b-r.xMin)*h,p=b=>i-s-(b-r.yMin)*h,l=[];l.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),l.push("  .overhang { fill: none; stroke: #ccc; stroke-width: 1; stroke-dasharray: 4; }"),l.push("  .raster { stroke: #2196F3; stroke-width: 1; opacity: 0.7; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),l.push("</style>"),l.push(`<rect class="overhang" x="${a(r.xMin)}" y="${p(r.yMax)}" width="${o*h}" height="${c*h}" />`),l.push(`<rect class="stock" x="${a(0)}" y="${p(n.stockHeight)}" width="${n.stockWidth*h}" height="${n.stockHeight*h}" />`);const y=a(0),g=a(n.stockWidth),P=p(n.stockHeight),$=p(0),k=(y+g)/2,x=$-10;l.push(`<text class="dimension-text" x="${k}" y="${x}" text-anchor="middle">${G(n.stockWidth)}</text>`);const H=y+10,Z=(P+$)/2;l.push(`<text class="dimension-text" x="${H}" y="${Z}" text-anchor="start" dominant-baseline="middle">${G(n.stockHeight)}</text>`);const w=e.passes[0];if(w){w.lines.forEach(f=>{n.rasterDirection==="x"?l.push(`<line class="raster" x1="${a(f.xStart)}" y1="${p(f.y)}" x2="${a(f.xEnd)}" y2="${p(f.y)}" />`):l.push(`<line class="raster" x1="${a(f.x)}" y1="${p(f.yStart)}" x2="${a(f.x)}" y2="${p(f.yEnd)}" />`)});const b=w.lines[0];if(b){const f=n.rasterDirection==="x"?b.xStart:b.x,E=n.rasterDirection==="x"?b.y:b.yStart;l.push(`<circle class="start" cx="${a(f)}" cy="${p(E)}" r="5" />`)}}return l.push("</svg>"),l.join(`
+`)}function W(e,t,i,r,n){const s=[];return e.lines.forEach((o,c)=>{n==="x"?(c===0?(s.push(`G0 Y${u(o.y)}`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 Y${u(o.y)} ; Stepover`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 X${u(o.xEnd)} F${i} ; Cut`)):(c===0?(s.push(`G0 X${u(o.x)}`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 X${u(o.x)} ; Stepover`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 Y${u(o.yEnd)} F${i} ; Cut`))}),s.push(`G0 Z${u(t)} ; Retract after pass`),s}function u(e){return e.toFixed(4).replace(/\.?0+$/,"")}function G(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function X(e,t,i){const{bounds:r,params:n}=e,s=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,d=(t-2*s)/o,v=(i-2*s)/c,h=Math.min(d,v),a=b=>s+(b-r.xMin)*h,p=b=>i-s-(b-r.yMin)*h,l=[];l.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),l.push("  .overhang { fill: none; stroke: #ccc; stroke-width: 1; stroke-dasharray: 4; }"),l.push("  .raster { stroke: #2196F3; stroke-width: 1; opacity: 0.7; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),l.push("</style>"),l.push(`<rect class="overhang" x="${a(r.xMin)}" y="${p(r.yMax)}" width="${o*h}" height="${c*h}" />`),l.push(`<rect class="stock" x="${a(0)}" y="${p(n.stockHeight)}" width="${n.stockWidth*h}" height="${n.stockHeight*h}" />`);const y=a(0),g=a(n.stockWidth),P=p(n.stockHeight),$=p(0),k=(y+g)/2,x=$-10;l.push(`<text class="dimension-text" x="${k}" y="${x}" text-anchor="middle">${G(n.stockWidth)}</text>`);const H=y+10,E=(P+$)/2;l.push(`<text class="dimension-text" x="${H}" y="${E}" text-anchor="start" dominant-baseline="middle">${G(n.stockHeight)}</text>`);const w=e.passes[0];if(w){w.lines.forEach(f=>{n.rasterDirection==="x"?l.push(`<line class="raster" x1="${a(f.xStart)}" y1="${p(f.y)}" x2="${a(f.xEnd)}" y2="${p(f.y)}" />`):l.push(`<line class="raster" x1="${a(f.x)}" y1="${p(f.yStart)}" x2="${a(f.x)}" y2="${p(f.yEnd)}" />`)});const b=w.lines[0];if(b){const f=n.rasterDirection==="x"?b.xStart:b.x,L=n.rasterDirection==="x"?b.y:b.yStart;l.push(`<circle class="start" cx="${a(f)}" cy="${p(L)}" r="5" />`)}}return l.push("</svg>"),l.join(`
 `)}function Y(){const e=document.querySelector("#app");e.innerHTML=`
     <h1>RasterMaster</h1>
     <div class="container">
@@ -253,9 +903,11 @@
         <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
       </div>
     </div>
-  `;const t=e.querySelector("#form-container"),i=e.querySelector("#preview"),r=e.querySelector("#generateBtn");let n={};function s(){if(!M(n)){i.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',r.disabled=!0;return}const c=S(n),d=D(c),v=i.getBoundingClientRect(),h=X(d,v.width||500,v.height||375);i.innerHTML=h,r.disabled=!1}const o=L(c=>{n=c,s()});t.appendChild(o),r.addEventListener("click",()=>{if(!M(n))return;const c=S(n),d=D(c),v=F(d),h=new Blob([v],{type:"text/plain"}),a=URL.createObjectURL(h),p=document.createElement("a");p.href=a,p.download=`rastermaster-${c.stockWidth}x${c.stockHeight}.gcode`,p.click(),URL.revokeObjectURL(a)}),s()}Y();</script>
+  `;const t=e.querySelector("#form-container"),i=e.querySelector("#preview"),r=e.querySelector("#generateBtn");let n={};function s(){if(!M(n)){i.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',r.disabled=!0;return}const c=S(n),d=D(c),v=i.getBoundingClientRect(),h=X(d,v.width||500,v.height||375);i.innerHTML=h,r.disabled=!1}const o=Z(c=>{n=c,s()});t.appendChild(o),r.addEventListener("click",()=>{if(!M(n))return;const c=S(n),d=D(c),v=F(d),h=new Blob([v],{type:"text/plain"}),a=URL.createObjectURL(h),p=document.createElement("a");p.href=a,p.download=`rastermaster-${c.stockWidth}x${c.stockHeight}.gcode`,p.click(),URL.revokeObjectURL(a)}),s()}Y();</script>
 </head>
+
 <body>
   <div id="app"></div>
 </body>
+
 </html>
