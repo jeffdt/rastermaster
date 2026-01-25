@@ -53,16 +53,16 @@ function generatePass(pass: ZPass, safeZ: number, feedRate: number, plungeRate: 
     if (direction === 'x') {
       // X-axis raster
       if (lineIndex === 0) {
+        // First line: rapid to start, plunge, cut
         lines.push(`G0 Y${fmt(line.y!)}`)
         lines.push(`G0 X${fmt(line.xStart!)}`)
         lines.push(`G1 Z${fmt(pass.z)} F${plungeRate} ; Plunge`)
+        lines.push(`G1 X${fmt(line.xEnd!)} F${feedRate} ; Cut`)
       } else {
-        lines.push(`G0 Z${fmt(safeZ)} ; Retract`)
-        lines.push(`G0 Y${fmt(line.y!)} ; Stepover`)
-        lines.push(`G0 X${fmt(line.xStart!)}`)
-        lines.push(`G1 Z${fmt(pass.z)} F${plungeRate} ; Plunge`)
+        // Subsequent lines: stepover at cutting depth, then cut
+        lines.push(`G1 Y${fmt(line.y!)} F${feedRate} ; Stepover`)
+        lines.push(`G1 X${fmt(line.xEnd!)} F${feedRate} ; Cut`)
       }
-      lines.push(`G1 X${fmt(line.xEnd!)} F${feedRate} ; Cut`)
     } else {
       // Y-axis raster
       if (lineIndex === 0) {
@@ -78,8 +78,6 @@ function generatePass(pass: ZPass, safeZ: number, feedRate: number, plungeRate: 
       lines.push(`G1 Y${fmt(line.yEnd!)} F${feedRate} ; Cut`)
     }
   })
-
-  lines.push(`G0 Z${fmt(safeZ)} ; Retract after pass`)
 
   return lines
 }
