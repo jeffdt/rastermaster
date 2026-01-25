@@ -24,14 +24,12 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   // Styles
   lines.push('<style>')
   lines.push('  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }')
-  lines.push('  .overhang { fill: none; stroke: #ccc; stroke-width: 1; stroke-dasharray: 4; }')
-  lines.push('  .raster { stroke: #2196F3; stroke-width: 1; opacity: 0.7; }')
+  lines.push('  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
+  lines.push('  .stepover { stroke: #FF9800; stroke-width: 1.5; opacity: 0.7; }')
+  lines.push('  .arrow { fill: #2196F3; opacity: 0.8; }')
   lines.push('  .start { fill: #4CAF50; }')
   lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }')
   lines.push('</style>')
-
-  // Overhang area (dashed rectangle)
-  lines.push(`<rect class="overhang" x="${tx(bounds.xMin)}" y="${ty(bounds.yMax)}" width="${contentWidth * scale}" height="${contentHeight * scale}" />`)
 
   // Stock rectangle
   lines.push(`<rect class="stock" x="${tx(0)}" y="${ty(params.stockHeight)}" width="${params.stockWidth * scale}" height="${params.stockHeight * scale}" />`)
@@ -52,18 +50,62 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const heightTextY = (stockY1 + stockY2) / 2
   lines.push(`<text class="dimension-text" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${formatDimension(params.stockHeight)}</text>`)
 
-  // Raster lines (first pass only for preview)
+  // Raster lines with snaking visualization (first pass only for preview)
   const firstPass = toolpath.passes[0]
   if (firstPass) {
-    firstPass.lines.forEach(line => {
+    firstPass.lines.forEach((line, index) => {
       if (params.rasterDirection === 'x') {
-        lines.push(`<line class="raster" x1="${tx(line.xStart!)}" y1="${ty(line.y!)}" x2="${tx(line.xEnd!)}" y2="${ty(line.y!)}" />`)
+        const x1 = tx(line.xStart!)
+        const y1 = ty(line.y!)
+        const x2 = tx(line.xEnd!)
+        const y2 = ty(line.y!)
+
+        // Draw cutting line
+        lines.push(`<line class="raster" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`)
+
+        // Draw arrow at midpoint
+        const midX = (x1 + x2) / 2
+        const midY = (y1 + y2) / 2
+        const arrowSize = 6
+        const direction = line.direction === 'positive' ? 1 : -1
+        // Triangle pointing right or left
+        lines.push(`<polygon class="arrow" points="${midX + direction * arrowSize},${midY} ${midX - direction * arrowSize / 2},${midY - arrowSize / 2} ${midX - direction * arrowSize / 2},${midY + arrowSize / 2}" />`)
+
+        // Draw stepover to next line (if not last)
+        if (index < firstPass.lines.length - 1) {
+          const nextLine = firstPass.lines[index + 1]
+          const nextX = tx(nextLine.xStart!)
+          const nextY = ty(nextLine.y!)
+          lines.push(`<line class="stepover" x1="${x2}" y1="${y2}" x2="${nextX}" y2="${nextY}" />`)
+        }
       } else {
-        lines.push(`<line class="raster" x1="${tx(line.x!)}" y1="${ty(line.yStart!)}" x2="${tx(line.x!)}" y2="${ty(line.yEnd!)}" />`)
+        const x1 = tx(line.x!)
+        const y1 = ty(line.yStart!)
+        const x2 = tx(line.x!)
+        const y2 = ty(line.yEnd!)
+
+        // Draw cutting line
+        lines.push(`<line class="raster" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`)
+
+        // Draw arrow at midpoint
+        const midX = (x1 + x2) / 2
+        const midY = (y1 + y2) / 2
+        const arrowSize = 6
+        const direction = line.direction === 'positive' ? 1 : -1
+        // Triangle pointing down or up (flipped for SVG coordinates)
+        lines.push(`<polygon class="arrow" points="${midX},${midY - direction * arrowSize} ${midX - arrowSize / 2},${midY + direction * arrowSize / 2} ${midX + arrowSize / 2},${midY + direction * arrowSize / 2}" />`)
+
+        // Draw stepover to next line (if not last)
+        if (index < firstPass.lines.length - 1) {
+          const nextLine = firstPass.lines[index + 1]
+          const nextX = tx(nextLine.x!)
+          const nextY = ty(nextLine.yStart!)
+          lines.push(`<line class="stepover" x1="${x2}" y1="${y2}" x2="${nextX}" y2="${nextY}" />`)
+        }
       }
     })
 
-    // Start point indicator
+    // Start point indicator (green dot)
     const startLine = firstPass.lines[0]
     if (startLine) {
       const startX = params.rasterDirection === 'x' ? startLine.xStart! : startLine.x!
