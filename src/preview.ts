@@ -25,7 +25,7 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   lines.push('<style>')
   lines.push('  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }')
   lines.push('  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
-  lines.push('  .stepover { stroke: #FF9800; stroke-width: 1.5; opacity: 0.7; }')
+  lines.push('  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
   lines.push('  .arrow { fill: #2196F3; opacity: 0.8; }')
   lines.push('  .start { fill: #4CAF50; }')
   lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }')
