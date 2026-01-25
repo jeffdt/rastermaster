@@ -46,6 +46,27 @@ export function generateGCode(toolpath: Toolpath): string {
   return lines.join('\n')
 }
 
+/**
+ * Generates GCode for a single Z-depth pass using a snaking raster pattern.
+ *
+ * The bit plunges once at the start, then stays at cutting depth while:
+ * 1. Cutting the first line
+ * 2. Stepping over to the next line at feed rate (G1)
+ * 3. Cutting the next line in the opposite direction
+ * 4. Repeating until all lines are complete
+ * 5. Retracting once at the end
+ *
+ * Stepover moves use G1 (feed rate) instead of G0 (rapid) for safety - if
+ * material exists outside the defined stock bounds, the bit will cut through
+ * it at a controlled speed rather than breaking on a rapid move.
+ *
+ * @param pass - The Z pass with raster lines
+ * @param safeZ - Safe retract height
+ * @param feedRate - Cutting feed rate (in/min)
+ * @param plungeRate - Z-axis plunge rate (in/min)
+ * @param direction - Raster direction ('x' or 'y')
+ * @returns Array of GCode command strings
+ */
 function generatePass(pass: ZPass, safeZ: number, feedRate: number, plungeRate: number, direction: 'x' | 'y'): string[] {
   const lines: string[] = []
 
