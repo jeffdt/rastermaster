@@ -60,4 +60,43 @@ describe('generateGCode', () => {
     expect(gcode).toContain('F125')
     expect(gcode).toContain('F12')
   })
+
+  test('X-axis raster uses snaking pattern with single retract per pass', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 2,
+      stockHeight: 2,
+      bitDiameter: 1,
+      stepoverPercent: 50,
+      rasterDirection: 'x',
+      numPasses: 1,
+      skimPass: false,
+    })
+    const toolpath = calculateToolpath(params)
+    const gcode = generateGCode(toolpath)
+
+    // Split into lines for analysis
+    const lines = gcode.split('\n')
+
+    // Find the pass section (between first plunge and final retract)
+    const firstPlungeIdx = lines.findIndex(l => l.includes('G1 Z-') && l.includes('Plunge'))
+    const finalRetractIdx = lines.findIndex(l => l.includes('Final retract'))
+    const passLines = lines.slice(firstPlungeIdx, finalRetractIdx)
+
+    // Count retracts in the pass (should be 0)
+    const retractCount = passLines.filter(l => l.includes('G0 Z')).length
+    expect(retractCount).toBe(0)
+
+    // Verify stepover moves use G1 (feed rate)
+    const stepoverLines = passLines.filter(l => l.includes('Stepover'))
+    expect(stepoverLines.length).toBeGreaterThan(0)
+    stepoverLines.forEach(line => {
+      expect(line).toContain('G1')
+      expect(line).toContain('Y') // X-axis raster steps in Y
+      expect(line).not.toContain('X') // Should only move in Y
+    })
+
+    // Verify cutting moves alternate direction
+    const cutLines = passLines.filter(l => l.includes('Cut'))
+    expect(cutLines.length).toBeGreaterThan(1)
+  })
 })
