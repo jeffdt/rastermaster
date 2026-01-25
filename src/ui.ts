@@ -40,13 +40,13 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="number" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" step="0.005" min="0.001">
+          <input type="number" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" step="0.005" min="0">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
           <input type="number" id="pauseInterval" value="${DEFAULT_PARAMS.pauseInterval}" step="1" min="0">
-          <span class="unit">pass(es)</span>
+          <span class="unit">passes</span>
         </div>
       </div>
 
@@ -66,7 +66,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="number" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" step="5" min="1">
+              <input type="number" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" step="5" min="0">
               <span class="unit">in/min</span>
             </div>
           </div>
@@ -82,7 +82,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
-              <input type="number" id="safeZ" value="${DEFAULT_PARAMS.safeZ}" step="0.125" min="0.01">
+              <input type="number" id="safeZ" value="${DEFAULT_PARAMS.safeZ}" step="0.125" min="0">
               <span class="unit">in</span>
             </div>
           </div>
@@ -136,7 +136,7 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
 
 export function isFormValid(params: Partial<SurfacingParams>): boolean {
   return !!(params.stockWidth && params.stockWidth > 0 &&
-            params.stockHeight && params.stockHeight > 0)
+    params.stockHeight && params.stockHeight > 0)
 }
 
 export function validateParams(params: Partial<SurfacingParams>): string[] {

@@ -18,6 +18,14 @@ RasterMaster is a single-page web application that generates GRBL-compatible GCo
 - `bun test <file>` - Run specific test file
 - Tests use Bun's built-in test runner (`bun:test`)
 
+### Deployment
+- **Automatic**: Push to `main` branch triggers GitHub Actions workflow
+  - Workflow runs `bun install`, `bun run build`, and deploys to `gh-pages` branch
+  - Site is live at `rastermaster.jeffdt.com`
+- **Manual**: Trigger deployment from GitHub Actions tab if needed
+- **Branch**: `gh-pages` branch contains only the built `index.html` (auto-managed by workflow)
+- **DNS**: CNAME record points `rastermaster.jeffdt.com` to `jeffdt.github.io`
+
 ## Architecture
 
 ### Build System
