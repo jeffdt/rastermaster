@@ -1,5 +1,7 @@
-# Confirm raster pattern snakes back and forth
-It appears as though it might move left to right, then retract and rapid to the next line, then move right to left, then retract and rapid to the next line, etc. Instead, it should move left to right, then rapid to the next line, then move right to left, then rapid to the next line, etc. It should not retract until it has finished the entire pattern and is ready to begin the next pass. 
+# ~~Confirm raster pattern snakes back and forth~~ COMPLETE
+~~It appears as though it might move left to right, then retract and rapid to the next line, then move right to left, then retract and rapid to the next line, etc. Instead, it should move left to right, then rapid to the next line, then move right to left, then rapid to the next line, etc. It should not retract until it has finished the entire pattern and is ready to begin the next pass.~~
+
+Implemented 2026-01-25: Snaking pattern now keeps bit at cutting depth, uses G1 stepover moves for safety. 
 
 # Dynamic Layout
 Dynamic layout: switch form/preview orientation based on raster direction (X-axis: form top/preview bottom, Y-axis: form left/preview right with animations)
