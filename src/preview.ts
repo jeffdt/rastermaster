@@ -28,6 +28,7 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   lines.push('  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
   lines.push('  .arrow { fill: #2196F3; opacity: 0.8; }')
   lines.push('  .start { fill: #4CAF50; }')
+  lines.push('  .end { fill: #F44336; }')
   lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }')
   lines.push('</style>')
 
@@ -111,6 +112,14 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
       const startX = params.rasterDirection === 'x' ? startLine.xStart! : startLine.x!
       const startY = params.rasterDirection === 'x' ? startLine.y! : startLine.yStart!
       lines.push(`<circle class="start" cx="${tx(startX)}" cy="${ty(startY)}" r="5" />`)
+    }
+
+    // End point indicator (red dot)
+    const endLine = firstPass.lines[firstPass.lines.length - 1]
+    if (endLine) {
+      const endX = params.rasterDirection === 'x' ? endLine.xEnd! : endLine.x!
+      const endY = params.rasterDirection === 'x' ? endLine.y! : endLine.yEnd!
+      lines.push(`<circle class="end" cx="${tx(endX)}" cy="${ty(endY)}" r="5" />`)
     }
   }
 
