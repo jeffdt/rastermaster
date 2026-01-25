@@ -843,6 +843,65 @@
         z-index: 1;
       }
     }
+
+    /* Tablet: hybrid approach (Job slides, Tool expands) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .form-column-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .form-column:nth-child(2).form-column-hidden {
+        /* Job column - slides horizontally */
+        transform: translateX(-100%);
+        position: absolute;
+        will-change: transform, opacity;
+      }
+
+      .form-column:nth-child(3).form-column-hidden {
+        /* Tool column - accordion expands */
+        max-height: 0;
+        overflow: hidden;
+        transform: none;
+        position: static;
+      }
+
+      .form-column-reveal-job {
+        animation: slideFromLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        position: static;
+        pointer-events: auto;
+      }
+
+      .form-column-reveal-tool {
+        animation: accordionExpand 0.5s ease-out 0.2s forwards;
+        pointer-events: auto;
+        overflow: visible;
+      }
+    }
+
+    /* Mobile: accordion expansion only */
+    @media (max-width: 767px) {
+      .form-column-hidden {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transform: none;
+        position: static;
+      }
+
+      .form-column-reveal-job {
+        animation: accordionExpand 0.5s ease-out forwards;
+        pointer-events: auto;
+        overflow: visible;
+      }
+
+      .form-column-reveal-tool {
+        animation: accordionExpand 0.5s ease-out 0.1s forwards;
+        pointer-events: auto;
+        overflow: visible;
+      }
+    }
   </style>
 </head>
 
