@@ -98,7 +98,7 @@
       pointer-events: none;
       z-index: 0;
       opacity: 0.6;
-      animation: rasterTrace 60s linear infinite;
+      animation: rasterTrace 20s linear infinite;
     }
 
     @keyframes rasterTrace {
@@ -806,7 +806,7 @@
       animation-delay: 0.2s;
     }
   </style>
-  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))r(n);new MutationObserver(n=>{for(const s of n)if(s.type==="childList")for(const o of s.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(n){const s={};return n.integrity&&(s.integrity=n.integrity),n.referrerPolicy&&(s.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?s.credentials="include":n.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function r(n){if(n.ep)return;n.ep=!0;const s=i(n);fetch(n.href,s)}})();const m={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function S(e){return{...m,...e}}function Z(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
+  <script type="module" crossorigin>(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))r(t);new MutationObserver(t=>{for(const n of t)if(n.type==="childList")for(const c of n.addedNodes)c.tagName==="LINK"&&c.rel==="modulepreload"&&r(c)}).observe(document,{childList:!0,subtree:!0});function i(t){const n={};return t.integrity&&(n.integrity=t.integrity),t.referrerPolicy&&(n.referrerPolicy=t.referrerPolicy),t.crossOrigin==="use-credentials"?n.credentials="include":t.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function r(t){if(t.ep)return;t.ep=!0;const n=i(t);fetch(t.href,n)}})();const v={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function C(e){return{...v,...e}}function B(e){const s=document.createElement("div");return s.className="form-container",s.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
@@ -837,17 +837,17 @@
         </div>
         <div class="form-row">
           <label for="numPasses"># Passes</label>
-          <input type="number" id="numPasses" value="${m.numPasses}" step="1" min="1">
+          <input type="number" id="numPasses" value="${v.numPasses}" step="1" min="1">
           <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="number" id="depthPerPass" value="${m.depthPerPass}" step="0.005" min="0">
+          <input type="number" id="depthPerPass" value="${v.depthPerPass}" step="0.005" min="0">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
-          <input type="number" id="pauseInterval" value="${m.pauseInterval}" step="1" min="0">
+          <input type="number" id="pauseInterval" value="${v.pauseInterval}" step="1" min="0">
           <span class="unit">passes</span>
         </div>
       </div>
@@ -858,43 +858,43 @@
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="bitDiameter">Bit Diameter</label>
-              <input type="number" id="bitDiameter" value="${m.bitDiameter}" step="0.125" min="0.125">
+              <input type="number" id="bitDiameter" value="${v.bitDiameter}" step="0.125" min="0.125">
               <span class="unit">in</span>
             </div>
             <div class="form-row">
               <label for="stepoverPercent">Stepover</label>
-              <input type="number" id="stepoverPercent" value="${m.stepoverPercent}" step="5" min="10" max="100">
+              <input type="number" id="stepoverPercent" value="${v.stepoverPercent}" step="5" min="10" max="100">
               <span class="unit">%</span>
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="number" id="feedRate" value="${m.feedRate}" step="5" min="0">
+              <input type="number" id="feedRate" value="${v.feedRate}" step="5" min="0">
               <span class="unit">in/min</span>
             </div>
           </div>
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="plungeRate">Plunge Rate</label>
-              <input type="number" id="plungeRate" value="${m.plungeRate}" step="1" min="1">
+              <input type="number" id="plungeRate" value="${v.plungeRate}" step="1" min="1">
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
               <label for="spindleRpm">Spindle Speed</label>
-              <input type="number" id="spindleRpm" value="${m.spindleRpm}" step="500" min="1000">
+              <input type="number" id="spindleRpm" value="${v.spindleRpm}" step="500" min="1000">
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
-              <input type="number" id="safeZ" value="${m.safeZ}" step="0.125" min="0">
+              <input type="number" id="safeZ" value="${v.safeZ}" step="0.125" min="0">
               <span class="unit">in</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,t.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>e(R(t))),r.addEventListener("change",()=>e(R(t)))}),t}function R(e){const t=n=>{const s=e.querySelector(`#${n}`);return parseFloat(s.value)},i=n=>e.querySelector(`#${n}`).checked,r=n=>e.querySelector(`input[name="${n}"]:checked`)?.value||"";return{stockWidth:t("stockWidth"),stockHeight:t("stockHeight"),bitDiameter:t("bitDiameter"),stepoverPercent:t("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:t("numPasses"),depthPerPass:t("depthPerPass"),pauseInterval:t("pauseInterval"),feedRate:t("feedRate"),plungeRate:t("plungeRate"),spindleRpm:t("spindleRpm"),safeZ:t("safeZ")}}function M(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function D(e){const t=e.bitDiameter*(e.stepoverPercent/100),i=e.bitDiameter/2,r=i-t;let n,s,o,c;e.rasterDirection==="x"?(n=-i,s=e.stockWidth+i,o=-r,c=e.stockHeight+r):(n=-r,s=e.stockWidth+r,o=-i,c=e.stockHeight+i);let d=[];if(e.rasterDirection==="x"){let a=o;for(;a<=c;)d.push(a),a+=t;d[d.length-1]<c&&d.push(c)}else{let a=n;for(;a<=s;)d.push(a),a+=t;d[d.length-1]<s&&d.push(s)}const v=[],h=e.numPasses+(e.skimPass?1:0);for(let a=0;a<h;a++){const p=e.skimPass&&a===0,l=e.skimPass?a:a+1,y=p?0:-(l*e.depthPerPass),g=d.map(($,k)=>{const x=k%2===0;return e.rasterDirection==="x"?{y:$,xStart:x?n:s,xEnd:x?s:n,direction:x?"positive":"negative"}:{x:$,yStart:x?o:c,yEnd:x?c:o,direction:x?"positive":"negative"}}),P=e.pauseInterval>0&&(a+1)%e.pauseInterval===0&&a<h-1;v.push({z:y,lines:g,pauseAfter:P})}return{passes:v,bounds:{xMin:n,xMax:s,yMin:o,yMax:c},params:e}}function F(e){const{params:t}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${t.stockWidth}" x ${t.stockHeight}"`),i.push(`; Bit: ${t.bitDiameter}" fly cutter`),i.push(`; Stepover: ${t.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${t.spindleRpm} ; Spindle on`),i.push(`G0 Z${u(t.safeZ)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],n=t.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,s=t.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${u(n)} Y${u(s)} ; Move to start`),i.push(""),e.passes.forEach((o,c)=>{i.push(`; Pass ${c+1} at Z=${u(o.z)}`),i.push(...W(o,t.safeZ,t.feedRate,t.plungeRate,t.rasterDirection)),o.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${u(t.safeZ)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
-`)}function W(e,t,i,r,n){const s=[];return e.lines.forEach((o,c)=>{n==="x"?(c===0?(s.push(`G0 Y${u(o.y)}`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 Y${u(o.y)} ; Stepover`),s.push(`G0 X${u(o.xStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 X${u(o.xEnd)} F${i} ; Cut`)):(c===0?(s.push(`G0 X${u(o.x)}`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)):(s.push(`G0 Z${u(t)} ; Retract`),s.push(`G0 X${u(o.x)} ; Stepover`),s.push(`G0 Y${u(o.yStart)}`),s.push(`G1 Z${u(e.z)} F${r} ; Plunge`)),s.push(`G1 Y${u(o.yEnd)} F${i} ; Cut`))}),s.push(`G0 Z${u(t)} ; Retract after pass`),s}function u(e){return e.toFixed(4).replace(/\.?0+$/,"")}function G(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function X(e,t,i){const{bounds:r,params:n}=e,s=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,d=(t-2*s)/o,v=(i-2*s)/c,h=Math.min(d,v),a=b=>s+(b-r.xMin)*h,p=b=>i-s-(b-r.yMin)*h,l=[];l.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),l.push("  .overhang { fill: none; stroke: #ccc; stroke-width: 1; stroke-dasharray: 4; }"),l.push("  .raster { stroke: #2196F3; stroke-width: 1; opacity: 0.7; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),l.push("</style>"),l.push(`<rect class="overhang" x="${a(r.xMin)}" y="${p(r.yMax)}" width="${o*h}" height="${c*h}" />`),l.push(`<rect class="stock" x="${a(0)}" y="${p(n.stockHeight)}" width="${n.stockWidth*h}" height="${n.stockHeight*h}" />`);const y=a(0),g=a(n.stockWidth),P=p(n.stockHeight),$=p(0),k=(y+g)/2,x=$-10;l.push(`<text class="dimension-text" x="${k}" y="${x}" text-anchor="middle">${G(n.stockWidth)}</text>`);const H=y+10,E=(P+$)/2;l.push(`<text class="dimension-text" x="${H}" y="${E}" text-anchor="start" dominant-baseline="middle">${G(n.stockHeight)}</text>`);const w=e.passes[0];if(w){w.lines.forEach(f=>{n.rasterDirection==="x"?l.push(`<line class="raster" x1="${a(f.xStart)}" y1="${p(f.y)}" x2="${a(f.xEnd)}" y2="${p(f.y)}" />`):l.push(`<line class="raster" x1="${a(f.x)}" y1="${p(f.yStart)}" x2="${a(f.x)}" y2="${p(f.yEnd)}" />`)});const b=w.lines[0];if(b){const f=n.rasterDirection==="x"?b.xStart:b.x,L=n.rasterDirection==="x"?b.y:b.yStart;l.push(`<circle class="start" cx="${a(f)}" cy="${p(L)}" r="5" />`)}}return l.push("</svg>"),l.join(`
-`)}function Y(){const e=document.querySelector("#app");e.innerHTML=`
+  `,s.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>e(q(s))),r.addEventListener("change",()=>e(q(s)))}),s}function q(e){const s=t=>{const n=e.querySelector(`#${t}`);return parseFloat(n.value)},i=t=>e.querySelector(`#${t}`).checked,r=t=>e.querySelector(`input[name="${t}"]:checked`)?.value||"";return{stockWidth:s("stockWidth"),stockHeight:s("stockHeight"),bitDiameter:s("bitDiameter"),stepoverPercent:s("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:s("numPasses"),depthPerPass:s("depthPerPass"),pauseInterval:s("pauseInterval"),feedRate:s("feedRate"),plungeRate:s("plungeRate"),spindleRpm:s("spindleRpm"),safeZ:s("safeZ")}}function T(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function A(e){const s=e.bitDiameter*(e.stepoverPercent/100),i=e.bitDiameter/2,r=i-s;let t,n,c,l;e.rasterDirection==="x"?(t=-i,n=e.stockWidth+i,c=-r,l=e.stockHeight+r):(t=-r,n=e.stockWidth+r,c=-i,l=e.stockHeight+i);let d=[];if(e.rasterDirection==="x"){let o=c;for(;o<=l;)d.push(o),o+=s;d[d.length-1]<l&&d.push(l)}else{let o=t;for(;o<=n;)d.push(o),o+=s;d[d.length-1]<n&&d.push(n)}const x=[],f=e.numPasses+(e.skimPass?1:0);for(let o=0;o<f;o++){const u=e.skimPass&&o===0,a=e.skimPass?o:o+1,G=u?0:-(a*e.depthPerPass),H=d.map((M,Y)=>{const b=Y%2===0;return e.rasterDirection==="x"?{y:M,xStart:b?t:n,xEnd:b?n:t,direction:b?"positive":"negative"}:{x:M,yStart:b?c:l,yEnd:b?l:c,direction:b?"positive":"negative"}}),X=e.pauseInterval>0&&(o+1)%e.pauseInterval===0&&o<f-1;x.push({z:G,lines:H,pauseAfter:X})}return{passes:x,bounds:{xMin:t,xMax:n,yMin:c,yMax:l},params:e}}function j(e){const{params:s}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${s.stockWidth}" x ${s.stockHeight}"`),i.push(`; Bit: ${s.bitDiameter}" fly cutter`),i.push(`; Stepover: ${s.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${s.spindleRpm} ; Spindle on`),i.push(`G0 Z${p(s.safeZ)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],t=s.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,n=s.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${p(t)} Y${p(n)} ; Move to start`),i.push(""),e.passes.forEach((c,l)=>{i.push(`; Pass ${l+1} at Z=${p(c.z)}`),i.push(...N(c,s.safeZ,s.feedRate,s.plungeRate,s.rasterDirection)),c.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${p(s.safeZ)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
+`)}function N(e,s,i,r,t){const n=[];return e.lines.forEach((c,l)=>{t==="x"?l===0?(n.push(`G0 Y${p(c.y)}`),n.push(`G0 X${p(c.xStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 X${p(c.xEnd)} F${i} ; Cut`)):(n.push(`G1 Y${p(c.y)} F${i} ; Stepover`),n.push(`G1 X${p(c.xEnd)} F${i} ; Cut`)):l===0?(n.push(`G0 X${p(c.x)}`),n.push(`G0 Y${p(c.yStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 Y${p(c.yEnd)} F${i} ; Cut`)):(n.push(`G1 X${p(c.x)} F${i} ; Stepover`),n.push(`G1 Y${p(c.yEnd)} F${i} ; Cut`))}),n}function p(e){return e.toFixed(4).replace(/\.?0+$/,"")}function I(e){const s=Math.round(e*100)/100;return s%1===0?`${s}"`:`${s.toFixed(2).replace(/\.?0+$/,"")}"`}function U(e,s,i){const{bounds:r,params:t}=e,n=20,c=r.xMax-r.xMin,l=r.yMax-r.yMin,d=(s-2*n)/c,x=(i-2*n)/l,f=Math.min(d,x),o=y=>n+(y-r.xMin)*f,u=y=>i-n-(y-r.yMin)*f,a=[];a.push(`<svg width="${s}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),a.push("<style>"),a.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),a.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),a.push("  .start { fill: #4CAF50; }"),a.push("  .end { fill: #F44336; }"),a.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),a.push("</style>"),a.push(`<rect class="stock" x="${o(0)}" y="${u(t.stockHeight)}" width="${t.stockWidth*f}" height="${t.stockHeight*f}" />`);const G=o(0),H=o(t.stockWidth),X=u(t.stockHeight),M=u(0),Y=(G+H)/2,b=M-10;a.push(`<text class="dimension-text" x="${Y}" y="${b}" text-anchor="middle">${I(t.stockWidth)}</text>`);const O=G+10,z=(X+M)/2;a.push(`<text class="dimension-text" x="${O}" y="${z}" text-anchor="start" dominant-baseline="middle">${I(t.stockHeight)}</text>`);const $=e.passes[0];if($){$.lines.forEach((h,g)=>{if(t.rasterDirection==="x"){const E=o(h.xStart),F=u(h.y),P=o(h.xEnd),k=u(h.y);a.push(`<line class="raster" x1="${E}" y1="${F}" x2="${P}" y2="${k}" />`);const w=(E+P)/2,S=(F+k)/2,m=6,D=h.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${w+D*m},${S} ${w-D*m/2},${S-m/2} ${w-D*m/2},${S+m/2}" />`),g<$.lines.length-1){const L=$.lines[g+1],Z=o(L.xStart),W=u(L.y);a.push(`<line class="stepover" x1="${P}" y1="${k}" x2="${Z}" y2="${W}" />`)}}else{const E=o(h.x),F=u(h.yStart),P=o(h.x),k=u(h.yEnd);a.push(`<line class="raster" x1="${E}" y1="${F}" x2="${P}" y2="${k}" />`);const w=(E+P)/2,S=(F+k)/2,m=6,D=h.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${w},${S-D*m} ${w-m/2},${S+D*m/2} ${w+m/2},${S+D*m/2}" />`),g<$.lines.length-1){const L=$.lines[g+1],Z=o(L.x),W=u(L.yStart);a.push(`<line class="stepover" x1="${P}" y1="${k}" x2="${Z}" y2="${W}" />`)}}});const y=$.lines[0];if(y){const h=t.rasterDirection==="x"?y.xStart:y.x,g=t.rasterDirection==="x"?y.y:y.yStart;a.push(`<circle class="start" cx="${o(h)}" cy="${u(g)}" r="5" />`)}const R=$.lines[$.lines.length-1];if(R){const h=t.rasterDirection==="x"?R.xEnd:R.x,g=t.rasterDirection==="x"?R.y:R.yEnd;a.push(`<circle class="end" cx="${o(h)}" cy="${u(g)}" r="5" />`)}}return a.push("</svg>"),a.join(`
+`)}function V(){const e=document.querySelector("#app");e.innerHTML=`
     <h1>RasterMaster</h1>
     <div class="container">
       <div id="form-container"></div>
@@ -903,7 +903,7 @@
         <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
       </div>
     </div>
-  `;const t=e.querySelector("#form-container"),i=e.querySelector("#preview"),r=e.querySelector("#generateBtn");let n={};function s(){if(!M(n)){i.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',r.disabled=!0;return}const c=S(n),d=D(c),v=i.getBoundingClientRect(),h=X(d,v.width||500,v.height||375);i.innerHTML=h,r.disabled=!1}const o=Z(c=>{n=c,s()});t.appendChild(o),r.addEventListener("click",()=>{if(!M(n))return;const c=S(n),d=D(c),v=F(d),h=new Blob([v],{type:"text/plain"}),a=URL.createObjectURL(h),p=document.createElement("a");p.href=a,p.download=`rastermaster-${c.stockWidth}x${c.stockHeight}.gcode`,p.click(),URL.revokeObjectURL(a)}),s()}Y();</script>
+  `;const s=e.querySelector("#form-container"),i=e.querySelector("#preview"),r=e.querySelector("#generateBtn");let t={};function n(){if(!T(t)){i.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',r.disabled=!0;return}const l=C(t),d=A(l),x=i.getBoundingClientRect(),f=U(d,x.width||500,x.height||375);i.innerHTML=f,r.disabled=!1}const c=B(l=>{t=l,n()});s.appendChild(c),r.addEventListener("click",()=>{if(!T(t))return;const l=C(t),d=A(l),x=j(d),f=new Blob([x],{type:"text/plain"}),o=URL.createObjectURL(f),u=document.createElement("a");u.href=o,u.download=`rastermaster-${l.stockWidth}x${l.stockHeight}.gcode`,u.click(),URL.revokeObjectURL(o)}),n()}V();</script>
 </head>
 
 <body>
