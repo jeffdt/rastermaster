@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Continuous raster toolpath -->
+  <polyline
+    points="6,8 26,8 26,13 6,13 6,18 26,18 26,23 6,23"
+    fill="none"
+    stroke="#f59e0b"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+  <!-- Start point marker -->
+  <circle cx="6" cy="8" r="2.5" fill="#f59e0b"/>
+</svg>

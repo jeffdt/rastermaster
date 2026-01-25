@@ -32,11 +32,12 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         <h3>Job</h3>
         <div class="form-row checkbox-row">
           <input type="checkbox" id="skimPass">
-          <label for="skimPass">Skim pass (Z=0 first)</label>
+          <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
-          <label for="numPasses">Number of Passes</label>
+          <label for="numPasses"># Passes</label>
           <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1">
+          <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
@@ -77,8 +78,9 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
-              <label for="spindleRpm">Spindle RPM</label>
+              <label for="spindleRpm">Spindle Speed</label>
               <input type="number" id="spindleRpm" value="${DEFAULT_PARAMS.spindleRpm}" step="500" min="1000">
+              <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
