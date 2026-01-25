@@ -123,4 +123,67 @@ describe('generateGCode', () => {
       expect(isSnaking).toBe(true)
     }
   })
+
+  test('Y-axis raster uses snaking pattern with single retract per pass', () => {
+    // Test scenario: 2"x2" stock with 1" bit at 50% stepover
+    // This produces 5 raster lines (X positions: -0.25, 0.25, 0.75, 1.25, 1.75, 2.25)
+    // With snaking, lines should alternate: bottom-to-top, top-to-bottom, bottom-to-top, etc.
+    const params = mergeWithDefaults({
+      stockWidth: 2,
+      stockHeight: 2,
+      bitDiameter: 1,
+      stepoverPercent: 50,
+      rasterDirection: 'y',
+      numPasses: 1,
+      skimPass: false,
+    })
+    const toolpath = calculateToolpath(params)
+    const gcode = generateGCode(toolpath)
+
+    // Split into lines for analysis
+    const lines = gcode.split('\n')
+
+    // Find the pass section (between first plunge and final retract)
+    const firstPlungeIdx = lines.findIndex(l => l.includes('G1 Z-') && l.includes('Plunge'))
+    const finalRetractIdx = lines.findIndex(l => l.includes('Final retract'))
+    const passLines = lines.slice(firstPlungeIdx, finalRetractIdx)
+
+    // Count retracts in the pass (should be 0)
+    const retractCount = passLines.filter(l => l.includes('G0 Z')).length
+    expect(retractCount).toBe(0)
+
+    // Verify stepover moves use G1 (feed rate)
+    const stepoverLines = passLines.filter(l => l.includes('Stepover'))
+    expect(stepoverLines.length).toBeGreaterThan(0)
+    stepoverLines.forEach(line => {
+      expect(line).toContain('G1')
+      expect(line).toContain('X') // Y-axis raster steps in X
+      expect(line).not.toContain('Y') // Should only move in X
+    })
+
+    // Verify cutting moves alternate direction
+    // Extract Y coordinates from cut lines to verify snaking pattern
+    const cutLines = passLines.filter(l => l.includes('Cut'))
+    expect(cutLines.length).toBeGreaterThan(1)
+
+    const yCoords = cutLines
+      .map(line => {
+        const match = line.match(/Y([-\d.]+)/)
+        return match ? parseFloat(match[1]) : null
+      })
+      .filter(y => y !== null)
+
+    // In a snaking pattern, consecutive cuts should move to opposite ends
+    // (e.g., Y=0 then Y=2, then Y=0, then Y=2, etc.)
+    if (yCoords.length >= 2) {
+      const isSnaking = yCoords.every((y, i) => {
+        if (i === 0) return true // first line can be any direction
+        const prev = yCoords[i - 1]
+        // Consecutive cuts should be at opposite ends (different Y values)
+        return Math.abs(y - prev) > 0.1 // tolerance for floating point
+      })
+      // This check will fail until snaking is implemented
+      expect(isSnaking).toBe(true)
+    }
+  })
 })
