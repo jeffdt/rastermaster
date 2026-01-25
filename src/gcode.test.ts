@@ -62,6 +62,9 @@ describe('generateGCode', () => {
   })
 
   test('X-axis raster uses snaking pattern with single retract per pass', () => {
+    // Test scenario: 2"x2" stock with 1" bit at 50% stepover
+    // This produces 5 raster lines (Y positions: -0.25, 0.25, 0.75, 1.25, 1.75, 2.25)
+    // With snaking, lines should alternate: left-to-right, right-to-left, left-to-right, etc.
     const params = mergeWithDefaults({
       stockWidth: 2,
       stockHeight: 2,
@@ -96,7 +99,28 @@ describe('generateGCode', () => {
     })
 
     // Verify cutting moves alternate direction
+    // Extract X coordinates from cut lines to verify snaking pattern
     const cutLines = passLines.filter(l => l.includes('Cut'))
     expect(cutLines.length).toBeGreaterThan(1)
+
+    const xCoords = cutLines
+      .map(line => {
+        const match = line.match(/X([-\d.]+)/)
+        return match ? parseFloat(match[1]) : null
+      })
+      .filter(x => x !== null)
+
+    // In a snaking pattern, consecutive cuts should move to opposite ends
+    // (e.g., X=0 then X=2, then X=0, then X=2, etc.)
+    if (xCoords.length >= 2) {
+      const isSnaking = xCoords.every((x, i) => {
+        if (i === 0) return true // first line can be any direction
+        const prev = xCoords[i - 1]
+        // Consecutive cuts should be at opposite ends (different X values)
+        return Math.abs(x - prev) > 0.1 // tolerance for floating point
+      })
+      // This check will fail until snaking is implemented
+      expect(isSnaking).toBe(true)
+    }
   })
 })
