@@ -407,7 +407,8 @@
       font-size: 12px;
     }
 
-    .tool-subcolumn input[type="number"] {
+    .tool-subcolumn input[type="number"],
+    .tool-subcolumn input[type="text"] {
       width: 95px;
     }
 
@@ -416,7 +417,8 @@
       font-size: 11px;
     }
 
-    input[type="number"] {
+    input[type="number"],
+    input[type="text"] {
       width: 110px;
       padding: 10px 12px;
       background: var(--color-surface-elevated);
@@ -430,14 +432,16 @@
       text-align: right;
     }
 
-    input[type="number"]:focus {
+    input[type="number"]:focus,
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--color-steel-blue);
       background: var(--color-bg);
       box-shadow: 0 0 0 3px var(--color-steel-blue-glow);
     }
 
-    input[type="number"]:hover:not(:focus) {
+    input[type="number"]:hover:not(:focus),
+    input[type="text"]:hover:not(:focus) {
       border-color: var(--color-text-muted);
     }
 
@@ -735,7 +739,8 @@
         grid-template-columns: 1fr auto auto;
       }
 
-      input[type="number"] {
+      input[type="number"],
+      input[type="text"] {
         width: 100px;
         padding: 10px;
         font-size: 14px;
