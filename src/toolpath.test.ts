@@ -30,6 +30,7 @@ describe('calculateToolpath', () => {
       stockWidth: 10,
       stockHeight: 5,
       bitDiameter: 2,
+      fudgeFactor: 0,
     })
 
     const toolpath = calculateToolpath(params)
@@ -206,6 +207,30 @@ describe('overhang coverage', () => {
   )
 })
 
+describe('fudge factor', () => {
+  test('applies fudge factor to stock dimensions before overhang', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 10, // 10% expansion
+      bitDiameter: 2,
+      stepoverPercent: 50,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    // 10% fudge: effective stock = 11" x 5.5"
+    // Bit radius = 1", stepover = 1"
+    // X (raster): overhang = bitRadius = 1"
+    // Y (stepping): overhang = bitRadius - stepover = 0"
+    // Bounds: X = [-1, 12], Y = [0, 5.5]
+    expect(toolpath.bounds.xMin).toBeCloseTo(-1, 2)
+    expect(toolpath.bounds.xMax).toBeCloseTo(12, 2)
+    expect(toolpath.bounds.yMin).toBeCloseTo(0, 2)
+    expect(toolpath.bounds.yMax).toBeCloseTo(5.5, 2)
+  })
+})
+
 describe('separate raster and stepping overhang', () => {
   test('X-axis raster has full X overhang, optimized Y overhang', () => {
     const params = mergeWithDefaults({
@@ -214,6 +239,7 @@ describe('separate raster and stepping overhang', () => {
       bitDiameter: 1.25,
       stepoverPercent: 50,
       rasterDirection: 'x',
+      fudgeFactor: 0,
     })
 
     const toolpath = calculateToolpath(params)
@@ -238,6 +264,7 @@ describe('separate raster and stepping overhang', () => {
       bitDiameter: 1.25,
       stepoverPercent: 50,
       rasterDirection: 'y',
+      fudgeFactor: 0,
     })
 
     const toolpath = calculateToolpath(params)
@@ -262,6 +289,7 @@ describe('separate raster and stepping overhang', () => {
       bitDiameter: 1.25,
       stepoverPercent: 25,
       rasterDirection: 'x',
+      fudgeFactor: 0,
     })
 
     const toolpath = calculateToolpath(params)
@@ -286,6 +314,7 @@ describe('separate raster and stepping overhang', () => {
       bitDiameter: 2,
       stepoverPercent: 75,
       rasterDirection: 'y',
+      fudgeFactor: 0,
     })
 
     const toolpath = calculateToolpath(params)
