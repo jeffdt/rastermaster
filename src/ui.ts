@@ -230,5 +230,10 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
     errors.push('Pause interval must be 0 or greater (0 = disabled)')
   }
 
+  // Fudge factor validation
+  if (params.fudgeFactor !== undefined && (params.fudgeFactor < 0 || params.fudgeFactor > 20)) {
+    errors.push('Fudge Factor must be between 0 and 20%')
+  }
+
   return errors
 }

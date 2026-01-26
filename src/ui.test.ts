@@ -1,7 +1,8 @@
 // src/ui.test.ts (create new file)
 import { describe, expect, test, beforeEach } from 'bun:test'
 import { Window } from 'happy-dom'
-import { updateFormVisibility, createForm, getFormValues } from './ui'
+import { updateFormVisibility, createForm, getFormValues, validateParams } from './ui'
+import { mergeWithDefaults } from './defaults'
 
 // Set up DOM environment
 let window: Window
@@ -158,5 +159,42 @@ describe('getFormValues', () => {
 
     const values = getFormValues(formElement)
     expect(values.fudgeFactor).toBe(10)
+  })
+})
+
+describe('validateParams', () => {
+  test('validateParams rejects fudgeFactor < 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: -5,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result.some(e => e.includes('fudgeFactor') || e.includes('Fudge Factor'))).toBe(true)
+  })
+
+  test('validateParams rejects fudgeFactor > 20', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 25,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result.some(e => e.includes('fudgeFactor') || e.includes('Fudge Factor'))).toBe(true)
+  })
+
+  test('validateParams accepts fudgeFactor between 0 and 20', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 10,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBe(0)
   })
 })
