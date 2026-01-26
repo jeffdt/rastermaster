@@ -1,7 +1,7 @@
 // src/ui.test.ts (create new file)
 import { describe, expect, test, beforeEach } from 'bun:test'
 import { Window } from 'happy-dom'
-import { updateFormVisibility } from './ui'
+import { updateFormVisibility, getFormValues } from './ui'
 
 // Set up DOM environment
 let window: Window
@@ -67,5 +67,64 @@ describe('updateFormVisibility', () => {
     const columns = form.querySelectorAll('.form-column')
     const jobColumn = columns[1]
     expect(jobColumn?.classList.contains('form-column-hidden')).toBe(false)
+  })
+})
+
+describe('getFormValues', () => {
+  test('parses decimal text inputs correctly', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <input type="text" id="stockWidth" value="12.5">
+      <input type="text" id="stockHeight" value="8.25">
+      <input type="text" id="bitDiameter" value="1.25">
+      <input type="text" id="stepoverPercent" value="50">
+      <input type="text" id="depthPerPass" value="0.01">
+      <input type="text" id="feedRate" value="125">
+      <input type="text" id="plungeRate" value="30">
+      <input type="text" id="spindleRpm" value="18000">
+      <input type="text" id="safeZ" value="0.125">
+      <input type="number" id="numPasses" value="3">
+      <input type="number" id="pauseInterval" value="0">
+      <input type="checkbox" id="skimPass">
+      <input type="radio" name="rasterDirection" value="x" checked>
+    `
+
+    const values = getFormValues(form)
+
+    expect(values.stockWidth).toBe(12.5)
+    expect(values.stockHeight).toBe(8.25)
+    expect(values.bitDiameter).toBe(1.25)
+    expect(values.stepoverPercent).toBe(50)
+    expect(values.depthPerPass).toBe(0.01)
+    expect(values.feedRate).toBe(125)
+    expect(values.plungeRate).toBe(30)
+    expect(values.spindleRpm).toBe(18000)
+    expect(values.safeZ).toBe(0.125)
+    expect(values.numPasses).toBe(3)
+    expect(values.pauseInterval).toBe(0)
+  })
+
+  test('handles invalid text input gracefully', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <input type="text" id="stockWidth" value="abc">
+      <input type="text" id="stockHeight" value="">
+      <input type="text" id="bitDiameter" value="1.25">
+      <input type="text" id="stepoverPercent" value="50">
+      <input type="text" id="depthPerPass" value="0.01">
+      <input type="text" id="feedRate" value="125">
+      <input type="text" id="plungeRate" value="30">
+      <input type="text" id="spindleRpm" value="18000">
+      <input type="text" id="safeZ" value="0.125">
+      <input type="number" id="numPasses" value="3">
+      <input type="number" id="pauseInterval" value="0">
+      <input type="checkbox" id="skimPass">
+      <input type="radio" name="rasterDirection" value="x" checked>
+    `
+
+    const values = getFormValues(form)
+
+    expect(isNaN(values.stockWidth!)).toBe(true)
+    expect(isNaN(values.stockHeight!)).toBe(true)
   })
 })
