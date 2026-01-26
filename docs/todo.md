@@ -20,11 +20,10 @@ For future sessions.
 # New/Reset All button
 Resets all fields to default values. Does not repeat the animation.
 
-# Add special color, icon or flag for local dev
+# Swap colors when in local dev
+Instead of orange title, raster effect and input fields, use green when doing local dev.
 
-# Rename "Safe Z" to "Retract Height"
-
-# Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there.
+# Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there. Or maybe it should just be spaced at the normal stepover spacing instead of calculating special spacing for the final line.
 
 # Does the filename need an extension filetype?
 

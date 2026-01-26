@@ -22,7 +22,8 @@
       "Bash(pkill:*)",
       "Bash(git push:*)",
       "Bash(grep:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(git stash push:*)"
     ]
   }
 }

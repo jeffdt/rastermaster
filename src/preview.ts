@@ -6,16 +6,30 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const { bounds, params } = toolpath
   const padding = 20
 
+  // Calculate preview bounds to include fudge zone if present
+  let previewBounds = { ...bounds }
+  if (params.fudgeFactor > 0) {
+    const origWidth = toolpath.originalStockBounds.xMax - toolpath.originalStockBounds.xMin
+    const origHeight = toolpath.originalStockBounds.yMax - toolpath.originalStockBounds.yMin
+    const fudgeAmountX = (origWidth * params.fudgeFactor / 100) / 2
+    const fudgeAmountY = (origHeight * params.fudgeFactor / 100) / 2
+
+    previewBounds.xMin = Math.min(bounds.xMin, toolpath.originalStockBounds.xMin - fudgeAmountX)
+    previewBounds.xMax = Math.max(bounds.xMax, toolpath.originalStockBounds.xMax + fudgeAmountX)
+    previewBounds.yMin = Math.min(bounds.yMin, toolpath.originalStockBounds.yMin - fudgeAmountY)
+    previewBounds.yMax = Math.max(bounds.yMax, toolpath.originalStockBounds.yMax + fudgeAmountY)
+  }
+
   // Calculate scale to fit preview
-  const contentWidth = bounds.xMax - bounds.xMin
-  const contentHeight = bounds.yMax - bounds.yMin
+  const contentWidth = previewBounds.xMax - previewBounds.xMin
+  const contentHeight = previewBounds.yMax - previewBounds.yMin
   const scaleX = (width - 2 * padding) / contentWidth
   const scaleY = (height - 2 * padding) / contentHeight
   const scale = Math.min(scaleX, scaleY)
 
   // Transform functions (flip Y axis for SVG coordinates)
-  const tx = (x: number) => padding + (x - bounds.xMin) * scale
-  const ty = (y: number) => height - padding - (y - bounds.yMin) * scale
+  const tx = (x: number) => padding + (x - previewBounds.xMin) * scale
+  const ty = (y: number) => height - padding - (y - previewBounds.yMin) * scale
 
   const lines: string[] = []
 
