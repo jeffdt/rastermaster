@@ -11,12 +11,12 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         <h3>Stock</h3>
         <div class="form-row">
           <label for="stockWidth">Width</label>
-          <input type="number" id="stockWidth" step="0.1" min="0.1" required>
+          <input type="text" id="stockWidth" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" required>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="stockHeight">Height</label>
-          <input type="number" id="stockHeight" step="0.1" min="0.1" required>
+          <input type="text" id="stockHeight" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" required>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
@@ -41,7 +41,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="number" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" step="0.005" min="0">
+          <input type="text" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
@@ -57,34 +57,34 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="bitDiameter">Bit Diameter</label>
-              <input type="number" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" step="0.125" min="0.125">
+              <input type="text" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">in</span>
             </div>
             <div class="form-row">
               <label for="stepoverPercent">Stepover</label>
-              <input type="number" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" step="5" min="10" max="100">
+              <input type="text" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">%</span>
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="number" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" step="5" min="0">
+              <input type="text" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">in/min</span>
             </div>
           </div>
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="plungeRate">Plunge Rate</label>
-              <input type="number" id="plungeRate" value="${DEFAULT_PARAMS.plungeRate}" step="1" min="1">
+              <input type="text" id="plungeRate" value="${DEFAULT_PARAMS.plungeRate}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
               <label for="spindleRpm">Spindle Speed</label>
-              <input type="number" id="spindleRpm" value="${DEFAULT_PARAMS.spindleRpm}" step="500" min="1000">
+              <input type="text" id="spindleRpm" value="${DEFAULT_PARAMS.spindleRpm}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
-              <input type="number" id="safeZ" value="${DEFAULT_PARAMS.safeZ}" step="0.125" min="0">
+              <input type="text" id="safeZ" value="${DEFAULT_PARAMS.safeZ}" inputmode="decimal" pattern="[0-9]*\.?[0-9]*">
               <span class="unit">in</span>
             </div>
           </div>
