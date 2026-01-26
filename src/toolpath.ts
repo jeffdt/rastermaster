@@ -52,10 +52,15 @@ export interface Toolpath {
  *   - Y bounds: [0, stockHeight] (optimized overhang = 0.625 - 0.625 = 0)
  */
 export function calculateToolpath(params: SurfacingParams): Toolpath {
-  // Apply fudge factor to stock dimensions
-  const fudgeMultiplier = 1 + (params.fudgeFactor / 100)
-  const effectiveWidth = params.stockWidth * fudgeMultiplier
-  const effectiveHeight = params.stockHeight * fudgeMultiplier
+  // Apply fudge factor to stock dimensions (centered expansion)
+  const fudgeAmountWidth = (params.stockWidth * params.fudgeFactor / 100) / 2
+  const fudgeAmountHeight = (params.stockHeight * params.fudgeFactor / 100) / 2
+
+  // Fudged stock bounds (centered around original stock)
+  const fudgedStockXMin = -fudgeAmountWidth
+  const fudgedStockXMax = params.stockWidth + fudgeAmountWidth
+  const fudgedStockYMin = -fudgeAmountHeight
+  const fudgedStockYMax = params.stockHeight + fudgeAmountHeight
 
   const stepover = params.bitDiameter * (params.stepoverPercent / 100)
   const bitRadius = params.bitDiameter / 2
@@ -66,16 +71,16 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
 
   if (params.rasterDirection === 'x') {
     // X-axis raster: lines travel in X (full overhang), step in Y (optimized)
-    xMin = -bitRadius
-    xMax = effectiveWidth + bitRadius
-    yMin = -steppingOverhang
-    yMax = effectiveHeight + steppingOverhang
+    xMin = fudgedStockXMin - bitRadius
+    xMax = fudgedStockXMax + bitRadius
+    yMin = fudgedStockYMin - steppingOverhang
+    yMax = fudgedStockYMax + steppingOverhang
   } else {
     // Y-axis raster: lines travel in Y (full overhang), step in X (optimized)
-    xMin = -steppingOverhang
-    xMax = effectiveWidth + steppingOverhang
-    yMin = -bitRadius
-    yMax = effectiveHeight + bitRadius
+    xMin = fudgedStockXMin - steppingOverhang
+    xMax = fudgedStockXMax + steppingOverhang
+    yMin = fudgedStockYMin - bitRadius
+    yMax = fudgedStockYMax + bitRadius
   }
 
   // Generate raster lines based on direction
