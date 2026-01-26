@@ -1,6 +1,6 @@
 // src/types.test.ts
 import { describe, expect, test } from 'bun:test'
-import { DEFAULT_PARAMS } from './defaults'
+import { DEFAULT_PARAMS, mergeWithDefaults } from './defaults'
 
 describe('DEFAULT_PARAMS', () => {
   test('has correct default values', () => {
@@ -15,5 +15,10 @@ describe('DEFAULT_PARAMS', () => {
     expect(DEFAULT_PARAMS.plungeRate).toBe(12)
     expect(DEFAULT_PARAMS.spindleRpm).toBe(18000)
     expect(DEFAULT_PARAMS.retractHeight).toBe(0.125)
+  })
+
+  test('DEFAULT_PARAMS includes fudgeFactor', () => {
+    const params = mergeWithDefaults({ stockWidth: 10, stockHeight: 5 })
+    expect(params.fudgeFactor).toBe(5)
   })
 })
