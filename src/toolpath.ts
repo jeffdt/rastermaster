@@ -27,6 +27,12 @@ export interface Toolpath {
     yMin: number
     yMax: number
   }
+  originalStockBounds: {
+    xMin: number
+    xMax: number
+    yMin: number
+    yMax: number
+  }
   params: SurfacingParams
 }
 
@@ -136,6 +142,12 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
   return {
     passes,
     bounds: { xMin, xMax, yMin, yMax },
+    originalStockBounds: {
+      xMin: 0,
+      xMax: params.stockWidth,
+      yMin: 0,
+      yMax: params.stockHeight,
+    },
     params,
   }
 }

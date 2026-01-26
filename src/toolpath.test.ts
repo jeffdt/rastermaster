@@ -229,6 +229,22 @@ describe('fudge factor', () => {
     expect(toolpath.bounds.yMin).toBeCloseTo(0, 2)
     expect(toolpath.bounds.yMax).toBeCloseTo(5.5, 2)
   })
+
+  test('preserves original stock bounds before fudge', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 10,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    // Original stock bounds should be pre-fudge dimensions
+    expect(toolpath.originalStockBounds.xMin).toBe(0)
+    expect(toolpath.originalStockBounds.xMax).toBe(10)
+    expect(toolpath.originalStockBounds.yMin).toBe(0)
+    expect(toolpath.originalStockBounds.yMax).toBe(5)
+  })
 })
 
 describe('separate raster and stepping overhang', () => {
