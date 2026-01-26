@@ -1,7 +1,7 @@
 // src/ui.test.ts (create new file)
 import { describe, expect, test, beforeEach } from 'bun:test'
 import { Window } from 'happy-dom'
-import { updateFormVisibility, getFormValues } from './ui'
+import { updateFormVisibility, createForm, getFormValues } from './ui'
 
 // Set up DOM environment
 let window: Window
@@ -70,6 +70,24 @@ describe('updateFormVisibility', () => {
   })
 })
 
+describe('createForm', () => {
+  test('form includes fudgeFactor input with correct attributes', () => {
+    // Use global document set up by happy-dom
+    ;(global as any).document = document
+
+    const mockOnUpdate = () => {}
+    const formElement = createForm(mockOnUpdate)
+
+    const input = formElement.querySelector<HTMLInputElement>('#fudgeFactor')
+    expect(input).toBeTruthy()
+    expect(input?.type).toBe('number')
+    expect(input?.min).toBe('0')
+    expect(input?.max).toBe('20')
+    expect(input?.step).toBe('0.5')
+    expect(input?.value).toBe('5')
+  })
+})
+
 describe('getFormValues', () => {
   test('parses decimal text inputs correctly', () => {
     const form = document.createElement('div')
@@ -126,5 +144,19 @@ describe('getFormValues', () => {
 
     expect(isNaN(values.stockWidth!)).toBe(true)
     expect(isNaN(values.stockHeight!)).toBe(true)
+  })
+
+  test('extracts fudgeFactor', () => {
+    // Use global document set up by happy-dom
+    ;(global as any).document = document
+
+    const mockOnUpdate = () => {}
+    const formElement = createForm(mockOnUpdate)
+
+    const fudgeInput = formElement.querySelector<HTMLInputElement>('#fudgeFactor')
+    if (fudgeInput) fudgeInput.value = '10'
+
+    const values = getFormValues(formElement)
+    expect(values.fudgeFactor).toBe(10)
   })
 })

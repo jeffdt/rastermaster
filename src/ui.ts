@@ -20,6 +20,12 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <span class="unit">in</span>
         </div>
         <div class="form-row">
+          <label for="fudgeFactor">Fudge Factor (%)</label>
+          <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+          <span class="unit">%</span>
+          <span class="help-text">Expands stock dimensions to account for misalignment or measurement errors</span>
+        </div>
+        <div class="form-row">
           <label>Direction</label>
           <div class="radio-group">
             <label><input type="radio" name="rasterDirection" value="x" checked> X-axis</label>
@@ -165,6 +171,7 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
   return {
     stockWidth: getValue('stockWidth'),
     stockHeight: getValue('stockHeight'),
+    fudgeFactor: getValue('fudgeFactor'),
     bitDiameter: getValue('bitDiameter'),
     stepoverPercent: getValue('stepoverPercent'),
     rasterDirection: getRadio('rasterDirection') as 'x' | 'y',
