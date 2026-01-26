@@ -95,6 +95,7 @@ describe('getFormValues', () => {
     form.innerHTML = `
       <input type="text" id="stockWidth" value="12.5">
       <input type="text" id="stockHeight" value="8.25">
+      <input type="number" id="fudgeFactor" value="5">
       <input type="text" id="bitDiameter" value="1.25">
       <input type="text" id="stepoverPercent" value="50">
       <input type="text" id="depthPerPass" value="0.01">
@@ -112,6 +113,7 @@ describe('getFormValues', () => {
 
     expect(values.stockWidth).toBe(12.5)
     expect(values.stockHeight).toBe(8.25)
+    expect(values.fudgeFactor).toBe(5)
     expect(values.bitDiameter).toBe(1.25)
     expect(values.stepoverPercent).toBe(50)
     expect(values.depthPerPass).toBe(0.01)
@@ -128,6 +130,7 @@ describe('getFormValues', () => {
     form.innerHTML = `
       <input type="text" id="stockWidth" value="abc">
       <input type="text" id="stockHeight" value="">
+      <input type="number" id="fudgeFactor" value="5">
       <input type="text" id="bitDiameter" value="1.25">
       <input type="text" id="stepoverPercent" value="50">
       <input type="text" id="depthPerPass" value="0.01">
