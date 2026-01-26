@@ -96,180 +96,76 @@
       pointer-events: none;
       z-index: 0;
       opacity: 0.6;
-      animation: rasterTrace 20s linear infinite;
+      /* 6 horizontal passes + returns = longer duration needed for same speed
+         old full screen was 20s. old 4-lines was 8s.
+         This is 6 passes, so maybe 12s? */
+      animation: rasterTrace 12s linear infinite;
     }
 
     @keyframes rasterTrace {
+
+      /* P1: Line 1 L->R */
       0% {
         transform: translate(-2px, -2px) scaleX(1);
-        opacity: 0;
-      }
-
-      1% {
-        opacity: 0.6;
-      }
-
-      4.5% {
-        transform: translate(calc(100vw - 2px), -2px) scaleX(1);
-      }
-
-      5% {
-        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
-      }
-
-      9.5% {
-        transform: translate(-2px, 30px) scaleX(-1);
-      }
-
-      10% {
-        transform: translate(-2px, 62px) scaleX(1);
-      }
-
-      14.5% {
-        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
       }
 
       15% {
+        transform: translate(calc(100vw - 2px), -2px) scaleX(1);
+      }
+
+      /* Drop to Line 2 */
+      16.6% {
+        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
+      }
+
+      /* P2: Line 2 R->L */
+      31.6% {
+        transform: translate(-2px, 30px) scaleX(-1);
+      }
+
+      /* Drop to Line 3 */
+      33.3% {
+        transform: translate(-2px, 62px) scaleX(1);
+      }
+
+      /* P3: Line 3 L->R */
+      48.3% {
+        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
+      }
+
+      /* Drop to Line 4 */
+      50% {
         transform: translate(calc(100vw - 2px), 94px) scaleX(-1);
       }
 
-      19.5% {
+      /* P4: Line 4 R->L (Bottom) */
+      65% {
         transform: translate(-2px, 94px) scaleX(-1);
       }
 
-      20% {
-        transform: translate(-2px, 126px) scaleX(1);
+      /* Rise to Line 3 */
+      66.6% {
+        transform: translate(-2px, 62px) scaleX(1);
       }
 
-      24.5% {
-        transform: translate(calc(100vw - 2px), 126px) scaleX(1);
+      /* P5: Line 3 L->R (Retrace) */
+      81.6% {
+        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
       }
 
-      25% {
-        transform: translate(calc(100vw - 2px), 158px) scaleX(-1);
+      /* Rise to Line 2 */
+      83.3% {
+        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
       }
 
-      29.5% {
-        transform: translate(-2px, 158px) scaleX(-1);
+      /* P6: Line 2 R->L (Retrace) */
+      98.3% {
+        transform: translate(-2px, 30px) scaleX(-1);
       }
 
-      30% {
-        transform: translate(-2px, 190px) scaleX(1);
-      }
-
-      34.5% {
-        transform: translate(calc(100vw - 2px), 190px) scaleX(1);
-      }
-
-      35% {
-        transform: translate(calc(100vw - 2px), 222px) scaleX(-1);
-      }
-
-      39.5% {
-        transform: translate(-2px, 222px) scaleX(-1);
-      }
-
-      40% {
-        transform: translate(-2px, 254px) scaleX(1);
-      }
-
-      44.5% {
-        transform: translate(calc(100vw - 2px), 254px) scaleX(1);
-      }
-
-      45% {
-        transform: translate(calc(100vw - 2px), 286px) scaleX(-1);
-      }
-
-      49.5% {
-        transform: translate(-2px, 286px) scaleX(-1);
-      }
-
-      50% {
-        transform: translate(-2px, 318px) scaleX(1);
-      }
-
-      54.5% {
-        transform: translate(calc(100vw - 2px), 318px) scaleX(1);
-      }
-
-      55% {
-        transform: translate(calc(100vw - 2px), 350px) scaleX(-1);
-      }
-
-      59.5% {
-        transform: translate(-2px, 350px) scaleX(-1);
-      }
-
-      60% {
-        transform: translate(-2px, 382px) scaleX(1);
-      }
-
-      64.5% {
-        transform: translate(calc(100vw - 2px), 382px) scaleX(1);
-      }
-
-      65% {
-        transform: translate(calc(100vw - 2px), 414px) scaleX(-1);
-      }
-
-      69.5% {
-        transform: translate(-2px, 414px) scaleX(-1);
-      }
-
-      70% {
-        transform: translate(-2px, 446px) scaleX(1);
-      }
-
-      74.5% {
-        transform: translate(calc(100vw - 2px), 446px) scaleX(1);
-      }
-
-      75% {
-        transform: translate(calc(100vw - 2px), 478px) scaleX(-1);
-      }
-
-      79.5% {
-        transform: translate(-2px, 478px) scaleX(-1);
-      }
-
-      80% {
-        transform: translate(-2px, 510px) scaleX(1);
-      }
-
-      84.5% {
-        transform: translate(calc(100vw - 2px), 510px) scaleX(1);
-      }
-
-      85% {
-        transform: translate(calc(100vw - 2px), 542px) scaleX(-1);
-      }
-
-      89.5% {
-        transform: translate(-2px, 542px) scaleX(-1);
-      }
-
-      90% {
-        transform: translate(-2px, 574px) scaleX(1);
-      }
-
-      94.5% {
-        transform: translate(calc(100vw - 2px), 574px) scaleX(1);
-      }
-
-      95% {
-        transform: translate(calc(100vw - 2px), 606px) scaleX(-1);
-        opacity: 0.6;
-      }
-
-      99% {
-        transform: translate(-2px, 606px) scaleX(-1);
-        opacity: 0;
-      }
-
+      /* Rise to Line 1 (Start) */
       100% {
         transform: translate(-2px, -2px) scaleX(1);
-        opacity: 0;
       }
     }
 
