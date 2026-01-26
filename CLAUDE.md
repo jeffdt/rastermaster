@@ -108,6 +108,29 @@ Toolpath Calculation (toolpath.ts)
 
 **Pause Between Passes**: Inserts M0 commands to pause machine after every N passes
 
+### Progressive Disclosure UI
+
+The form uses progressive disclosure to guide new users:
+
+**Initial State:** Only Stock dimensions and raster direction visible
+
+**Trigger:** When stockWidth > 0 and stockHeight > 0, Job and Tool sections animate into view
+
+**Animation Strategy (Responsive):**
+- **Desktop (>= 1024px):** Clockwork cascade - Job and Tool slide from left with staggered timing
+- **Tablet (768-1023px):** Hybrid - Job slides horizontally, Tool expands vertically
+- **Mobile (< 768px):** Accordion - both sections expand downward
+
+**Key Implementation Details:**
+- One-time animation: sections stay visible even if Stock is cleared
+- Accessibility: `aria-hidden` on hidden sections, removed on reveal
+- Performance: GPU-accelerated transforms, `will-change` cleanup after animation
+
+**Implementation Files:**
+- CSS: `index.html` (progressive disclosure animations section)
+- Logic: `src/ui.ts` (`updateFormVisibility` function)
+- Tests: `src/ui.test.ts`
+
 ## Default to Bun
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
