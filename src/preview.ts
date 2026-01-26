@@ -38,22 +38,29 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
 
   // Fudge zone (amber strips) - only if fudge factor > 0
   if (params.fudgeFactor > 0) {
-    const fudgedWidth = params.stockWidth * (1 + params.fudgeFactor / 100)
-    const fudgedHeight = params.stockHeight * (1 + params.fudgeFactor / 100)
-    const fudgeAmountX = (fudgedWidth - params.stockWidth) / 2
-    const fudgeAmountY = (fudgedHeight - params.stockHeight) / 2
+    const origMinX = toolpath.originalStockBounds.xMin
+    const origMaxX = toolpath.originalStockBounds.xMax
+    const origMinY = toolpath.originalStockBounds.yMin
+    const origMaxY = toolpath.originalStockBounds.yMax
+    const origWidth = origMaxX - origMinX
+    const origHeight = origMaxY - origMinY
+
+    const fudgedWidth = origWidth * (1 + params.fudgeFactor / 100)
+    const fudgedHeight = origHeight * (1 + params.fudgeFactor / 100)
+    const fudgeAmountX = (fudgedWidth - origWidth) / 2
+    const fudgeAmountY = (fudgedHeight - origHeight) / 2
 
     // Top strip
-    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(params.stockHeight + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Bottom strip
-    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(0)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
-    // Left strip (between top and bottom)
-    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(params.stockHeight)}" width="${fudgeAmountX * scale}" height="${params.stockHeight * scale}" />`)
+    // Left strip (vertical, excluding top/bottom corners already covered)
+    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
-    // Right strip (between top and bottom)
-    lines.push(`<rect fill="#fbbf24" x="${tx(params.stockWidth)}" y="${ty(params.stockHeight)}" width="${fudgeAmountX * scale}" height="${params.stockHeight * scale}" />`)
+    // Right strip (vertical, excluding top/bottom corners already covered)
+    lines.push(`<rect fill="#fbbf24" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
   }
 
   // Dimension labels (inside original stock)
