@@ -8,6 +8,7 @@
 - Desktop: Clockwork cascade with staggered timing
 - Tablet: Hybrid (Job slides, Tool expands)
 - Mobile: Accordion expansion
+- Fixed visual bugs (z-index layering, display none for hidden state)
 
 ### TypeScript (src/ui.ts)
 - Added `updateFormVisibility()` function
@@ -27,8 +28,9 @@
 - All 42 tests passing
 - Manual testing successful across all viewports
 - Production build verified
+- Visual bugs fixed (no flash, proper z-index)
 
 ## Ready for Review
 Branch: feature/progressive-form-disclosure-impl
-Commits: 10
-Files changed: 4 (index.html, src/ui.ts, src/ui.test.ts, CLAUDE.md)
+Commits: 12
+Files changed: 5 (index.html, src/ui.ts, src/ui.test.ts, CLAUDE.md, package.json)
