@@ -10,7 +10,7 @@ function init() {
   const app = document.querySelector<HTMLDivElement>('#app')!
 
   app.innerHTML = `
-    <h1>RasterMaster</h1>
+    <h1 class="title">RasterMaster</h1>
     <div class="container">
       <div id="form-container"></div>
       <div class="preview-container">

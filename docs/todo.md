@@ -1,8 +1,3 @@
-# ~~Confirm raster pattern snakes back and forth~~ COMPLETE
-~~It appears as though it might move left to right, then retract and rapid to the next line, then move right to left, then retract and rapid to the next line, etc. Instead, it should move left to right, then rapid to the next line, then move right to left, then rapid to the next line, etc. It should not retract until it has finished the entire pattern and is ready to begin the next pass.~~
-
-Implemented 2026-01-25: Snaking pattern now keeps bit at cutting depth, uses G1 stepover moves for safety. 
-
 # Dynamic Layout
 Dynamic layout: switch form/preview orientation based on raster direction (X-axis: form top/preview bottom, Y-axis: form left/preview right with animations)
 
@@ -10,10 +5,7 @@ Dynamic layout: switch form/preview orientation based on raster direction (X-axi
 User needs to be able to add a fudge factor to the stock dimensions to account for stock that's misaligned, mismeasured, or misshapen. I am imagining a percentage that defaults to 5%. The fudged dimensions should be used for layout and overhang. Maybe we could display it in the preview as well, in a different color than the stock?
 
 # Remove up/down numeric stepper buttons
-The up/down buttons feel pointless on most numeric inputs. I think the user should just be expected to type in the value they want. Ask me which ones we should keep.
-
-# Preview missing edge steps
-The preview doesn't show the steps between raster lines (or if it does, they're hidden behind the dotted lines at the borders). Ask me for a screenshot when we work on this item, I'll show you what I mean.
+The up/down buttons feel pointless on most numeric inputs. I think the user should just be expected to type in the value they want. Help me figure out if it makes sense to keep any of them.
 
 # Allow fractions for dimensions
 I'm not sure how to handle this on the UI, but being able to enter 15/16 instead of having to calculate it as 0.9375 would reduce friction between taking measurements and generating toolpaths.
