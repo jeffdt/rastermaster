@@ -96,8 +96,14 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
   // Wire up event listeners
   const inputs = form.querySelectorAll('input')
   inputs.forEach(input => {
-    input.addEventListener('input', () => onUpdate(getFormValues(form)))
-    input.addEventListener('change', () => onUpdate(getFormValues(form)))
+    input.addEventListener('input', () => {
+      updateFormVisibility(form)
+      onUpdate(getFormValues(form))
+    })
+    input.addEventListener('change', () => {
+      updateFormVisibility(form)
+      onUpdate(getFormValues(form))
+    })
   })
 
   return form
