@@ -23,7 +23,6 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
 
   // Styles
   lines.push('<style>')
-  lines.push('  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }')
   lines.push('  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
   lines.push('  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }')
   lines.push('  .arrow { fill: #2196F3; opacity: 0.8; }')
@@ -32,14 +31,36 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }')
   lines.push('</style>')
 
-  // Stock rectangle
-  lines.push(`<rect class="stock" x="${tx(0)}" y="${ty(params.stockHeight)}" width="${params.stockWidth * scale}" height="${params.stockHeight * scale}" />`)
+  // Original stock rectangle (gray)
+  const origWidth = toolpath.originalStockBounds.xMax - toolpath.originalStockBounds.xMin
+  const origHeight = toolpath.originalStockBounds.yMax - toolpath.originalStockBounds.yMin
+  lines.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${tx(toolpath.originalStockBounds.xMin)}" y="${ty(toolpath.originalStockBounds.yMax)}" width="${origWidth * scale}" height="${origHeight * scale}" />`)
 
-  // Dimension labels (inside stock)
-  const stockX1 = tx(0)
-  const stockX2 = tx(params.stockWidth)
-  const stockY1 = ty(params.stockHeight)  // Top of stock in SVG
-  const stockY2 = ty(0)                   // Bottom of stock in SVG
+  // Fudge zone (amber strips) - only if fudge factor > 0
+  if (params.fudgeFactor > 0) {
+    const fudgedWidth = params.stockWidth * (1 + params.fudgeFactor / 100)
+    const fudgedHeight = params.stockHeight * (1 + params.fudgeFactor / 100)
+    const fudgeAmountX = (fudgedWidth - params.stockWidth) / 2
+    const fudgeAmountY = (fudgedHeight - params.stockHeight) / 2
+
+    // Top strip
+    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(params.stockHeight + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+
+    // Bottom strip
+    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(0)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+
+    // Left strip (between top and bottom)
+    lines.push(`<rect fill="#fbbf24" x="${tx(-fudgeAmountX)}" y="${ty(params.stockHeight)}" width="${fudgeAmountX * scale}" height="${params.stockHeight * scale}" />`)
+
+    // Right strip (between top and bottom)
+    lines.push(`<rect fill="#fbbf24" x="${tx(params.stockWidth)}" y="${ty(params.stockHeight)}" width="${fudgeAmountX * scale}" height="${params.stockHeight * scale}" />`)
+  }
+
+  // Dimension labels (inside original stock)
+  const stockX1 = tx(toolpath.originalStockBounds.xMin)
+  const stockX2 = tx(toolpath.originalStockBounds.xMax)
+  const stockY1 = ty(toolpath.originalStockBounds.yMax)  // Top of stock in SVG
+  const stockY2 = ty(toolpath.originalStockBounds.yMin)  // Bottom of stock in SVG
 
   // Width label - centered on bottom edge
   const widthTextX = (stockX1 + stockX2) / 2

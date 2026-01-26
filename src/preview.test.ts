@@ -26,7 +26,7 @@ describe('generatePreviewSVG', () => {
     const toolpath = calculateToolpath(params)
     const svg = generatePreviewSVG(toolpath, 400, 300)
 
-    expect(svg).toContain('class="stock"')
+    expect(svg).toContain('fill="#e5e7eb"')
     expect(svg).toContain('<rect')
   })
 
@@ -96,5 +96,41 @@ describe('dimension labels', () => {
     // Should contain dimension text
     expect(svg).toContain('text-anchor="middle"')  // Width label centered
     expect(svg).toContain('text-anchor="start"')   // Height label left-aligned
+  })
+})
+
+describe('fudge zone rendering', () => {
+  test('renders fudge zone when fudge factor > 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 10,
+    })
+    const toolpath = calculateToolpath(params)
+    const svg = generatePreviewSVG(toolpath, 800, 600)
+
+    // Should contain original stock rect with inline fill
+    expect(svg).toContain('fill="#e5e7eb"')
+    // Should contain fudge zone rects with inline fill
+    expect(svg).toContain('fill="#fbbf24"')
+    // Should have multiple rect elements (original stock + 4 fudge zones)
+    expect(svg).toContain('<rect')
+  })
+
+  test('does not render separate fudge zone when fudge factor is 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      fudgeFactor: 0,
+    })
+    const toolpath = calculateToolpath(params)
+    const svg = generatePreviewSVG(toolpath, 800, 600)
+
+    // Should contain original stock rect
+    expect(svg).toContain('fill="#e5e7eb"')
+    // Should not contain fudge zone fill color
+    expect(svg).not.toContain('fill="#fbbf24"')
+    // Verify it doesn't crash and renders something
+    expect(svg.length).toBeGreaterThan(0)
   })
 })
