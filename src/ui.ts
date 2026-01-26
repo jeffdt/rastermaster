@@ -103,6 +103,43 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
   return form
 }
 
+export function updateFormVisibility(form: HTMLElement): void {
+  const getValue = (id: string): number => {
+    const input = form.querySelector(`#${id}`) as HTMLInputElement
+    return parseFloat(input?.value || '0')
+  }
+
+  const stockWidth = getValue('stockWidth')
+  const stockHeight = getValue('stockHeight')
+  const isStockValid = stockWidth > 0 && stockHeight > 0
+
+  if (!isStockValid) return
+
+  const columns = form.querySelectorAll('.form-column')
+  const jobColumn = columns[1] as HTMLElement
+  const toolColumn = columns[2] as HTMLElement
+
+  if (!jobColumn || !toolColumn) return
+
+  // Only reveal if not already revealed (one-time animation)
+  if (jobColumn.classList.contains('form-column-hidden')) {
+    jobColumn.classList.remove('form-column-hidden')
+    jobColumn.classList.add('form-column-reveal-job')
+    jobColumn.removeAttribute('aria-hidden')
+
+    toolColumn.classList.remove('form-column-hidden')
+    toolColumn.classList.add('form-column-reveal-tool')
+    toolColumn.removeAttribute('aria-hidden')
+
+    // Clean up will-change after animations complete
+    const cleanup = () => {
+      if (jobColumn.style) jobColumn.style.willChange = 'auto'
+      if (toolColumn.style) toolColumn.style.willChange = 'auto'
+    }
+    toolColumn.addEventListener('animationend', cleanup, { once: true })
+  }
+}
+
 export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
   const getValue = (id: string): number => {
     const input = form.querySelector(`#${id}`) as HTMLInputElement
