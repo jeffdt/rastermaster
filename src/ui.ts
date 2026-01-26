@@ -28,7 +28,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
       </div>
 
-      <div class="form-column">
+      <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Job</h3>
         <div class="form-row checkbox-row">
           <input type="checkbox" id="skimPass">
@@ -51,7 +51,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
       </div>
 
-      <div class="form-column">
+      <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Tool</h3>
         <div class="tool-subgrid">
           <div class="tool-subcolumn">
