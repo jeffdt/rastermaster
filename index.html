@@ -411,7 +411,8 @@
       font-size: 12px;
     }
 
-    .tool-subcolumn input[type="number"] {
+    .tool-subcolumn input[type="number"],
+    .tool-subcolumn input[type="text"] {
       width: 95px;
     }
 
@@ -420,7 +421,8 @@
       font-size: 11px;
     }
 
-    input[type="number"] {
+    input[type="number"],
+    input[type="text"] {
       width: 110px;
       padding: 10px 12px;
       background: var(--color-surface-elevated);
@@ -434,14 +436,16 @@
       text-align: right;
     }
 
-    input[type="number"]:focus {
+    input[type="number"]:focus,
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--color-steel-blue);
       background: var(--color-bg);
       box-shadow: 0 0 0 3px var(--color-steel-blue-glow);
     }
 
-    input[type="number"]:hover:not(:focus) {
+    input[type="number"]:hover:not(:focus),
+    input[type="text"]:hover:not(:focus) {
       border-color: var(--color-text-muted);
     }
 
@@ -744,7 +748,8 @@
         grid-template-columns: 1fr auto auto;
       }
 
-      input[type="number"] {
+      input[type="number"],
+      input[type="text"] {
         width: 100px;
         padding: 10px;
         font-size: 14px;
@@ -961,18 +966,18 @@
       }
     }
   </style>
-  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const s of document.querySelectorAll('link[rel="modulepreload"]'))r(s);new MutationObserver(s=>{for(const n of s)if(n.type==="childList")for(const o of n.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(s){const n={};return s.integrity&&(n.integrity=s.integrity),s.referrerPolicy&&(n.referrerPolicy=s.referrerPolicy),s.crossOrigin==="use-credentials"?n.credentials="include":s.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function r(s){if(s.ep)return;s.ep=!0;const n=i(s);fetch(s.href,n)}})();const y={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function C(e){return{...y,...e}}function z(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
+  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const s of document.querySelectorAll('link[rel="modulepreload"]'))r(s);new MutationObserver(s=>{for(const n of s)if(n.type==="childList")for(const o of n.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(s){const n={};return s.integrity&&(n.integrity=s.integrity),s.referrerPolicy&&(n.referrerPolicy=s.referrerPolicy),s.crossOrigin==="use-credentials"?n.credentials="include":s.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function r(s){if(s.ep)return;s.ep=!0;const n=i(s);fetch(s.href,n)}})();const x={bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,safeZ:.125};function C(e){return{...x,...e}}function z(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
         <div class="form-row">
           <label for="stockWidth">Width</label>
-          <input type="number" id="stockWidth" step="0.1" min="0.1" required>
+          <input type="text" id="stockWidth" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?" required>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="stockHeight">Height</label>
-          <input type="number" id="stockHeight" step="0.1" min="0.1" required>
+          <input type="text" id="stockHeight" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?" required>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
@@ -992,17 +997,17 @@
         </div>
         <div class="form-row">
           <label for="numPasses"># Passes</label>
-          <input type="number" id="numPasses" value="${y.numPasses}" step="1" min="1">
+          <input type="number" id="numPasses" value="${x.numPasses}" step="1" min="1">
           <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="number" id="depthPerPass" value="${y.depthPerPass}" step="0.005" min="0">
+          <input type="text" id="depthPerPass" value="${x.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
-          <input type="number" id="pauseInterval" value="${y.pauseInterval}" step="1" min="0">
+          <input type="number" id="pauseInterval" value="${x.pauseInterval}" step="1" min="0">
           <span class="unit">passes</span>
         </div>
       </div>
@@ -1013,42 +1018,42 @@
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="bitDiameter">Bit Diameter</label>
-              <input type="number" id="bitDiameter" value="${y.bitDiameter}" step="0.125" min="0.125">
+              <input type="text" id="bitDiameter" value="${x.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
             <div class="form-row">
               <label for="stepoverPercent">Stepover</label>
-              <input type="number" id="stepoverPercent" value="${y.stepoverPercent}" step="5" min="10" max="100">
+              <input type="text" id="stepoverPercent" value="${x.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">%</span>
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="number" id="feedRate" value="${y.feedRate}" step="5" min="0">
+              <input type="text" id="feedRate" value="${x.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
           </div>
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="plungeRate">Plunge Rate</label>
-              <input type="number" id="plungeRate" value="${y.plungeRate}" step="1" min="1">
+              <input type="text" id="plungeRate" value="${x.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
               <label for="spindleRpm">Spindle Speed</label>
-              <input type="number" id="spindleRpm" value="${y.spindleRpm}" step="500" min="1000">
+              <input type="text" id="spindleRpm" value="${x.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="safeZ">Safe Z</label>
-              <input type="number" id="safeZ" value="${y.safeZ}" step="0.125" min="0">
+              <input type="text" id="safeZ" value="${x.safeZ}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,t.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>{q(t),e(A(t))}),r.addEventListener("change",()=>{q(t),e(A(t))})}),t}function q(e){const t=u=>{const f=e.querySelector(`#${u}`);return parseFloat(f?.value||"0")},i=t("stockWidth"),r=t("stockHeight");if(!(i>0&&r>0))return;const n=e.querySelectorAll(".form-column"),o=n[1],c=n[2];if(!(!o||!c)&&o.classList.contains("form-column-hidden")){o.classList.remove("form-column-hidden"),o.classList.add("form-column-reveal-job"),o.removeAttribute("aria-hidden"),c.classList.remove("form-column-hidden"),c.classList.add("form-column-reveal-tool"),c.removeAttribute("aria-hidden");const u=()=>{o.style&&(o.style.willChange="auto"),c.style&&(c.style.willChange="auto")};c.addEventListener("animationend",u,{once:!0})}}function A(e){const t=s=>{const n=e.querySelector(`#${s}`);return parseFloat(n.value)},i=s=>e.querySelector(`#${s}`).checked,r=s=>e.querySelector(`input[name="${s}"]:checked`)?.value||"";return{stockWidth:t("stockWidth"),stockHeight:t("stockHeight"),bitDiameter:t("bitDiameter"),stepoverPercent:t("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:t("numPasses"),depthPerPass:t("depthPerPass"),pauseInterval:t("pauseInterval"),feedRate:t("feedRate"),plungeRate:t("plungeRate"),spindleRpm:t("spindleRpm"),safeZ:t("safeZ")}}function T(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function I(e){const t=e.bitDiameter*(e.stepoverPercent/100),i=e.bitDiameter/2,r=i-t;let s,n,o,c;e.rasterDirection==="x"?(s=-i,n=e.stockWidth+i,o=-r,c=e.stockHeight+r):(s=-r,n=e.stockWidth+r,o=-i,c=e.stockHeight+i);let u=[];if(e.rasterDirection==="x"){let a=o;for(;a<=c;)u.push(a),a+=t;u[u.length-1]<c&&u.push(c)}else{let a=s;for(;a<=n;)u.push(a),a+=t;u[u.length-1]<n&&u.push(n)}const f=[],m=e.numPasses+(e.skimPass?1:0);for(let a=0;a<m;a++){const d=e.skimPass&&a===0,l=e.skimPass?a:a+1,H=d?0:-(l*e.depthPerPass),G=u.map((M,Y)=>{const b=Y%2===0;return e.rasterDirection==="x"?{y:M,xStart:b?s:n,xEnd:b?n:s,direction:b?"positive":"negative"}:{x:M,yStart:b?o:c,yEnd:b?c:o,direction:b?"positive":"negative"}}),X=e.pauseInterval>0&&(a+1)%e.pauseInterval===0&&a<m-1;f.push({z:H,lines:G,pauseAfter:X})}return{passes:f,bounds:{xMin:s,xMax:n,yMin:o,yMax:c},params:e}}function B(e){const{params:t}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${t.stockWidth}" x ${t.stockHeight}"`),i.push(`; Bit: ${t.bitDiameter}" fly cutter`),i.push(`; Stepover: ${t.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${t.spindleRpm} ; Spindle on`),i.push(`G0 Z${p(t.safeZ)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],s=t.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,n=t.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${p(s)} Y${p(n)} ; Move to start`),i.push(""),e.passes.forEach((o,c)=>{i.push(`; Pass ${c+1} at Z=${p(o.z)}`),i.push(...N(o,t.safeZ,t.feedRate,t.plungeRate,t.rasterDirection)),o.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${p(t.safeZ)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
-`)}function N(e,t,i,r,s){const n=[];return e.lines.forEach((o,c)=>{s==="x"?c===0?(n.push(`G0 Y${p(o.y)}`),n.push(`G0 X${p(o.xStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 X${p(o.xEnd)} F${i} ; Cut`)):(n.push(`G1 Y${p(o.y)} F${i} ; Stepover`),n.push(`G1 X${p(o.xEnd)} F${i} ; Cut`)):c===0?(n.push(`G0 X${p(o.x)}`),n.push(`G0 Y${p(o.yStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 Y${p(o.yEnd)} F${i} ; Cut`)):(n.push(`G1 X${p(o.x)} F${i} ; Stepover`),n.push(`G1 Y${p(o.yEnd)} F${i} ; Cut`))}),n}function p(e){return e.toFixed(4).replace(/\.?0+$/,"")}function O(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function U(e,t,i){const{bounds:r,params:s}=e,n=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,u=(t-2*n)/o,f=(i-2*n)/c,m=Math.min(u,f),a=x=>n+(x-r.xMin)*m,d=x=>i-n-(x-r.yMin)*m,l=[];l.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),l.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .end { fill: #F44336; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),l.push("</style>"),l.push(`<rect class="stock" x="${a(0)}" y="${d(s.stockHeight)}" width="${s.stockWidth*m}" height="${s.stockHeight*m}" />`);const H=a(0),G=a(s.stockWidth),X=d(s.stockHeight),M=d(0),Y=(H+G)/2,b=M-10;l.push(`<text class="dimension-text" x="${Y}" y="${b}" text-anchor="middle">${O(s.stockWidth)}</text>`);const V=H+10,j=(X+M)/2;l.push(`<text class="dimension-text" x="${V}" y="${j}" text-anchor="start" dominant-baseline="middle">${O(s.stockHeight)}</text>`);const $=e.passes[0];if($){$.lines.forEach((h,g)=>{if(s.rasterDirection==="x"){const R=a(h.xStart),F=d(h.y),k=a(h.xEnd),P=d(h.y);l.push(`<line class="raster" x1="${R}" y1="${F}" x2="${k}" y2="${P}" />`);const w=(R+k)/2,S=(F+P)/2,v=6,D=h.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${w+D*v},${S} ${w-D*v/2},${S-v/2} ${w-D*v/2},${S+v/2}" />`),g<$.lines.length-1){const E=$.lines[g+1],W=a(E.xStart),Z=d(E.y);l.push(`<line class="stepover" x1="${k}" y1="${P}" x2="${W}" y2="${Z}" />`)}}else{const R=a(h.x),F=d(h.yStart),k=a(h.x),P=d(h.yEnd);l.push(`<line class="raster" x1="${R}" y1="${F}" x2="${k}" y2="${P}" />`);const w=(R+k)/2,S=(F+P)/2,v=6,D=h.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${w},${S-D*v} ${w-v/2},${S+D*v/2} ${w+v/2},${S+D*v/2}" />`),g<$.lines.length-1){const E=$.lines[g+1],W=a(E.x),Z=d(E.yStart);l.push(`<line class="stepover" x1="${k}" y1="${P}" x2="${W}" y2="${Z}" />`)}}});const x=$.lines[0];if(x){const h=s.rasterDirection==="x"?x.xStart:x.x,g=s.rasterDirection==="x"?x.y:x.yStart;l.push(`<circle class="start" cx="${a(h)}" cy="${d(g)}" r="5" />`)}const L=$.lines[$.lines.length-1];if(L){const h=s.rasterDirection==="x"?L.xEnd:L.x,g=s.rasterDirection==="x"?L.y:L.yEnd;l.push(`<circle class="end" cx="${a(h)}" cy="${d(g)}" r="5" />`)}}return l.push("</svg>"),l.join(`
+  `,t.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>{q(t),e(A(t))}),r.addEventListener("change",()=>{q(t),e(A(t))})}),t}function q(e){const t=u=>{const f=e.querySelector(`#${u}`);return parseFloat(f?.value||"0")},i=t("stockWidth"),r=t("stockHeight");if(!(i>0&&r>0))return;const n=e.querySelectorAll(".form-column"),o=n[1],c=n[2];if(!(!o||!c)&&o.classList.contains("form-column-hidden")){o.classList.remove("form-column-hidden"),o.classList.add("form-column-reveal-job"),o.removeAttribute("aria-hidden"),c.classList.remove("form-column-hidden"),c.classList.add("form-column-reveal-tool"),c.removeAttribute("aria-hidden");const u=()=>{o.style&&(o.style.willChange="auto"),c.style&&(c.style.willChange="auto")};c.addEventListener("animationend",u,{once:!0})}}function A(e){const t=s=>{const n=e.querySelector(`#${s}`);return parseFloat(n.value)},i=s=>e.querySelector(`#${s}`).checked,r=s=>e.querySelector(`input[name="${s}"]:checked`)?.value||"";return{stockWidth:t("stockWidth"),stockHeight:t("stockHeight"),bitDiameter:t("bitDiameter"),stepoverPercent:t("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:t("numPasses"),depthPerPass:t("depthPerPass"),pauseInterval:t("pauseInterval"),feedRate:t("feedRate"),plungeRate:t("plungeRate"),spindleRpm:t("spindleRpm"),safeZ:t("safeZ")}}function T(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function I(e){const t=e.bitDiameter*(e.stepoverPercent/100),i=e.bitDiameter/2,r=i-t;let s,n,o,c;e.rasterDirection==="x"?(s=-i,n=e.stockWidth+i,o=-r,c=e.stockHeight+r):(s=-r,n=e.stockWidth+r,o=-i,c=e.stockHeight+i);let u=[];if(e.rasterDirection==="x"){let a=o;for(;a<=c;)u.push(a),a+=t;u[u.length-1]<c&&u.push(c)}else{let a=s;for(;a<=n;)u.push(a),a+=t;u[u.length-1]<n&&u.push(n)}const f=[],m=e.numPasses+(e.skimPass?1:0);for(let a=0;a<m;a++){const d=e.skimPass&&a===0,l=e.skimPass?a:a+1,H=d?0:-(l*e.depthPerPass),G=u.map((M,Y)=>{const g=Y%2===0;return e.rasterDirection==="x"?{y:M,xStart:g?s:n,xEnd:g?n:s,direction:g?"positive":"negative"}:{x:M,yStart:g?o:c,yEnd:g?c:o,direction:g?"positive":"negative"}}),X=e.pauseInterval>0&&(a+1)%e.pauseInterval===0&&a<m-1;f.push({z:H,lines:G,pauseAfter:X})}return{passes:f,bounds:{xMin:s,xMax:n,yMin:o,yMax:c},params:e}}function B(e){const{params:t}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${t.stockWidth}" x ${t.stockHeight}"`),i.push(`; Bit: ${t.bitDiameter}" fly cutter`),i.push(`; Stepover: ${t.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${t.spindleRpm} ; Spindle on`),i.push(`G0 Z${p(t.safeZ)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],s=t.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,n=t.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${p(s)} Y${p(n)} ; Move to start`),i.push(""),e.passes.forEach((o,c)=>{i.push(`; Pass ${c+1} at Z=${p(o.z)}`),i.push(...N(o,t.safeZ,t.feedRate,t.plungeRate,t.rasterDirection)),o.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${p(t.safeZ)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
+`)}function N(e,t,i,r,s){const n=[];return e.lines.forEach((o,c)=>{s==="x"?c===0?(n.push(`G0 Y${p(o.y)}`),n.push(`G0 X${p(o.xStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 X${p(o.xEnd)} F${i} ; Cut`)):(n.push(`G1 Y${p(o.y)} F${i} ; Stepover`),n.push(`G1 X${p(o.xEnd)} F${i} ; Cut`)):c===0?(n.push(`G0 X${p(o.x)}`),n.push(`G0 Y${p(o.yStart)}`),n.push(`G1 Z${p(e.z)} F${r} ; Plunge`),n.push(`G1 Y${p(o.yEnd)} F${i} ; Cut`)):(n.push(`G1 X${p(o.x)} F${i} ; Stepover`),n.push(`G1 Y${p(o.yEnd)} F${i} ; Cut`))}),n}function p(e){return e.toFixed(4).replace(/\.?0+$/,"")}function O(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function U(e,t,i){const{bounds:r,params:s}=e,n=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,u=(t-2*n)/o,f=(i-2*n)/c,m=Math.min(u,f),a=$=>n+($-r.xMin)*m,d=$=>i-n-($-r.yMin)*m,l=[];l.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .stock { fill: #f5f5dc; stroke: #8b7355; stroke-width: 2; }"),l.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .end { fill: #F44336; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),l.push("</style>"),l.push(`<rect class="stock" x="${a(0)}" y="${d(s.stockHeight)}" width="${s.stockWidth*m}" height="${s.stockHeight*m}" />`);const H=a(0),G=a(s.stockWidth),X=d(s.stockHeight),M=d(0),Y=(H+G)/2,g=M-10;l.push(`<text class="dimension-text" x="${Y}" y="${g}" text-anchor="middle">${O(s.stockWidth)}</text>`);const V=H+10,j=(X+M)/2;l.push(`<text class="dimension-text" x="${V}" y="${j}" text-anchor="start" dominant-baseline="middle">${O(s.stockHeight)}</text>`);const y=e.passes[0];if(y){y.lines.forEach((h,b)=>{if(s.rasterDirection==="x"){const R=a(h.xStart),F=d(h.y),k=a(h.xEnd),P=d(h.y);l.push(`<line class="raster" x1="${R}" y1="${F}" x2="${k}" y2="${P}" />`);const w=(R+k)/2,S=(F+P)/2,v=6,D=h.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${w+D*v},${S} ${w-D*v/2},${S-v/2} ${w-D*v/2},${S+v/2}" />`),b<y.lines.length-1){const E=y.lines[b+1],W=a(E.xStart),Z=d(E.y);l.push(`<line class="stepover" x1="${k}" y1="${P}" x2="${W}" y2="${Z}" />`)}}else{const R=a(h.x),F=d(h.yStart),k=a(h.x),P=d(h.yEnd);l.push(`<line class="raster" x1="${R}" y1="${F}" x2="${k}" y2="${P}" />`);const w=(R+k)/2,S=(F+P)/2,v=6,D=h.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${w},${S-D*v} ${w-v/2},${S+D*v/2} ${w+v/2},${S+D*v/2}" />`),b<y.lines.length-1){const E=y.lines[b+1],W=a(E.x),Z=d(E.yStart);l.push(`<line class="stepover" x1="${k}" y1="${P}" x2="${W}" y2="${Z}" />`)}}});const $=y.lines[0];if($){const h=s.rasterDirection==="x"?$.xStart:$.x,b=s.rasterDirection==="x"?$.y:$.yStart;l.push(`<circle class="start" cx="${a(h)}" cy="${d(b)}" r="5" />`)}const L=y.lines[y.lines.length-1];if(L){const h=s.rasterDirection==="x"?L.xEnd:L.x,b=s.rasterDirection==="x"?L.y:L.yEnd;l.push(`<circle class="end" cx="${a(h)}" cy="${d(b)}" r="5" />`)}}return l.push("</svg>"),l.join(`
 `)}function J(){const e=document.querySelector("#app");e.innerHTML=`
     <h1 class="title">RasterMaster</h1>
     <div class="container">
