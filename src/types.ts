@@ -19,7 +19,7 @@ export interface SurfacingParams {
   feedRate: number
   plungeRate: number
   spindleRpm: number
-  safeZ: number
+  retractHeight: number
 }
 
 export type PartialParams = Partial<SurfacingParams> & {

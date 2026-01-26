@@ -83,8 +83,8 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
-              <label for="safeZ">Safe Z</label>
-              <input type="text" id="safeZ" value="${DEFAULT_PARAMS.safeZ}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+              <label for="retractHeight">Retract Height</label>
+              <input type="text" id="retractHeight" value="${DEFAULT_PARAMS.retractHeight}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
               <span class="unit">in</span>
             </div>
           </div>
@@ -175,7 +175,7 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
     feedRate: getValue('feedRate'),
     plungeRate: getValue('plungeRate'),
     spindleRpm: getValue('spindleRpm'),
-    safeZ: getValue('safeZ'),
+    retractHeight: getValue('retractHeight'),
   }
 }
 
@@ -214,8 +214,8 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
   if (!params.spindleRpm || params.spindleRpm <= 0 || isNaN(params.spindleRpm)) {
     errors.push('Spindle RPM must be greater than 0')
   }
-  if (!params.safeZ || params.safeZ <= 0 || isNaN(params.safeZ)) {
-    errors.push('Safe Z must be greater than 0')
+  if (!params.retractHeight || params.retractHeight <= 0 || isNaN(params.retractHeight)) {
+    errors.push('Retract Height must be greater than 0')
   }
 
   // Pause interval validation (0 = disabled, no pauses)

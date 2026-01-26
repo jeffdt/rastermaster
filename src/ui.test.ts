@@ -82,7 +82,7 @@ describe('getFormValues', () => {
       <input type="text" id="feedRate" value="125">
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
-      <input type="text" id="safeZ" value="0.125">
+      <input type="text" id="retractHeight" value="0.125">
       <input type="number" id="numPasses" value="3">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">
@@ -99,7 +99,7 @@ describe('getFormValues', () => {
     expect(values.feedRate).toBe(125)
     expect(values.plungeRate).toBe(30)
     expect(values.spindleRpm).toBe(18000)
-    expect(values.safeZ).toBe(0.125)
+    expect(values.retractHeight).toBe(0.125)
     expect(values.numPasses).toBe(3)
     expect(values.pauseInterval).toBe(0)
   })
@@ -115,7 +115,7 @@ describe('getFormValues', () => {
       <input type="text" id="feedRate" value="125">
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
-      <input type="text" id="safeZ" value="0.125">
+      <input type="text" id="retractHeight" value="0.125">
       <input type="number" id="numPasses" value="3">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">

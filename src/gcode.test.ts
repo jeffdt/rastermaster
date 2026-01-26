@@ -85,7 +85,7 @@ describe('generateGCode', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      safeZ: 0.125,
+      retractHeight: 0.125,
     })
     const toolpath = calculateToolpath(params)
     const gcode = generateGCode(toolpath)
