@@ -15,7 +15,12 @@
       "Bash(bun run dev)",
       "Bash(bun -e:*)",
       "Bash(bun run:*)",
-      "Bash(bun:*)"
+      "Bash(bun:*)",
+      "Bash(git branch:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git worktree:*)",
+      "Bash(pkill:*)",
+      "Bash(git push:*)"
     ]
   }
 }
