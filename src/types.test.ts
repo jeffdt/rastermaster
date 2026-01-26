@@ -14,6 +14,6 @@ describe('DEFAULT_PARAMS', () => {
     expect(DEFAULT_PARAMS.feedRate).toBe(125)
     expect(DEFAULT_PARAMS.plungeRate).toBe(12)
     expect(DEFAULT_PARAMS.spindleRpm).toBe(18000)
-    expect(DEFAULT_PARAMS.safeZ).toBe(0.125)
+    expect(DEFAULT_PARAMS.retractHeight).toBe(0.125)
   })
 })

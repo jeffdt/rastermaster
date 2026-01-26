@@ -14,7 +14,7 @@ export function generateGCode(toolpath: Toolpath): string {
   lines.push('G90 ; Absolute positioning')
   lines.push('G20 ; Inches')
   lines.push(`M3 S${params.spindleRpm} ; Spindle on`)
-  lines.push(`G0 Z${fmt(params.safeZ)} ; Retract to safe Z`)
+  lines.push(`G0 Z${fmt(params.retractHeight)} ; Retract to safe Z`)
 
   // Move to start position
   const firstLine = toolpath.passes[0]?.lines[0]
@@ -30,7 +30,7 @@ export function generateGCode(toolpath: Toolpath): string {
   // Generate passes
   toolpath.passes.forEach((pass, passIndex) => {
     lines.push(`; Pass ${passIndex + 1} at Z=${fmt(pass.z)}`)
-    lines.push(...generatePass(pass, params.safeZ, params.feedRate, params.plungeRate, params.rasterDirection))
+    lines.push(...generatePass(pass, params.retractHeight, params.feedRate, params.plungeRate, params.rasterDirection))
 
     if (pass.pauseAfter) {
       lines.push('M0 ; Pause - press resume to continue or stop to end')
@@ -39,7 +39,7 @@ export function generateGCode(toolpath: Toolpath): string {
   })
 
   // Postamble
-  lines.push(`G0 Z${fmt(params.safeZ)} ; Final retract`)
+  lines.push(`G0 Z${fmt(params.retractHeight)} ; Final retract`)
   lines.push('M5 ; Spindle off')
   lines.push('M30 ; Program end')
 
@@ -61,13 +61,13 @@ export function generateGCode(toolpath: Toolpath): string {
  * it at a controlled speed rather than breaking on a rapid move.
  *
  * @param pass - The Z pass with raster lines
- * @param safeZ - Safe retract height
+ * @param retractHeight - Safe retract height
  * @param feedRate - Cutting feed rate (in/min)
  * @param plungeRate - Z-axis plunge rate (in/min)
  * @param direction - Raster direction ('x' or 'y')
  * @returns Array of GCode command strings
  */
-function generatePass(pass: ZPass, safeZ: number, feedRate: number, plungeRate: number, direction: 'x' | 'y'): string[] {
+function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plungeRate: number, direction: 'x' | 'y'): string[] {
   const lines: string[] = []
 
   pass.lines.forEach((line, lineIndex) => {

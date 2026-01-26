@@ -12,7 +12,7 @@ export const DEFAULT_PARAMS: Omit<SurfacingParams, 'stockWidth' | 'stockHeight'>
   feedRate: 125,
   plungeRate: 12,
   spindleRpm: 18000,
-  safeZ: 0.125,
+  retractHeight: 0.125,
 }
 
 export function mergeWithDefaults(partial: { stockWidth: number; stockHeight: number } & Partial<SurfacingParams>): SurfacingParams {
