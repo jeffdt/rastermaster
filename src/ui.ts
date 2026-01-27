@@ -20,13 +20,13 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <span class="unit">in</span>
         </div>
         <div class="form-row">
-          <label for="fudgeFactor">Fudge Factor (%)</label>
+          <label for="fudgeFactor">Corner Fudge</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+            <input type="number" id="fudgeFactor" value="0.5" step="0.5" min="0" max="10">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
-          <span class="unit">%</span>
+          <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label>Direction</label>
@@ -277,9 +277,9 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
     errors.push('Pause interval must be 0 or greater (0 = disabled)')
   }
 
-  // Fudge factor validation
-  if (params.fudgeFactor !== undefined && (params.fudgeFactor < 0 || params.fudgeFactor > 20)) {
-    errors.push('Fudge Factor must be between 0 and 20%')
+  // Fudge factor validation (margin in inches)
+  if (params.fudgeFactor !== undefined && (params.fudgeFactor < 0 || params.fudgeFactor > 10)) {
+    errors.push('Fudge factor must be between 0 and 10 inches')
   }
 
   return errors

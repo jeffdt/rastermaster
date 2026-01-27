@@ -9,15 +9,12 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   // Calculate preview bounds to include fudge zone if present
   let previewBounds = { ...bounds }
   if (params.fudgeFactor > 0) {
-    const origWidth = toolpath.originalStockBounds.xMax - toolpath.originalStockBounds.xMin
-    const origHeight = toolpath.originalStockBounds.yMax - toolpath.originalStockBounds.yMin
-    const fudgeAmountX = (origWidth * params.fudgeFactor / 100) / 2
-    const fudgeAmountY = (origHeight * params.fudgeFactor / 100) / 2
+    const fudgeAmount = params.fudgeFactor
 
-    previewBounds.xMin = Math.min(bounds.xMin, toolpath.originalStockBounds.xMin - fudgeAmountX)
-    previewBounds.xMax = Math.max(bounds.xMax, toolpath.originalStockBounds.xMax + fudgeAmountX)
-    previewBounds.yMin = Math.min(bounds.yMin, toolpath.originalStockBounds.yMin - fudgeAmountY)
-    previewBounds.yMax = Math.max(bounds.yMax, toolpath.originalStockBounds.yMax + fudgeAmountY)
+    previewBounds.xMin = Math.min(bounds.xMin, toolpath.originalStockBounds.xMin - fudgeAmount)
+    previewBounds.xMax = Math.max(bounds.xMax, toolpath.originalStockBounds.xMax + fudgeAmount)
+    previewBounds.yMin = Math.min(bounds.yMin, toolpath.originalStockBounds.yMin - fudgeAmount)
+    previewBounds.yMax = Math.max(bounds.yMax, toolpath.originalStockBounds.yMax + fudgeAmount)
   }
 
   // Calculate scale to fit preview
@@ -59,10 +56,10 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
     const origWidth = origMaxX - origMinX
     const origHeight = origMaxY - origMinY
 
-    const fudgedWidth = origWidth * (1 + params.fudgeFactor / 100)
-    const fudgedHeight = origHeight * (1 + params.fudgeFactor / 100)
-    const fudgeAmountX = (fudgedWidth - origWidth) / 2
-    const fudgeAmountY = (fudgedHeight - origHeight) / 2
+    const fudgedWidth = origWidth + (2 * params.fudgeFactor)
+    const fudgedHeight = origHeight + (2 * params.fudgeFactor)
+    const fudgeAmountX = params.fudgeFactor
+    const fudgeAmountY = params.fudgeFactor
 
     // Top strip
     lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)

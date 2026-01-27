@@ -74,18 +74,18 @@ describe('updateFormVisibility', () => {
 describe('createForm', () => {
   test('form includes fudgeFactor input with correct attributes', () => {
     // Use global document set up by happy-dom
-    ;(global as any).document = document
+    ; (global as any).document = document
 
-    const mockOnUpdate = () => {}
+    const mockOnUpdate = () => { }
     const formElement = createForm(mockOnUpdate)
 
     const input = formElement.querySelector<HTMLInputElement>('#fudgeFactor')
     expect(input).toBeTruthy()
     expect(input?.type).toBe('number')
     expect(input?.min).toBe('0')
-    expect(input?.max).toBe('20')
+    expect(input?.max).toBe('10')
     expect(input?.step).toBe('0.5')
-    expect(input?.value).toBe('5')
+    expect(input?.value).toBe('0.5')
   })
 })
 
@@ -152,9 +152,9 @@ describe('getFormValues', () => {
 
   test('extracts fudgeFactor', () => {
     // Use global document set up by happy-dom
-    ;(global as any).document = document
+    ; (global as any).document = document
 
-    const mockOnUpdate = () => {}
+    const mockOnUpdate = () => { }
     const formElement = createForm(mockOnUpdate)
 
     const fudgeInput = formElement.querySelector<HTMLInputElement>('#fudgeFactor')
@@ -175,22 +175,22 @@ describe('validateParams', () => {
 
     const result = validateParams(params)
     expect(result.length).toBeGreaterThan(0)
-    expect(result.some(e => e.includes('fudgeFactor') || e.includes('Fudge Factor'))).toBe(true)
+    expect(result.some(e => e.toLowerCase().includes('fudge factor'))).toBe(true)
   })
 
-  test('validateParams rejects fudgeFactor > 20', () => {
+  test('validateParams rejects fudgeFactor > 10', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      fudgeFactor: 25,
+      fudgeFactor: 11,
     })
 
     const result = validateParams(params)
     expect(result.length).toBeGreaterThan(0)
-    expect(result.some(e => e.includes('fudgeFactor') || e.includes('Fudge Factor'))).toBe(true)
+    expect(result.some(e => e.toLowerCase().includes('fudge factor'))).toBe(true)
   })
 
-  test('validateParams accepts fudgeFactor between 0 and 20', () => {
+  test('validateParams accepts fudgeFactor between 0 and 10', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,

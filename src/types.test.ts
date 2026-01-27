@@ -19,6 +19,6 @@ describe('DEFAULT_PARAMS', () => {
 
   test('DEFAULT_PARAMS includes fudgeFactor', () => {
     const params = mergeWithDefaults({ stockWidth: 10, stockHeight: 5 })
-    expect(params.fudgeFactor).toBe(5)
+    expect(params.fudgeFactor).toBe(0.5)
   })
 })

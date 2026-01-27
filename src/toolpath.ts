@@ -52,9 +52,9 @@ export interface Toolpath {
  *   - Y bounds: [0, stockHeight] (optimized overhang = 0.625 - 0.625 = 0)
  */
 export function calculateToolpath(params: SurfacingParams): Toolpath {
-  // Apply fudge factor to stock dimensions (centered expansion)
-  const fudgeAmountWidth = (params.stockWidth * params.fudgeFactor / 100) / 2
-  const fudgeAmountHeight = (params.stockHeight * params.fudgeFactor / 100) / 2
+  // Apply fudge factor (margin) to stock dimensions (centered expansion)
+  const fudgeAmountWidth = params.fudgeFactor
+  const fudgeAmountHeight = params.fudgeFactor
 
   // Fudged stock bounds (centered around original stock)
   const fudgedStockXMin = -fudgeAmountWidth
@@ -125,14 +125,14 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
           y: pos,
           xStart: isEven ? xMin : xMax,
           xEnd: isEven ? xMax : xMin,
-          direction: (isEven ? 'positive' : 'negative') as const,
+          direction: isEven ? 'positive' : 'negative',
         }
       } else {
         return {
           x: pos,
           yStart: isEven ? yMin : yMax,
           yEnd: isEven ? yMax : yMin,
-          direction: (isEven ? 'positive' : 'negative') as const,
+          direction: isEven ? 'positive' : 'negative',
         }
       }
     })

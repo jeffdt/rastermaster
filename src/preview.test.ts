@@ -104,7 +104,7 @@ describe('fudge zone rendering', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      fudgeFactor: 10,
+      fudgeFactor: 0.5,
     })
     const toolpath = calculateToolpath(params)
     const svg = generatePreviewSVG(toolpath, 800, 600)

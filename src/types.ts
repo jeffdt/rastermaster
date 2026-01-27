@@ -3,7 +3,7 @@ export interface SurfacingParams {
   // Stock dimensions (required, no defaults)
   stockWidth: number
   stockHeight: number
-  fudgeFactor: number
+  fudgeFactor: number // Margin in inches to add to each side
 
   // Tool settings
   bitDiameter: number

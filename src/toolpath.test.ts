@@ -214,24 +214,28 @@ describe('fudge factor', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      fudgeFactor: 10, // 10% expansion
+      fudgeFactor: 0.5, // 0.5 inches on each side
       bitDiameter: 2,
       stepoverPercent: 50,
     })
 
     const toolpath = calculateToolpath(params)
 
-    // 10% fudge: centered expansion
-    // Fudge amount: (10 * 10% / 2) = 0.5" each side in X, (5 * 10% / 2) = 0.25" each side in Y
-    // Fudged stock: X = [-0.5, 10.5], Y = [-0.25, 5.25]
+    // 0.5" fudge (margin)
+    // Fudged stock: X = [-0.5, 10.5], Y = [-0.5, 5.5]
     // Bit radius = 1", stepover = 1"
     // X (raster): overhang = bitRadius = 1"
     // Y (stepping): overhang = bitRadius - stepover = 0"
-    // Bounds: X = [-1.5, 11.5], Y = [-0.25, 5.25]
+    // Bounds: 
+    // X Min = -0.5 - 1 = -1.5
+    // X Max = 10.5 + 1 = 11.5
+    // Y Min = -0.5 - 0 = -0.5
+    // Y Max = 5.5 + 0 = 5.5
+
     expect(toolpath.bounds.xMin).toBeCloseTo(-1.5, 2)
     expect(toolpath.bounds.xMax).toBeCloseTo(11.5, 2)
-    expect(toolpath.bounds.yMin).toBeCloseTo(-0.25, 2)
-    expect(toolpath.bounds.yMax).toBeCloseTo(5.25, 2)
+    expect(toolpath.bounds.yMin).toBeCloseTo(-0.5, 2)
+    expect(toolpath.bounds.yMax).toBeCloseTo(5.5, 2)
   })
 
   test('preserves original stock bounds before fudge', () => {
