@@ -439,6 +439,87 @@
       font-weight: bold;
     }
 
+    /* Custom Number Control */
+    .number-control {
+      display: flex;
+      align-items: center;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0;
+      transition: all 0.2s ease;
+      width: fit-content;
+    }
+
+    .number-control:focus-within {
+      border-color: var(--color-steel-blue);
+      box-shadow: 0 0 0 3px var(--color-steel-blue-glow);
+    }
+
+    .number-control input[type="number"] {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      width: 50px;
+      padding: 8px 0;
+      text-align: center;
+      border-radius: 0;
+      -moz-appearance: textfield;
+    }
+
+    .number-control input[type="number"]:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* Hide native spinners */
+    .number-control input[type=number]::-webkit-inner-spin-button,
+    .number-control input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .stepper-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .stepper-btn:hover {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stepper-btn:active {
+      color: var(--color-accent-amber);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    /* Small variant for tool column */
+    .tool-subcolumn .number-control input[type="number"] {
+      width: 40px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .tool-subcolumn .stepper-btn {
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+    }
+
     .checkbox-row {
       display: grid;
       grid-template-columns: auto 1fr;

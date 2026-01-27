@@ -65,16 +65,19 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
     const fudgeAmountY = (fudgedHeight - origHeight) / 2
 
     // Top strip
-    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Bottom strip
-    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Left strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
     // Right strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+
+    // Dashed outline around entire fudge zone
+    lines.push(`<rect fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
   }
 
   // Dimension labels (inside original stock)

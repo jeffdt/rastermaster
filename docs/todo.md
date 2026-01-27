@@ -30,3 +30,5 @@ Instead of orange title, raster effect and input fields, use green when doing lo
 # The number stepper buttons are too close to the input boxes. Ask me for a screenshot.
 
 # Bug: On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
+
+# Instead of percentages, fudge factor should be in inches, with half inch increments. This way it's equal on both axes, regardless of the stock dimensions. This is a much more realistic way to account for misalignment, mismeasurement, or misshapen stock.

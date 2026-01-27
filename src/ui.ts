@@ -21,9 +21,12 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="fudgeFactor">Fudge Factor (%)</label>
-          <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit">%</span>
-          <span class="help-text">Expands stock dimensions to account for misalignment or measurement errors</span>
         </div>
         <div class="form-row">
           <label>Direction</label>
@@ -42,7 +45,11 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="numPasses"># Passes</label>
-          <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit"></span>
         </div>
         <div class="form-row">
@@ -52,7 +59,11 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
-          <input type="number" id="pauseInterval" value="${DEFAULT_PARAMS.pauseInterval}" step="1" min="0">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="pauseInterval" value="${DEFAULT_PARAMS.pauseInterval}" step="1" min="0">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit">passes</span>
         </div>
       </div>
@@ -110,6 +121,42 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
       updateFormVisibility(form)
       onUpdate(getFormValues(form))
     })
+  })
+
+  // Wire up stepper buttons
+  const steppers = form.querySelectorAll('.number-control')
+  steppers.forEach(stepper => {
+    const input = stepper.querySelector('input[type="number"]') as HTMLInputElement
+    const decrementBtn = stepper.querySelector('button[data-action="decrement"]') as HTMLButtonElement
+    const incrementBtn = stepper.querySelector('button[data-action="increment"]') as HTMLButtonElement
+
+    if (!input || !decrementBtn || !incrementBtn) return
+
+    const updateValue = (increment: boolean) => {
+      const step = parseFloat(input.step) || 1
+      const min = input.min ? parseFloat(input.min) : -Infinity
+      const max = input.max ? parseFloat(input.max) : Infinity
+      let val = parseFloat(input.value) || 0
+
+      if (increment) {
+        val += step
+      } else {
+        val -= step
+      }
+
+      // Floating point correction
+      val = Math.round(val * 100) / 100
+
+      if (val < min) val = min
+      if (val > max) val = max
+
+      input.value = val.toString()
+      input.dispatchEvent(new Event('input'))
+      input.dispatchEvent(new Event('change'))
+    }
+
+    decrementBtn.addEventListener('click', () => updateValue(false))
+    incrementBtn.addEventListener('click', () => updateValue(true))
   })
 
   return form
