@@ -446,6 +446,90 @@
       font-weight: bold;
     }
 
+    /* Custom Number Control */
+
+    .number-control {
+      display: flex;
+      align-items: center;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0;
+      transition: all 0.2s ease;
+      width: fit-content;
+    }
+
+    .number-control:focus-within {
+      border-color: var(--color-steel-blue);
+      box-shadow: 0 0 0 3px var(--color-steel-blue-glow);
+    }
+
+    .number-control input[type="number"] {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      width: 50px;
+      padding: 8px 0;
+      text-align: center;
+      border-radius: 0;
+      -moz-appearance: textfield;
+    }
+
+    .number-control input[type="number"]:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* Hide native spinners */
+
+    .number-control input[type=number]::-webkit-inner-spin-button,
+    .number-control input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .stepper-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .stepper-btn:hover {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stepper-btn:active {
+      color: var(--color-accent-amber);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    /* Small variant for tool column */
+
+    .tool-subcolumn .number-control input[type="number"] {
+      width: 40px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .tool-subcolumn .stepper-btn {
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+    }
+
     .checkbox-row {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -893,7 +977,7 @@
       }
     }
   </style>
-  <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))r(n);new MutationObserver(n=>{for(const s of n)if(s.type==="childList")for(const o of s.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(n){const s={};return n.integrity&&(s.integrity=n.integrity),n.referrerPolicy&&(s.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?s.credentials="include":n.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function r(n){if(n.ep)return;n.ep=!0;const s=i(n);fetch(n.href,s)}})();const S={fudgeFactor:5,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function T(e){return{...S,...e}}function N(e){const t=document.createElement("div");return t.className="form-container",t.innerHTML=`
+  <script type="module" crossorigin>(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))l(n);new MutationObserver(n=>{for(const s of n)if(s.type==="childList")for(const i of s.addedNodes)i.tagName==="LINK"&&i.rel==="modulepreload"&&l(i)}).observe(document,{childList:!0,subtree:!0});function o(n){const s={};return n.integrity&&(s.integrity=n.integrity),n.referrerPolicy&&(s.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?s.credentials="include":n.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function l(n){if(n.ep)return;n.ep=!0;const s=o(n);fetch(n.href,s)}})();const H={fudgeFactor:5,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function O(t){return{...H,...t}}function U(t){const e=document.createElement("div");return e.className="form-container",e.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
@@ -909,9 +993,12 @@
         </div>
         <div class="form-row">
           <label for="fudgeFactor">Fudge Factor (%)</label>
-          <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="fudgeFactor" value="5" step="0.5" min="0" max="20">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit">%</span>
-          <span class="help-text">Expands stock dimensions to account for misalignment or measurement errors</span>
         </div>
         <div class="form-row">
           <label>Direction</label>
@@ -930,17 +1017,25 @@
         </div>
         <div class="form-row">
           <label for="numPasses"># Passes</label>
-          <input type="number" id="numPasses" value="${S.numPasses}" step="1" min="1">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="numPasses" value="${H.numPasses}" step="1" min="1">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="text" id="depthPerPass" value="${S.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+          <input type="text" id="depthPerPass" value="${H.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
-          <input type="number" id="pauseInterval" value="${S.pauseInterval}" step="1" min="0">
+          <div class="number-control">
+            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+            <input type="number" id="pauseInterval" value="${H.pauseInterval}" step="1" min="0">
+            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+          </div>
           <span class="unit">passes</span>
         </div>
       </div>
@@ -951,43 +1046,43 @@
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="bitDiameter">Bit Diameter</label>
-              <input type="text" id="bitDiameter" value="${S.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="bitDiameter" value="${H.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
             <div class="form-row">
               <label for="stepoverPercent">Stepover</label>
-              <input type="text" id="stepoverPercent" value="${S.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="stepoverPercent" value="${H.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">%</span>
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="text" id="feedRate" value="${S.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="feedRate" value="${H.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
           </div>
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="plungeRate">Plunge Rate</label>
-              <input type="text" id="plungeRate" value="${S.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="plungeRate" value="${H.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
               <label for="spindleRpm">Spindle Speed</label>
-              <input type="text" id="spindleRpm" value="${S.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="spindleRpm" value="${H.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="retractHeight">Retract Height</label>
-              <input type="text" id="retractHeight" value="${S.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="retractHeight" value="${H.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,t.querySelectorAll("input").forEach(r=>{r.addEventListener("input",()=>{I(t),e(O(t))}),r.addEventListener("change",()=>{I(t),e(O(t))})}),t}function I(e){const t=p=>{const g=e.querySelector(`#${p}`);return parseFloat(g?.value||"0")},i=t("stockWidth"),r=t("stockHeight");if(!(i>0&&r>0))return;const s=e.querySelectorAll(".form-column"),o=s[1],c=s[2];if(!(!o||!c)&&o.classList.contains("form-column-hidden")){o.classList.remove("form-column-hidden"),o.classList.add("form-column-reveal-job"),o.removeAttribute("aria-hidden"),c.classList.remove("form-column-hidden"),c.classList.add("form-column-reveal-tool"),c.removeAttribute("aria-hidden");const p=()=>{o.style&&(o.style.willChange="auto"),c.style&&(c.style.willChange="auto")};c.addEventListener("animationend",p,{once:!0})}}function O(e){const t=n=>{const s=e.querySelector(`#${n}`);return parseFloat(s.value)},i=n=>e.querySelector(`#${n}`).checked,r=n=>e.querySelector(`input[name="${n}"]:checked`)?.value||"";return{stockWidth:t("stockWidth"),stockHeight:t("stockHeight"),fudgeFactor:t("fudgeFactor"),bitDiameter:t("bitDiameter"),stepoverPercent:t("stepoverPercent"),rasterDirection:r("rasterDirection"),skimPass:i("skimPass"),numPasses:t("numPasses"),depthPerPass:t("depthPerPass"),pauseInterval:t("pauseInterval"),feedRate:t("feedRate"),plungeRate:t("plungeRate"),spindleRpm:t("spindleRpm"),retractHeight:t("retractHeight")}}function V(e){return!!(e.stockWidth&&e.stockWidth>0&&e.stockHeight&&e.stockHeight>0)}function j(e){const t=1+e.fudgeFactor/100,i=e.stockWidth*t,r=e.stockHeight*t,n=e.bitDiameter*(e.stepoverPercent/100),s=e.bitDiameter/2,o=s-n;let c,p,g,u;e.rasterDirection==="x"?(c=-s,p=i+s,g=-o,u=r+o):(c=-o,p=i+o,g=-s,u=r+s);let l=[];if(e.rasterDirection==="x"){let h=g;for(;h<=u;)l.push(h),h+=n;l[l.length-1]<u&&l.push(u)}else{let h=c;for(;h<=p;)l.push(h),h+=n;l[l.length-1]<p&&l.push(p)}const d=[],a=e.numPasses+(e.skimPass?1:0);for(let h=0;h<a;h++){const Y=e.skimPass&&h===0,E=e.skimPass?h:h+1,G=Y?0:-(E*e.depthPerPass),W=l.map((X,C)=>{const F=C%2===0;return e.rasterDirection==="x"?{y:X,xStart:F?c:p,xEnd:F?p:c,direction:F?"positive":"negative"}:{x:X,yStart:F?g:u,yEnd:F?u:g,direction:F?"positive":"negative"}}),B=e.pauseInterval>0&&(h+1)%e.pauseInterval===0&&h<a-1;d.push({z:G,lines:W,pauseAfter:B})}return{passes:d,bounds:{xMin:c,xMax:p,yMin:g,yMax:u},originalStockBounds:{xMin:0,xMax:e.stockWidth,yMin:0,yMax:e.stockHeight},params:e}}function U(e){const{params:t}=e,i=[];i.push("; Surfacing operation"),i.push(`; Stock: ${t.stockWidth}" x ${t.stockHeight}"`),i.push(`; Bit: ${t.bitDiameter}" fly cutter`),i.push(`; Stepover: ${t.stepoverPercent}%`),i.push(""),i.push("G90 ; Absolute positioning"),i.push("G20 ; Inches"),i.push(`M3 S${t.spindleRpm} ; Spindle on`),i.push(`G0 Z${m(t.retractHeight)} ; Retract to safe Z`);const r=e.passes[0]?.lines[0],n=t.rasterDirection==="x"?r?.xStart??e.bounds.xMin:r?.x??e.bounds.xMin,s=t.rasterDirection==="x"?r?.y??e.bounds.yMin:r?.yStart??e.bounds.yMin;return i.push(`G0 X${m(n)} Y${m(s)} ; Move to start`),i.push(""),e.passes.forEach((o,c)=>{i.push(`; Pass ${c+1} at Z=${m(o.z)}`),i.push(...J(o,t.retractHeight,t.feedRate,t.plungeRate,t.rasterDirection)),o.pauseAfter&&i.push("M0 ; Pause - press resume to continue or stop to end"),i.push("")}),i.push(`G0 Z${m(t.retractHeight)} ; Final retract`),i.push("M5 ; Spindle off"),i.push("M30 ; Program end"),i.join(`
-`)}function J(e,t,i,r,n){const s=[];return e.lines.forEach((o,c)=>{n==="x"?c===0?(s.push(`G0 Y${m(o.y)}`),s.push(`G0 X${m(o.xStart)}`),s.push(`G1 Z${m(e.z)} F${r} ; Plunge`),s.push(`G1 X${m(o.xEnd)} F${i} ; Cut`)):(s.push(`G1 Y${m(o.y)} F${i} ; Stepover`),s.push(`G1 X${m(o.xEnd)} F${i} ; Cut`)):c===0?(s.push(`G0 X${m(o.x)}`),s.push(`G0 Y${m(o.yStart)}`),s.push(`G1 Z${m(e.z)} F${r} ; Plunge`),s.push(`G1 Y${m(o.yEnd)} F${i} ; Cut`)):(s.push(`G1 X${m(o.x)} F${i} ; Stepover`),s.push(`G1 Y${m(o.yEnd)} F${i} ; Cut`))}),s}function m(e){return e.toFixed(4).replace(/\.?0+$/,"")}function z(e){const t=Math.round(e*100)/100;return t%1===0?`${t}"`:`${t.toFixed(2).replace(/\.?0+$/,"")}"`}function K(e,t,i){const{bounds:r,params:n}=e,s=20,o=r.xMax-r.xMin,c=r.yMax-r.yMin,p=(t-2*s)/o,g=(i-2*s)/c,u=Math.min(p,g),l=v=>s+(v-r.xMin)*u,d=v=>i-s-(v-r.yMin)*u,a=[];a.push(`<svg width="${t}" height="${i}" xmlns="http://www.w3.org/2000/svg">`),a.push("<style>"),a.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),a.push("  .start { fill: #4CAF50; }"),a.push("  .end { fill: #F44336; }"),a.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),a.push("</style>");const h=e.originalStockBounds.xMax-e.originalStockBounds.xMin,Y=e.originalStockBounds.yMax-e.originalStockBounds.yMin;if(a.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${l(e.originalStockBounds.xMin)}" y="${d(e.originalStockBounds.yMax)}" width="${h*u}" height="${Y*u}" />`),n.fudgeFactor>0){const v=e.originalStockBounds.xMin,H=e.originalStockBounds.xMax,f=e.originalStockBounds.yMin,x=e.originalStockBounds.yMax,D=H-v,P=x-f,$=D*(1+n.fudgeFactor/100),w=P*(1+n.fudgeFactor/100),y=($-D)/2,b=(w-P)/2;a.push(`<rect fill="#fbbf24" x="${l(v-y)}" y="${d(x+b)}" width="${$*u}" height="${b*u}" />`),a.push(`<rect fill="#fbbf24" x="${l(v-y)}" y="${d(f)}" width="${$*u}" height="${b*u}" />`),a.push(`<rect fill="#fbbf24" x="${l(v-y)}" y="${d(x)}" width="${y*u}" height="${P*u}" />`),a.push(`<rect fill="#fbbf24" x="${l(H)}" y="${d(x)}" width="${y*u}" height="${P*u}" />`)}const E=l(e.originalStockBounds.xMin),G=l(e.originalStockBounds.xMax),W=d(e.originalStockBounds.yMax),B=d(e.originalStockBounds.yMin),X=(E+G)/2,C=B-10;a.push(`<text class="dimension-text" x="${X}" y="${C}" text-anchor="middle">${z(n.stockWidth)}</text>`);const F=E+10,Z=(W+B)/2;a.push(`<text class="dimension-text" x="${F}" y="${Z}" text-anchor="start" dominant-baseline="middle">${z(n.stockHeight)}</text>`);const M=e.passes[0];if(M){M.lines.forEach((f,x)=>{if(n.rasterDirection==="x"){const D=l(f.xStart),P=d(f.y),$=l(f.xEnd),w=d(f.y);a.push(`<line class="raster" x1="${D}" y1="${P}" x2="${$}" y2="${w}" />`);const y=(D+$)/2,b=(P+w)/2,k=6,R=f.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${y+R*k},${b} ${y-R*k/2},${b-k/2} ${y-R*k/2},${b+k/2}" />`),x<M.lines.length-1){const L=M.lines[x+1],A=l(L.xStart),q=d(L.y);a.push(`<line class="stepover" x1="${$}" y1="${w}" x2="${A}" y2="${q}" />`)}}else{const D=l(f.x),P=d(f.yStart),$=l(f.x),w=d(f.yEnd);a.push(`<line class="raster" x1="${D}" y1="${P}" x2="${$}" y2="${w}" />`);const y=(D+$)/2,b=(P+w)/2,k=6,R=f.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${y},${b-R*k} ${y-k/2},${b+R*k/2} ${y+k/2},${b+R*k/2}" />`),x<M.lines.length-1){const L=M.lines[x+1],A=l(L.x),q=d(L.yStart);a.push(`<line class="stepover" x1="${$}" y1="${w}" x2="${A}" y2="${q}" />`)}}});const v=M.lines[0];if(v){const f=n.rasterDirection==="x"?v.xStart:v.x,x=n.rasterDirection==="x"?v.y:v.yStart;a.push(`<circle class="start" cx="${l(f)}" cy="${d(x)}" r="5" />`)}const H=M.lines[M.lines.length-1];if(H){const f=n.rasterDirection==="x"?H.xEnd:H.x,x=n.rasterDirection==="x"?H.y:H.yEnd;a.push(`<circle class="end" cx="${l(f)}" cy="${d(x)}" r="5" />`)}}return a.push("</svg>"),a.join(`
-`)}function _(){const e=document.querySelector("#app");e.innerHTML=`
+  `,e.querySelectorAll("input").forEach(n=>{n.addEventListener("input",()=>{V(e),t(j(e))}),n.addEventListener("change",()=>{V(e),t(j(e))})}),e.querySelectorAll(".number-control").forEach(n=>{const s=n.querySelector('input[type="number"]'),i=n.querySelector('button[data-action="decrement"]'),u=n.querySelector('button[data-action="increment"]');if(!s||!i||!u)return;const h=y=>{const b=parseFloat(s.step)||1,d=s.min?parseFloat(s.min):-1/0,a=s.max?parseFloat(s.max):1/0;let c=parseFloat(s.value)||0;y?c+=b:c-=b,c=Math.round(c*100)/100,c<d&&(c=d),c>a&&(c=a),s.value=c.toString(),s.dispatchEvent(new Event("input")),s.dispatchEvent(new Event("change"))};i.addEventListener("click",()=>h(!1)),u.addEventListener("click",()=>h(!0))}),e}function V(t){const e=h=>{const y=t.querySelector(`#${h}`);return parseFloat(y?.value||"0")},o=e("stockWidth"),l=e("stockHeight");if(!(o>0&&l>0))return;const s=t.querySelectorAll(".form-column"),i=s[1],u=s[2];if(!(!i||!u)&&i.classList.contains("form-column-hidden")){i.classList.remove("form-column-hidden"),i.classList.add("form-column-reveal-job"),i.removeAttribute("aria-hidden"),u.classList.remove("form-column-hidden"),u.classList.add("form-column-reveal-tool"),u.removeAttribute("aria-hidden");const h=()=>{i.style&&(i.style.willChange="auto"),u.style&&(u.style.willChange="auto")};u.addEventListener("animationend",h,{once:!0})}}function j(t){const e=n=>{const s=t.querySelector(`#${n}`);return parseFloat(s.value)},o=n=>t.querySelector(`#${n}`).checked,l=n=>t.querySelector(`input[name="${n}"]:checked`)?.value||"";return{stockWidth:e("stockWidth"),stockHeight:e("stockHeight"),fudgeFactor:e("fudgeFactor"),bitDiameter:e("bitDiameter"),stepoverPercent:e("stepoverPercent"),rasterDirection:l("rasterDirection"),skimPass:o("skimPass"),numPasses:e("numPasses"),depthPerPass:e("depthPerPass"),pauseInterval:e("pauseInterval"),feedRate:e("feedRate"),plungeRate:e("plungeRate"),spindleRpm:e("spindleRpm"),retractHeight:e("retractHeight")}}function z(t){return!!(t.stockWidth&&t.stockWidth>0&&t.stockHeight&&t.stockHeight>0)}function Z(t){const e=t.stockWidth*t.fudgeFactor/100/2,o=t.stockHeight*t.fudgeFactor/100/2,l=-e,n=t.stockWidth+e,s=-o,i=t.stockHeight+o,u=t.bitDiameter*(t.stepoverPercent/100),h=t.bitDiameter/2,y=h-u;let b,d,a,c;t.rasterDirection==="x"?(b=l-h,d=n+h,a=s-y,c=i+y):(b=l-y,d=n+y,a=s-h,c=i+h);let r=[];if(t.rasterDirection==="x"){let f=a;for(;f<=c;)r.push(f),f+=u;r[r.length-1]<c&&r.push(c)}else{let f=b;for(;f<=d;)r.push(f),f+=u;r[r.length-1]<d&&r.push(d)}const L=[],R=t.numPasses+(t.skimPass?1:0);for(let f=0;f<R;f++){const W=t.skimPass&&f===0,G=t.skimPass?f:f+1,X=W?0:-(G*t.depthPerPass),A=r.map((Y,C)=>{const v=C%2===0;return t.rasterDirection==="x"?{y:Y,xStart:v?b:d,xEnd:v?d:b,direction:v?"positive":"negative"}:{x:Y,yStart:v?a:c,yEnd:v?c:a,direction:v?"positive":"negative"}}),q=t.pauseInterval>0&&(f+1)%t.pauseInterval===0&&f<R-1;L.push({z:X,lines:A,pauseAfter:q})}return{passes:L,bounds:{xMin:b,xMax:d,yMin:a,yMax:c},originalStockBounds:{xMin:0,xMax:t.stockWidth,yMin:0,yMax:t.stockHeight},params:t}}function J(t){const{params:e}=t,o=[];o.push("; Surfacing operation"),o.push(`; Stock: ${e.stockWidth}" x ${e.stockHeight}"`),o.push(`; Bit: ${e.bitDiameter}" fly cutter`),o.push(`; Stepover: ${e.stepoverPercent}%`),o.push(""),o.push("G90 ; Absolute positioning"),o.push("G20 ; Inches"),o.push(`M3 S${e.spindleRpm} ; Spindle on`),o.push(`G0 Z${x(e.retractHeight)} ; Retract to safe Z`);const l=t.passes[0]?.lines[0],n=e.rasterDirection==="x"?l?.xStart??t.bounds.xMin:l?.x??t.bounds.xMin,s=e.rasterDirection==="x"?l?.y??t.bounds.yMin:l?.yStart??t.bounds.yMin;return o.push(`G0 X${x(n)} Y${x(s)} ; Move to start`),o.push(""),t.passes.forEach((i,u)=>{o.push(`; Pass ${u+1} at Z=${x(i.z)}`),o.push(...K(i,e.retractHeight,e.feedRate,e.plungeRate,e.rasterDirection)),i.pauseAfter&&o.push("M0 ; Pause - press resume to continue or stop to end"),o.push("")}),o.push(`G0 Z${x(e.retractHeight)} ; Final retract`),o.push("M5 ; Spindle off"),o.push("M30 ; Program end"),o.join(`
+`)}function K(t,e,o,l,n){const s=[];return t.lines.forEach((i,u)=>{n==="x"?u===0?(s.push(`G0 Y${x(i.y)}`),s.push(`G0 X${x(i.xStart)}`),s.push(`G1 Z${x(t.z)} F${l} ; Plunge`),s.push(`G1 X${x(i.xEnd)} F${o} ; Cut`)):(s.push(`G1 Y${x(i.y)} F${o} ; Stepover`),s.push(`G1 X${x(i.xEnd)} F${o} ; Cut`)):u===0?(s.push(`G0 X${x(i.x)}`),s.push(`G0 Y${x(i.yStart)}`),s.push(`G1 Z${x(t.z)} F${l} ; Plunge`),s.push(`G1 Y${x(i.yEnd)} F${o} ; Cut`)):(s.push(`G1 X${x(i.x)} F${o} ; Stepover`),s.push(`G1 Y${x(i.yEnd)} F${o} ; Cut`))}),s}function x(t){return t.toFixed(4).replace(/\.?0+$/,"")}function N(t){const e=Math.round(t*100)/100;return e%1===0?`${e}"`:`${e.toFixed(2).replace(/\.?0+$/,"")}"`}function _(t,e,o){const{bounds:l,params:n}=t,s=20;let i={...l};if(n.fudgeFactor>0){const m=t.originalStockBounds.xMax-t.originalStockBounds.xMin,P=t.originalStockBounds.yMax-t.originalStockBounds.yMin,p=m*n.fudgeFactor/100/2,g=P*n.fudgeFactor/100/2;i.xMin=Math.min(l.xMin,t.originalStockBounds.xMin-p),i.xMax=Math.max(l.xMax,t.originalStockBounds.xMax+p),i.yMin=Math.min(l.yMin,t.originalStockBounds.yMin-g),i.yMax=Math.max(l.yMax,t.originalStockBounds.yMax+g)}const u=i.xMax-i.xMin,h=i.yMax-i.yMin,y=(e-2*s)/u,b=(o-2*s)/h,d=Math.min(y,b),a=m=>s+(m-i.xMin)*d,c=m=>o-s-(m-i.yMin)*d,r=[];r.push(`<svg width="${e}" height="${o}" xmlns="http://www.w3.org/2000/svg">`),r.push("<style>"),r.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),r.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),r.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),r.push("  .start { fill: #4CAF50; }"),r.push("  .end { fill: #F44336; }"),r.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }"),r.push("</style>");const L=t.originalStockBounds.xMax-t.originalStockBounds.xMin,R=t.originalStockBounds.yMax-t.originalStockBounds.yMin;if(r.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${a(t.originalStockBounds.xMin)}" y="${c(t.originalStockBounds.yMax)}" width="${L*d}" height="${R*d}" />`),n.fudgeFactor>0){const m=t.originalStockBounds.xMin,P=t.originalStockBounds.xMax,p=t.originalStockBounds.yMin,g=t.originalStockBounds.yMax,B=P-m,w=g-p,k=B*(1+n.fudgeFactor/100),F=w*(1+n.fudgeFactor/100),$=(k-B)/2,M=(F-w)/2;r.push(`<rect fill="#fbbf24" opacity="0.2" x="${a(m-$)}" y="${c(g+M)}" width="${k*d}" height="${M*d}" />`),r.push(`<rect fill="#fbbf24" opacity="0.2" x="${a(m-$)}" y="${c(p)}" width="${k*d}" height="${M*d}" />`),r.push(`<rect fill="#fbbf24" opacity="0.2" x="${a(m-$)}" y="${c(g)}" width="${$*d}" height="${w*d}" />`),r.push(`<rect fill="#fbbf24" opacity="0.2" x="${a(P)}" y="${c(g)}" width="${$*d}" height="${w*d}" />`),r.push(`<rect fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4" x="${a(m-$)}" y="${c(g+M)}" width="${k*d}" height="${F*d}" />`)}const f=a(t.originalStockBounds.xMin),W=a(t.originalStockBounds.xMax),G=c(t.originalStockBounds.yMax),X=c(t.originalStockBounds.yMin),A=(f+W)/2,q=X-10;r.push(`<text class="dimension-text" x="${A}" y="${q}" text-anchor="middle">${N(n.stockWidth)}</text>`);const Y=f+10,C=(G+X)/2;r.push(`<text class="dimension-text" x="${Y}" y="${C}" text-anchor="start" dominant-baseline="middle">${N(n.stockHeight)}</text>`);const v=t.passes[0];if(v){v.lines.forEach((p,g)=>{if(n.rasterDirection==="x"){const B=a(p.xStart),w=c(p.y),k=a(p.xEnd),F=c(p.y);r.push(`<line class="raster" x1="${B}" y1="${w}" x2="${k}" y2="${F}" />`);const $=(B+k)/2,M=(w+F)/2,S=6,D=p.direction==="positive"?1:-1;if(r.push(`<polygon class="arrow" points="${$+D*S},${M} ${$-D*S/2},${M-S/2} ${$-D*S/2},${M+S/2}" />`),g<v.lines.length-1){const E=v.lines[g+1],I=a(E.xStart),T=c(E.y);r.push(`<line class="stepover" x1="${k}" y1="${F}" x2="${I}" y2="${T}" />`)}}else{const B=a(p.x),w=c(p.yStart),k=a(p.x),F=c(p.yEnd);r.push(`<line class="raster" x1="${B}" y1="${w}" x2="${k}" y2="${F}" />`);const $=(B+k)/2,M=(w+F)/2,S=6,D=p.direction==="positive"?1:-1;if(r.push(`<polygon class="arrow" points="${$},${M-D*S} ${$-S/2},${M+D*S/2} ${$+S/2},${M+D*S/2}" />`),g<v.lines.length-1){const E=v.lines[g+1],I=a(E.x),T=c(E.yStart);r.push(`<line class="stepover" x1="${k}" y1="${F}" x2="${I}" y2="${T}" />`)}}});const m=v.lines[0];if(m){const p=n.rasterDirection==="x"?m.xStart:m.x,g=n.rasterDirection==="x"?m.y:m.yStart;r.push(`<circle class="start" cx="${a(p)}" cy="${c(g)}" r="5" />`)}const P=v.lines[v.lines.length-1];if(P){const p=n.rasterDirection==="x"?P.xEnd:P.x,g=n.rasterDirection==="x"?P.y:P.yEnd;r.push(`<circle class="end" cx="${a(p)}" cy="${c(g)}" r="5" />`)}}return r.push("</svg>"),r.join(`
+`)}function Q(){const t=document.querySelector("#app");t.innerHTML=`
     <h1 class="title">RasterMaster</h1>
     <div class="container">
       <div id="form-container"></div>
@@ -996,7 +1091,7 @@
         <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
       </div>
     </div>
-  `;const t=e.querySelector("#form-container"),i=e.querySelector("#preview"),r=e.querySelector("#generateBtn");let n={};function s(){if(!V(n)){i.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',r.disabled=!0;return}const c=T(n),p=j(c),g=i.getBoundingClientRect(),u=K(p,g.width||500,g.height||375);i.innerHTML=u,r.disabled=!1}const o=N(c=>{n=c,s()});t.appendChild(o),r.addEventListener("click",()=>{if(!V(n))return;const c=T(n),p=j(c),g=U(p),u=new Blob([g],{type:"text/plain"}),l=URL.createObjectURL(u),d=document.createElement("a");d.href=l,d.download=`rastermaster-${c.stockWidth}x${c.stockHeight}.gcode`,d.click(),URL.revokeObjectURL(l)}),s()}_();</script>
+  `;const e=t.querySelector("#form-container"),o=t.querySelector("#preview"),l=t.querySelector("#generateBtn");let n={};function s(){if(!z(n)){o.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',l.disabled=!0;return}const u=O(n),h=Z(u),y=o.getBoundingClientRect(),b=_(h,y.width||500,y.height||375);o.innerHTML=b,l.disabled=!1}const i=U(u=>{n=u,s()});e.appendChild(i),l.addEventListener("click",()=>{if(!z(n))return;const u=O(n),h=Z(u),y=J(h),b=new Blob([y],{type:"text/plain"}),d=URL.createObjectURL(b),a=document.createElement("a");a.href=d,a.download=`rastermaster-${u.stockWidth}x${u.stockHeight}.gcode`,a.click(),URL.revokeObjectURL(d)}),s()}Q();</script>
 </head>
 
 <body>
