@@ -1,9 +1,6 @@
 # Dynamic Layout
 Dynamic layout: switch form/preview orientation based on raster direction (X-axis: form top/preview bottom, Y-axis: form left/preview right with animations)
 
-# Fudge factor
-User needs to be able to add a fudge factor to the stock dimensions to account for stock that's misaligned, mismeasured, or misshapen. I am imagining a percentage that defaults to 5%. The fudged dimensions should be used for layout and overhang. Maybe we could display it in the preview as well, in a different color than the stock?
-
 # Allow fractions for dimensions
 I'm not sure how to handle this on the UI, but being able to enter 15/16 instead of having to calculate it as 0.9375 would reduce friction between taking measurements and generating toolpaths.
 
@@ -25,10 +22,12 @@ Instead of orange title, raster effect and input fields, use green when doing lo
 
 # Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there. Or maybe it should just be spaced at the normal stepover spacing instead of calculating special spacing for the final line.
 
-# Does the filename need an extension filetype?
-
-# The number stepper buttons are too close to the input boxes. Ask me for a screenshot.
-
 # Bug: On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
 
 # Instead of percentages, fudge factor should be in inches, with half inch increments. This way it's equal on both axes, regardless of the stock dimensions. This is a much more realistic way to account for misalignment, mismeasurement, or misshapen stock.
+
+# Add tooltips to all input fields. Work with me to determine the content of each tooltip. 
+
+# Center the rendering in the preview window, both vertically and horizontally.
+
+# Stock dimensions in preview should appear above all other elements.

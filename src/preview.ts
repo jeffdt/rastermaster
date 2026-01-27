@@ -24,9 +24,15 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const scaleY = (height - 2 * padding) / contentHeight
   const scale = Math.min(scaleX, scaleY)
 
+  // Calculate offsets to center the preview
+  const renderedWidth = contentWidth * scale
+  const renderedHeight = contentHeight * scale
+  const offsetX = (width - renderedWidth) / 2
+  const offsetY = (height - renderedHeight) / 2
+
   // Transform functions (flip Y axis for SVG coordinates)
-  const tx = (x: number) => padding + (x - previewBounds.xMin) * scale
-  const ty = (y: number) => height - padding - (y - previewBounds.yMin) * scale
+  const tx = (x: number) => offsetX + (x - previewBounds.xMin) * scale
+  const ty = (y: number) => height - offsetY - (y - previewBounds.yMin) * scale
 
   const lines: string[] = []
 
@@ -77,21 +83,6 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
     lines.push(`<rect fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
   }
 
-  // Dimension labels (inside original stock)
-  const stockX1 = tx(toolpath.originalStockBounds.xMin)
-  const stockX2 = tx(toolpath.originalStockBounds.xMax)
-  const stockY1 = ty(toolpath.originalStockBounds.yMax)  // Top of stock in SVG
-  const stockY2 = ty(toolpath.originalStockBounds.yMin)  // Bottom of stock in SVG
-
-  // Width label - centered on bottom edge
-  const widthTextX = (stockX1 + stockX2) / 2
-  const widthTextY = stockY2 - 10  // 10px above bottom edge
-  lines.push(`<text class="dimension-text" x="${widthTextX}" y="${widthTextY}" text-anchor="middle">${formatDimension(params.stockWidth)}</text>`)
-
-  // Height label - centered on left edge (horizontal text)
-  const heightTextX = stockX1 + 10  // 10px from left edge
-  const heightTextY = (stockY1 + stockY2) / 2
-  lines.push(`<text class="dimension-text" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${formatDimension(params.stockHeight)}</text>`)
 
   // Raster lines with snaking visualization (first pass only for preview)
   const firstPass = toolpath.passes[0]
@@ -164,6 +155,22 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
       lines.push(`<circle class="end" cx="${tx(endX)}" cy="${ty(endY)}" r="5" />`)
     }
   }
+
+  // Dimension labels (inside original stock) - Drawn last to be on top
+  const stockX1 = tx(toolpath.originalStockBounds.xMin)
+  const stockX2 = tx(toolpath.originalStockBounds.xMax)
+  const stockY1 = ty(toolpath.originalStockBounds.yMax)  // Top of stock in SVG
+  const stockY2 = ty(toolpath.originalStockBounds.yMin)  // Bottom of stock in SVG
+
+  // Width label - centered on bottom edge
+  const widthTextX = (stockX1 + stockX2) / 2
+  const widthTextY = stockY2 - 10  // 10px above bottom edge
+  lines.push(`<text class="dimension-text" x="${widthTextX}" y="${widthTextY}" text-anchor="middle">${formatDimension(params.stockWidth)}</text>`)
+
+  // Height label - centered on left edge (horizontal text)
+  const heightTextX = stockX1 + 10  // 10px from left edge
+  const heightTextY = (stockY1 + stockY2) / 2
+  lines.push(`<text class="dimension-text" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${formatDimension(params.stockHeight)}</text>`)
 
   lines.push('</svg>')
 

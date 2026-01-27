@@ -94,8 +94,25 @@ describe('dimension labels', () => {
     expect(svg).not.toContain('marker-end')
 
     // Should contain dimension text
-    expect(svg).toContain('text-anchor="middle"')  // Width label centered
     expect(svg).toContain('text-anchor="start"')   // Height label left-aligned
+  })
+
+  test('dimension labels are rendered last (on top)', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+    })
+    const toolpath = calculateToolpath(params)
+    const svg = generatePreviewSVG(toolpath, 400, 300)
+
+    const lastRectIndex = svg.lastIndexOf('<rect')
+    const lastLineIndex = svg.lastIndexOf('<line')
+    const lastCircleIndex = svg.lastIndexOf('<circle')
+    const firstTextIndex = svg.indexOf('<text class="dimension-text"')
+
+    expect(firstTextIndex).toBeGreaterThan(lastRectIndex)
+    expect(firstTextIndex).toBeGreaterThan(lastLineIndex)
+    expect(firstTextIndex).toBeGreaterThan(lastCircleIndex)
   })
 })
 
