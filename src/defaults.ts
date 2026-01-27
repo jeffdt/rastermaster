@@ -2,7 +2,7 @@
 import type { SurfacingParams } from './types'
 
 export const DEFAULT_PARAMS: Omit<SurfacingParams, 'stockWidth' | 'stockHeight'> = {
-  fudgeFactor: 0.5,
+  fudgeFactor: 0.25,
   bitDiameter: 1.25,
   stepoverPercent: 50,
   rasterDirection: 'x',

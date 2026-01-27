@@ -84,8 +84,8 @@ describe('createForm', () => {
     expect(input?.type).toBe('number')
     expect(input?.min).toBe('0')
     expect(input?.max).toBe('10')
-    expect(input?.step).toBe('0.5')
-    expect(input?.value).toBe('0.5')
+    expect(input?.step).toBe('0.25')
+    expect(input?.value).toBe('0.25')
   })
 })
 

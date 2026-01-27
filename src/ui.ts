@@ -23,7 +23,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <label for="fudgeFactor">Corner Fudge</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="fudgeFactor" value="0.5" step="0.5" min="0" max="10">
+            <input type="number" id="fudgeFactor" value="0.25" step="0.25" min="0" max="10">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit">in</span>
