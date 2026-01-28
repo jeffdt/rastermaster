@@ -31,3 +31,7 @@ Instead of orange title, raster effect and input fields, use green when doing lo
 # Center the rendering in the preview window, both vertically and horizontally.
 
 # Stock dimensions in preview should appear above all other elements.
+
+# For the raster effect trail, maybe it could be implemented as additional copies of the mai effect, staggered back in time and increasingly faded out. What do you think?
+
+# Stock section shrinks once you enter dimensions. It should stay the same size.

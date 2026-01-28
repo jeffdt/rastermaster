@@ -11,26 +11,26 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         <h3>Stock</h3>
         <div class="form-row">
           <label for="stockWidth">Width</label>
-          <input type="text" id="stockWidth" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required>
+          <input type="text" id="stockWidth" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required data-tooltip="Measure widest dimension of your stock.">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="stockHeight">Height</label>
-          <input type="text" id="stockHeight" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required>
+          <input type="text" id="stockHeight" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required data-tooltip="Measure tallest dimension of your stock.">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
-          <label for="fudgeFactor">Corner Fudge</label>
+          <label for="fudgeFactor">Fudge Factor</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="fudgeFactor" value="0.25" step="0.25" min="0" max="10">
+            <input type="number" id="fudgeFactor" value="0.25" step="0.25" min="0" max="10" data-tooltip="Adds margin around stock to account for measurement/placement errors. Start with 0.25&quot; - 0.5&quot;.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label>Direction</label>
-          <div class="radio-group">
+          <div class="radio-group" data-tooltip="X-axis rasters horizontally, Y-axis rasters front-to-back. Cut along the grain (X for wide stock, Y for tall).">
             <label><input type="radio" name="rasterDirection" value="x" checked> X-axis</label>
             <label><input type="radio" name="rasterDirection" value="y"> Y-axis</label>
           </div>
@@ -40,14 +40,14 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
       <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Job</h3>
         <div class="form-row checkbox-row">
-          <input type="checkbox" id="skimPass">
+          <input type="checkbox" id="skimPass" data-tooltip="First pass at Z=0 before depth cuts. Prevents deep initial engagement on uneven stock.">
           <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
           <label for="numPasses"># Passes</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1">
+            <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1" data-tooltip="Depth passes to complete the cut. Total depth = passes × depth per pass. Excludes skim pass.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit"></span>
@@ -61,7 +61,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <label for="pauseInterval">Pause every</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="pauseInterval" value="${DEFAULT_PARAMS.pauseInterval}" step="1" min="0">
+            <input type="number" id="pauseInterval" value="${DEFAULT_PARAMS.pauseInterval}" step="1" min="0" data-tooltip="Inserts M0 pause after every N passes. Set to 0 to disable.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit">passes</span>
@@ -158,6 +158,9 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
     decrementBtn.addEventListener('click', () => updateValue(false))
     incrementBtn.addEventListener('click', () => updateValue(true))
   })
+
+  // Initialize tooltips
+  initializeTooltips(form)
 
   return form
 }
@@ -283,4 +286,176 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
   }
 
   return errors
+}
+
+function initializeTooltips(container: HTMLElement): void {
+  const tooltipEl = document.createElement('div')
+  tooltipEl.className = 'blueprint-tooltip'
+  tooltipEl.innerHTML = `
+    <div class="blueprint-tooltip-leader"></div>
+    <div class="blueprint-tooltip-content">
+      <div class="blueprint-tooltip-corner blueprint-tooltip-corner-tl"></div>
+      <div class="blueprint-tooltip-corner blueprint-tooltip-corner-tr"></div>
+      <div class="blueprint-tooltip-corner blueprint-tooltip-corner-bl"></div>
+      <div class="blueprint-tooltip-corner blueprint-tooltip-corner-br"></div>
+      <div class="blueprint-tooltip-text"></div>
+    </div>
+  `
+  document.body.appendChild(tooltipEl)
+
+  let currentTarget: HTMLElement | null = null
+  let showTimeout: number | null = null
+  let isHovering = false
+
+  const showTooltip = (target: HTMLElement, immediate = false) => {
+    const text = target.getAttribute('data-tooltip')
+    if (!text) return
+
+    currentTarget = target
+    const textEl = tooltipEl.querySelector('.blueprint-tooltip-text') as HTMLElement
+    textEl.textContent = text
+
+    const delay = immediate ? 0 : 200
+
+    if (showTimeout) clearTimeout(showTimeout)
+    showTimeout = window.setTimeout(() => {
+      positionTooltip(target, tooltipEl)
+      tooltipEl.classList.add('visible')
+    }, delay)
+  }
+
+  const hideTooltip = () => {
+    if (showTimeout) clearTimeout(showTimeout)
+    tooltipEl.classList.remove('visible')
+    currentTarget = null
+    isHovering = false
+  }
+
+  const positionTooltip = (target: HTMLElement, tooltip: HTMLElement) => {
+    const targetRect = target.getBoundingClientRect()
+    const tooltipContent = tooltip.querySelector('.blueprint-tooltip-content') as HTMLElement
+
+    // Temporarily show to measure
+    tooltip.style.visibility = 'hidden'
+    tooltip.style.display = 'block'
+    const tooltipRect = tooltipContent.getBoundingClientRect()
+    tooltip.style.visibility = ''
+    tooltip.style.display = ''
+
+    const spacing = 16
+    const leaderLength = 32
+
+    // Try to position horizontally first (left or right)
+    const spaceRight = window.innerWidth - targetRect.right
+    const spaceLeft = targetRect.left
+    const spaceAbove = targetRect.top
+    const spaceBelow = window.innerHeight - targetRect.bottom
+
+    let top: number
+    let left: number
+    let position: string
+
+    // Prefer horizontal positioning to avoid covering the input
+    if (spaceRight > tooltipRect.width + spacing + leaderLength) {
+      // Position to the right
+      position = 'right'
+      left = targetRect.right + spacing + leaderLength
+      top = targetRect.top + targetRect.height / 2 - tooltipRect.height / 2
+    } else if (spaceLeft > tooltipRect.width + spacing + leaderLength) {
+      // Position to the left
+      position = 'left'
+      left = targetRect.left - spacing - leaderLength - tooltipRect.width
+      top = targetRect.top + targetRect.height / 2 - tooltipRect.height / 2
+    } else if (spaceAbove > tooltipRect.height + spacing + leaderLength) {
+      // Fallback to above
+      position = 'above'
+      left = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2
+      top = targetRect.top - spacing - leaderLength - tooltipRect.height
+    } else {
+      // Fallback to below
+      position = 'below'
+      left = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2
+      top = targetRect.bottom + spacing + leaderLength
+    }
+
+    // Keep tooltip within viewport
+    left = Math.max(8, Math.min(left, window.innerWidth - tooltipRect.width - 8))
+    top = Math.max(8, Math.min(top, window.innerHeight - tooltipRect.height - 8))
+
+    tooltip.setAttribute('data-position', position)
+    tooltip.style.left = `${left}px`
+    tooltip.style.top = `${top}px`
+
+    // Position the leader line
+    const leader = tooltip.querySelector('.blueprint-tooltip-leader') as HTMLElement
+
+    if (position === 'right' || position === 'left') {
+      // Horizontal leader - adjust length to reach the edge of the target
+      const leaderY = targetRect.top + targetRect.height / 2 - top
+      leader.style.top = `${leaderY}px`
+
+      if (position === 'right') {
+        const distanceToTarget = left - targetRect.right
+        leader.style.left = `-${distanceToTarget}px`
+        leader.style.width = `${distanceToTarget}px`
+      } else {
+        const distanceToTarget = targetRect.left - (left + tooltipRect.width)
+        leader.style.left = `${tooltipRect.width}px`
+        leader.style.width = `${distanceToTarget}px`
+      }
+    } else {
+      // Vertical leader
+      const leaderX = targetRect.left + targetRect.width / 2 - left
+      leader.style.left = `${leaderX}px`
+      leader.style.top = position === 'below' ? `-${leaderLength}px` : `${tooltipRect.height}px`
+    }
+  }
+
+  // Event delegation for all tooltip elements
+  container.addEventListener('mouseenter', (e) => {
+    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement
+    if (target && !currentTarget) {
+      isHovering = true
+      showTooltip(target, false)
+    }
+  }, true)
+
+  container.addEventListener('mouseleave', (e) => {
+    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement
+    if (target && currentTarget === target) {
+      isHovering = false
+      // Small delay to allow moving to tooltip
+      setTimeout(() => {
+        if (!isHovering) hideTooltip()
+      }, 50)
+    }
+  }, true)
+
+  container.addEventListener('focusin', (e) => {
+    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement
+    if (target) {
+      showTooltip(target, true)
+    }
+  }, true)
+
+  container.addEventListener('focusout', (e) => {
+    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement
+    if (target && currentTarget === target) {
+      // Small delay to prevent flicker when clicking inside
+      setTimeout(() => {
+        if (document.activeElement && !document.activeElement.hasAttribute('data-tooltip')) {
+          hideTooltip()
+        }
+      }, 50)
+    }
+  }, true)
+
+  // Update position on scroll/resize
+  window.addEventListener('scroll', () => {
+    if (currentTarget) positionTooltip(currentTarget, tooltipEl)
+  }, true)
+
+  window.addEventListener('resize', () => {
+    if (currentTarget) positionTooltip(currentTarget, tooltipEl)
+  })
 }
