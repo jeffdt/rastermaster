@@ -10,15 +10,21 @@ function init() {
   const app = document.querySelector<HTMLDivElement>('#app')!
 
   app.innerHTML = `
-    <h1 class="title">RasterMaster</h1>
+    <div class="header">
+      <h1 class="title">RasterMaster</h1>
+      <button class="menu-trigger" id="menuTrigger" aria-label="Menu">≡</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="menu-item" id="newMenuItem">
+          <span>⟳</span>
+          <span>New</span>
+        </button>
+      </div>
+    </div>
     <div class="container">
       <div id="form-container"></div>
       <div class="preview-container">
         <div id="preview"></div>
-        <div class="button-group">
-          <button class="reset-btn" id="resetBtn">New</button>
-          <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
-        </div>
+        <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
       </div>
     </div>
   `
@@ -26,7 +32,9 @@ function init() {
   const formContainer = app.querySelector('#form-container')!
   const previewContainer = app.querySelector('#preview')!
   const generateBtn = app.querySelector('#generateBtn') as HTMLButtonElement
-  const resetBtn = app.querySelector('#resetBtn') as HTMLButtonElement
+  const menuTrigger = app.querySelector('#menuTrigger') as HTMLButtonElement
+  const menuDropdown = app.querySelector('#menuDropdown') as HTMLDivElement
+  const newMenuItem = app.querySelector('#newMenuItem') as HTMLButtonElement
 
   let currentParams: Partial<SurfacingParams> = {}
 
@@ -51,6 +59,34 @@ function init() {
   })
   formContainer.appendChild(form)
 
+  // Menu toggle
+  menuTrigger.addEventListener('click', (e) => {
+    e.stopPropagation()
+    menuDropdown.classList.toggle('open')
+    menuTrigger.classList.toggle('active')
+  })
+
+  // Close menu on click outside
+  document.addEventListener('click', () => {
+    menuDropdown.classList.remove('open')
+    menuTrigger.classList.remove('active')
+  })
+
+  // Prevent menu from closing when clicking inside it
+  menuDropdown.addEventListener('click', (e) => {
+    e.stopPropagation()
+  })
+
+  // New project action
+  newMenuItem.addEventListener('click', () => {
+    resetForm(form, (params) => {
+      currentParams = params
+      updatePreview()
+    })
+    menuDropdown.classList.remove('open')
+    menuTrigger.classList.remove('active')
+  })
+
   generateBtn.addEventListener('click', () => {
     if (!isFormValid(currentParams)) return
 
@@ -66,13 +102,6 @@ function init() {
     a.download = `rastermaster-${params.stockWidth}x${params.stockHeight}.gcode`
     a.click()
     URL.revokeObjectURL(url)
-  })
-
-  resetBtn.addEventListener('click', () => {
-    resetForm(form, (params) => {
-      currentParams = params
-      updatePreview()
-    })
   })
 
   // Initial preview
