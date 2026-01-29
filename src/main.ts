@@ -12,7 +12,7 @@ function init() {
   app.innerHTML = `
     <div class="header">
       <h1 class="title">RasterMaster</h1>
-      <button class="menu-trigger" id="menuTrigger" aria-label="Menu">≡</button>
+      <button class="menu-trigger" id="menuTrigger" aria-label="Menu">⚙</button>
       <div class="menu-dropdown" id="menuDropdown">
         <button class="menu-item" id="newMenuItem">
           <span>⟳</span>
