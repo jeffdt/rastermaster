@@ -640,6 +640,40 @@
       display: none;
     }
 
+    /* Button Group */
+    .button-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .button-group .generate-btn {
+      flex: 1;
+    }
+
+    /* Reset Button */
+    .reset-btn {
+      display: block;
+      padding: 16px 24px;
+      background: transparent;
+      border: 2px solid var(--color-border);
+      border-radius: 8px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+
+    .reset-btn:active {
+      transform: translateY(0);
+    }
+
     input:invalid {
       border-color: var(--color-error);
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);

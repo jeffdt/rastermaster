@@ -241,6 +241,48 @@ export function isFormValid(params: Partial<SurfacingParams>): boolean {
     params.stockHeight && params.stockHeight > 0)
 }
 
+export function resetForm(form: HTMLElement, onUpdate: (params: Partial<SurfacingParams>) => void): void {
+  const setValue = (id: string, value: string) => {
+    const input = form.querySelector(`#${id}`) as HTMLInputElement
+    if (input) input.value = value
+  }
+
+  const setChecked = (id: string, checked: boolean) => {
+    const input = form.querySelector(`#${id}`) as HTMLInputElement
+    if (input) input.checked = checked
+  }
+
+  const setRadio = (name: string, value: string) => {
+    const input = form.querySelector(`input[name="${name}"][value="${value}"]`) as HTMLInputElement
+    if (input) input.checked = true
+  }
+
+  // Clear stock dimensions (no defaults for these)
+  setValue('stockWidth', '')
+  setValue('stockHeight', '')
+
+  // Reset all other fields to defaults
+  setValue('fudgeFactor', DEFAULT_PARAMS.fudgeFactor.toString())
+  setValue('bitDiameter', DEFAULT_PARAMS.bitDiameter.toString())
+  setValue('stepoverPercent', DEFAULT_PARAMS.stepoverPercent.toString())
+  setValue('numPasses', DEFAULT_PARAMS.numPasses.toString())
+  setValue('depthPerPass', DEFAULT_PARAMS.depthPerPass.toString())
+  setValue('pauseInterval', DEFAULT_PARAMS.pauseInterval.toString())
+  setValue('feedRate', DEFAULT_PARAMS.feedRate.toString())
+  setValue('plungeRate', DEFAULT_PARAMS.plungeRate.toString())
+  setValue('spindleRpm', DEFAULT_PARAMS.spindleRpm.toString())
+  setValue('retractHeight', DEFAULT_PARAMS.retractHeight.toString())
+
+  setRadio('rasterDirection', DEFAULT_PARAMS.rasterDirection)
+  setChecked('skimPass', DEFAULT_PARAMS.skimPass)
+
+  // Note: We do NOT re-hide the Job/Tool columns - animation should not repeat
+  // The columns stay visible after first reveal
+
+  // Trigger update
+  onUpdate(getFormValues(form))
+}
+
 export function validateParams(params: Partial<SurfacingParams>): string[] {
   const errors: string[] = []
 

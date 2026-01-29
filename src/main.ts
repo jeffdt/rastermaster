@@ -1,5 +1,5 @@
 // src/main.ts
-import { createForm, getFormValues, isFormValid } from './ui'
+import { createForm, getFormValues, isFormValid, resetForm } from './ui'
 import { calculateToolpath } from './toolpath'
 import { generateGCode } from './gcode'
 import { generatePreviewSVG } from './preview'
@@ -15,7 +15,10 @@ function init() {
       <div id="form-container"></div>
       <div class="preview-container">
         <div id="preview"></div>
-        <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
+        <div class="button-group">
+          <button class="reset-btn" id="resetBtn">New</button>
+          <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
+        </div>
       </div>
     </div>
   `
@@ -23,6 +26,7 @@ function init() {
   const formContainer = app.querySelector('#form-container')!
   const previewContainer = app.querySelector('#preview')!
   const generateBtn = app.querySelector('#generateBtn') as HTMLButtonElement
+  const resetBtn = app.querySelector('#resetBtn') as HTMLButtonElement
 
   let currentParams: Partial<SurfacingParams> = {}
 
@@ -62,6 +66,13 @@ function init() {
     a.download = `rastermaster-${params.stockWidth}x${params.stockHeight}.gcode`
     a.click()
     URL.revokeObjectURL(url)
+  })
+
+  resetBtn.addEventListener('click', () => {
+    resetForm(form, (params) => {
+      currentParams = params
+      updatePreview()
+    })
   })
 
   // Initial preview
