@@ -18,6 +18,18 @@ function init() {
           <span>⟳</span>
           <span>New</span>
         </button>
+        <button class="menu-item menu-item-disabled" disabled>
+          <span>↓</span>
+          <span>Save</span>
+        </button>
+        <button class="menu-item menu-item-disabled" disabled>
+          <span>↑</span>
+          <span>Load</span>
+        </button>
+        <button class="menu-item menu-item-disabled" disabled>
+          <span>⚙</span>
+          <span>Settings</span>
+        </button>
       </div>
     </div>
     <div class="container">
