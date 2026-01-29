@@ -356,3 +356,29 @@ describe('separate raster and stepping overhang', () => {
     expect(toolpath.bounds.yMax).toBeCloseTo(6, 2)
   })
 })
+
+describe('regular stepover spacing', () => {
+  test('maintains regular stepover spacing even when final line exceeds boundary', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 30,
+      stockHeight: 3.9,  // Doesn't divide evenly by stepover
+      bitDiameter: 1.25,
+      stepoverPercent: 50,  // stepover = 0.625"
+      rasterDirection: 'x',
+      fudgeFactor: 0,
+    })
+
+    const toolpath = calculateToolpath(params)
+    const yPositions = toolpath.passes[0].lines.map(line => line.y!)
+
+    // Verify all gaps are consistent (regular stepover)
+    for (let i = 1; i < yPositions.length; i++) {
+      const gap = yPositions[i] - yPositions[i - 1]
+      expect(gap).toBeCloseTo(0.625, 2)
+    }
+
+    // Verify final line extends beyond stock
+    const finalY = yPositions[yPositions.length - 1]
+    expect(finalY).toBeGreaterThan(3.9)
+  })
+})

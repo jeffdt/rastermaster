@@ -89,23 +89,17 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
   if (params.rasterDirection === 'x') {
     // Lines run along X, step over in Y
     let y = yMin
-    while (y <= yMax) {
+    do {
       linePositions.push(y)
       y += stepover
-    }
-    if (linePositions[linePositions.length - 1] < yMax) {
-      linePositions.push(yMax)
-    }
+    } while (linePositions[linePositions.length - 1] < yMax)
   } else {
     // Lines run along Y, step over in X
     let x = xMin
-    while (x <= xMax) {
+    do {
       linePositions.push(x)
       x += stepover
-    }
-    if (linePositions[linePositions.length - 1] < xMax) {
-      linePositions.push(xMax)
-    }
+    } while (linePositions[linePositions.length - 1] < xMax)
   }
 
   // Generate Z passes

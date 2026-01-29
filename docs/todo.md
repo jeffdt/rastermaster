@@ -35,3 +35,5 @@ Instead of orange title, raster effect and input fields, use green when doing lo
 # For the raster effect trail, maybe it could be implemented as additional copies of the mai effect, staggered back in time and increasingly faded out. What do you think?
 
 # Stock section shrinks once you enter dimensions. It should stay the same size.
+
+# Add stepper to stepover field, stepping in 5% increments.
