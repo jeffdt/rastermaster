@@ -20,18 +20,12 @@ Resets all fields to default values. Does not repeat the animation.
 # Swap colors when in local dev
 Instead of orange title, raster effect and input fields, use green when doing local dev.
 
-# Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there. Or maybe it should just be spaced at the normal stepover spacing instead of calculating special spacing for the final line.
+# Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there. Or maybe it should just be spaced at the normal stepover spacing instead of calculating special spacing for the final line. Help me reason through this.
 
 # Bug: On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
 
-# Instead of percentages, fudge factor should be in inches, with half inch increments. This way it's equal on both axes, regardless of the stock dimensions. This is a much more realistic way to account for misalignment, mismeasurement, or misshapen stock.
-
-# Add tooltips to all input fields. Work with me to determine the content of each tooltip. 
-
-# Center the rendering in the preview window, both vertically and horizontally.
-
 # Stock dimensions in preview should appear above all other elements.
 
-# For the raster effect trail, maybe it could be implemented as additional copies of the mai effect, staggered back in time and increasingly faded out. What do you think?
+# For the raster effect trail, maybe it could be implemented as additional copies of the main effect, staggered back in time and increasingly faded out. What do you think?
 
 # Stock section shrinks once you enter dimensions. It should stay the same size.

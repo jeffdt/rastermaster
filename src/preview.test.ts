@@ -108,11 +108,14 @@ describe('dimension labels', () => {
     const lastRectIndex = svg.lastIndexOf('<rect')
     const lastLineIndex = svg.lastIndexOf('<line')
     const lastCircleIndex = svg.lastIndexOf('<circle')
+    const firstHaloIndex = svg.indexOf('<text class="dimension-halo"')
     const firstTextIndex = svg.indexOf('<text class="dimension-text"')
 
-    expect(firstTextIndex).toBeGreaterThan(lastRectIndex)
-    expect(firstTextIndex).toBeGreaterThan(lastLineIndex)
-    expect(firstTextIndex).toBeGreaterThan(lastCircleIndex)
+    expect(firstHaloIndex).toBeGreaterThan(lastRectIndex)
+    expect(firstHaloIndex).toBeGreaterThan(lastLineIndex)
+    expect(firstHaloIndex).toBeGreaterThan(lastCircleIndex)
+
+    expect(firstTextIndex).toBeGreaterThan(firstHaloIndex)
   })
 })
 
