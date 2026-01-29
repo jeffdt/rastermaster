@@ -6,6 +6,9 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const { bounds, params } = toolpath
   const padding = 20
 
+  // Get accent color from CSS variables (for dev/prod theme support)
+  const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent-amber').trim() || '#f59e0b'
+
   // Calculate preview bounds to include fudge zone if present
   let previewBounds = { ...bounds }
   if (params.fudgeFactor > 0) {
@@ -69,19 +72,19 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
     const fudgeAmountY = params.fudgeFactor
 
     // Top strip
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Bottom strip
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Left strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
     // Right strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
     // Dashed outline around entire fudge zone
-    lines.push(`<rect fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
+    lines.push(`<rect fill="none" stroke="${accentColor}" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
   }
 
 

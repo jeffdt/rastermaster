@@ -28,6 +28,12 @@
       --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
 
+    /* Development Environment Theme (Purple) */
+    body.is-dev {
+      --color-accent-amber: #a855f7;
+      --color-accent-amber-glow: rgba(168, 85, 247, 0.15);
+    }
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -968,6 +974,7 @@
         opacity: 0;
         transform: translateY(-8px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -983,6 +990,7 @@
         opacity: 0;
         transform: translateY(8px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -998,6 +1006,7 @@
         opacity: 0;
         transform: translateX(-8px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateX(0) scale(1);
@@ -1013,6 +1022,7 @@
         opacity: 0;
         transform: translateX(8px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateX(0) scale(1);
