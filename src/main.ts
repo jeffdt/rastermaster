@@ -5,6 +5,7 @@ import { generateGCode } from './gcode'
 import { generatePreviewSVG } from './preview'
 import { mergeWithDefaults } from './defaults'
 import type { SurfacingParams } from './types'
+import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
 
 function init() {
   const app = document.querySelector<HTMLDivElement>('#app')!
@@ -13,6 +14,9 @@ function init() {
   if (import.meta.env.DEV) {
     document.body.classList.add('is-dev')
   }
+
+  // Load saved theme (must happen after is-dev class is added)
+  loadTheme()
 
   app.innerHTML = `
     <div class="app-content">
@@ -37,7 +41,7 @@ function init() {
               <span>↑</span>
               <span>Load</span>
             </button>
-            <button class="menu-item menu-item-disabled" disabled>
+            <button class="menu-item" id="settingsMenuItem">
               <span>⚙</span>
               <span>Settings</span>
             </button>
@@ -52,6 +56,32 @@ function init() {
         </div>
       </div>
     </div>
+    
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+      <div class="settings-panel">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button class="settings-close" id="settingsClose">×</button>
+        </div>
+        <div class="settings-content">
+          <div class="settings-section">
+            <h3>Color Palette</h3>
+            <div class="palette-grid" id="paletteGrid">
+              ${Object.entries(PALETTES).map(([colorName, palette]) => `
+                <button 
+                  class="palette-swatch" 
+                  data-color="${colorName}"
+                  style="--swatch-color: ${palette.hex}"
+                  title="${colorName.charAt(0).toUpperCase() + colorName.slice(1)}"
+                  aria-label="Select ${colorName} theme"
+                ></button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `
 
   const formContainer = app.querySelector('#form-container')!
@@ -60,8 +90,25 @@ function init() {
   const menuTrigger = app.querySelector('#menuTrigger') as HTMLButtonElement
   const menuDropdown = app.querySelector('#menuDropdown') as HTMLDivElement
   const newMenuItem = app.querySelector('#newMenuItem') as HTMLButtonElement
+  const settingsMenuItem = app.querySelector('#settingsMenuItem') as HTMLButtonElement
+  const settingsModal = app.querySelector('#settingsModal') as HTMLDivElement
+  const settingsClose = app.querySelector('#settingsClose') as HTMLButtonElement
+  const paletteSwatches = app.querySelectorAll('.palette-swatch') as NodeListOf<HTMLButtonElement>
 
   let currentParams: Partial<SurfacingParams> = {}
+
+  // Update active swatch based on current theme
+  function updateActiveSwatch() {
+    const currentTheme = getCurrentTheme()
+    paletteSwatches.forEach(swatch => {
+      const colorName = swatch.getAttribute('data-color')
+      if (colorName === currentTheme) {
+        swatch.classList.add('active')
+      } else {
+        swatch.classList.remove('active')
+      }
+    })
+  }
 
   function updatePreview() {
     if (!isFormValid(currentParams)) {
@@ -111,6 +158,48 @@ function init() {
     menuDropdown.classList.remove('open')
     menuTrigger.classList.remove('active')
   })
+
+  // Settings menu action
+  settingsMenuItem.addEventListener('click', () => {
+    settingsModal.classList.add('open')
+    updateActiveSwatch()
+    menuDropdown.classList.remove('open')
+    menuTrigger.classList.remove('active')
+  })
+
+  // Close settings modal
+  function closeSettings() {
+    settingsModal.classList.remove('open')
+  }
+
+  settingsClose.addEventListener('click', closeSettings)
+
+  // Close modal when clicking backdrop
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) {
+      closeSettings()
+    }
+  })
+
+  // Prevent panel clicks from closing modal
+  settingsModal.querySelector('.settings-panel')!.addEventListener('click', (e) => {
+    e.stopPropagation()
+  })
+
+  // Color palette selection
+  paletteSwatches.forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      const colorName = swatch.getAttribute('data-color') as ColorName
+      if (colorName) {
+        applyTheme(colorName)
+        saveTheme(colorName)
+        updateActiveSwatch()
+      }
+    })
+  })
+
+  // Initialize active swatch
+  updateActiveSwatch()
 
   generateBtn.addEventListener('click', () => {
     if (!isFormValid(currentParams)) return
