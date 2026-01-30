@@ -7,7 +7,7 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const padding = 20
 
   // Get accent color from CSS variables (for dev/prod theme support)
-  const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent-amber').trim() || '#f59e0b'
+  const accentColor = getComputedStyle(document.body).getPropertyValue('--color-accent-amber').trim() || '#f59e0b'
 
   // Calculate preview bounds to include fudge zone if present
   let previewBounds = { ...bounds }
