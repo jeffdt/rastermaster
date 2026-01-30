@@ -203,10 +203,29 @@
       z-index: 1;
     }
 
+    /* App Content Wrapper */
+    .app-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+
     /* Header */
+    .header {
+      position: relative;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     h1 {
       margin: 0;
-      padding: 20px;
       font-family: 'Rajdhani', var(--font-sans);
       font-size: 28px;
       font-weight: 700;
@@ -218,12 +237,152 @@
       background-clip: text;
       flex-shrink: 0;
       text-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
-      text-align: center;
+    }
+
+    /* Menu Container */
+    .menu-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+
+    /* Menu Trigger Button */
+    .menu-trigger {
+      width: 40px;
+      height: 40px;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 20px;
+      flex-shrink: 0;
+
+      /* Blueprint corner notches via clip-path */
+      clip-path: polygon(
+        0 4px, 4px 4px, 4px 0,
+        calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+        100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+      );
+    }
+
+    .menu-trigger:hover {
+      border-color: var(--color-accent-amber);
+      color: var(--color-accent-amber);
+      box-shadow: 0 0 16px var(--color-accent-amber-glow);
+    }
+
+    .menu-trigger.active {
+      border-color: var(--color-accent-amber);
+      color: var(--color-accent-amber);
+      box-shadow: 0 0 16px var(--color-accent-amber-glow);
+    }
+
+    .gear-icon {
+      display: block;
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu-trigger.active .gear-icon {
+      transform: rotate(90deg);
+    }
+
+    /* Dropdown */
+    .menu-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      min-width: 160px;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+
+      /* Blueprint corner notches */
+      clip-path: polygon(
+        0 4px, 4px 4px, 4px 0,
+        calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+        100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+      );
+
+      /* Grid texture */
+      background-image:
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+      background-size: 16px 16px;
+      background-position: -1px -1px;
+    }
+
+    .menu-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    /* Menu Items */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      position: relative;
+      background: var(--color-surface-elevated);
+      transition: color 0.15s ease;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .menu-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: var(--color-accent-amber);
+      opacity: 0.15;
+      transition: width 0.2s ease;
+    }
+
+    .menu-item:hover {
+      color: var(--color-accent-amber);
+    }
+
+    .menu-item:hover::before {
+      width: 100%;
+    }
+
+    .menu-item-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .menu-item-disabled:hover {
+      color: var(--color-text-secondary);
+    }
+
+    .menu-item-disabled:hover::before {
+      width: 0;
     }
 
     .container {
-      max-width: 1400px;
-      margin: 0 auto;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -664,40 +823,6 @@
 
     .generate-btn:disabled::before {
       display: none;
-    }
-
-    /* Button Group */
-    .button-group {
-      display: flex;
-      gap: 12px;
-    }
-
-    .button-group .generate-btn {
-      flex: 1;
-    }
-
-    /* Reset Button */
-    .reset-btn {
-      display: block;
-      padding: 16px 24px;
-      background: transparent;
-      border: 2px solid var(--color-border);
-      border-radius: 8px;
-      color: var(--color-text-muted);
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .reset-btn:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-      transform: translateY(-2px);
-    }
-
-    .reset-btn:active {
-      transform: translateY(0);
     }
 
     input:invalid {

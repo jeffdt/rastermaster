@@ -28,6 +28,4 @@ Some of the input boxes are red with the default values. Depth of pass=0.01, Fee
 
 ## On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
 
-## Restore the fix for the final raster line in CC
-- Branch: claude/review-todo-suggestions-eiWLA
-- Session: Raster Spacing Bug Fix Implementation
+# Add stepper to stepover field, stepping in 5% increments.
