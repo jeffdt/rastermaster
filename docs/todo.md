@@ -1,39 +1,31 @@
-# Dynamic Layout
-Dynamic layout: switch form/preview orientation based on raster direction (X-axis: form top/preview bottom, Y-axis: form left/preview right with animations)
+# ENHANCEMENTS
 
-# Allow fractions for dimensions
-I'm not sure how to handle this on the UI, but being able to enter 15/16 instead of having to calculate it as 0.9375 would reduce friction between taking measurements and generating toolpaths.
+## Should we use something like supabase to allow users to save settings? Any alternatives to consider?
 
-# Investigate erroneous red input boxes
-Some of the input boxes are red with the default values. Depth of pass=0.01, Feed rate=125, Safe Z=0.125
+## Dynamic layout: switch form/preview orientation based on raster direction (X-axis: form top/preview bottom, Y-axis: form left/preview right with animations)
 
-# Save Tool settings to local storage
+## Save Tool settings to local storage
 For future sessions.
 
-# Add buttons next to each field to reset to default value
+## Add buttons next to each field to reset to default value
 
-# Save/Load Project (json) buttons
+## Save/Load Project (json) buttons
 
-# New/Reset All button
-Resets all fields to default values. Does not repeat the animation.
+# COSMETIC
 
-# Swap colors when in local dev
-Instead of orange title, raster effect and input fields, use green when doing local dev.
+## The H1 should pulse from a light to dark color (orange for production, purple for dev). And/or explore leveraging gradients for an interesting dynamic effect here (swirling through as the gradient settings cycle through phases).
 
-# Bug: Look at rasters with a height like 3.9. There's an additional raster line at the top that shouldn't be there. Or maybe it should just be spaced at the normal stepover spacing instead of calculating special spacing for the final line.
+## For the raster effect trail, maybe it could be implemented as additional copies of the main effect, staggered back in time and increasingly faded out. What do you think?
 
-# Bug: On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
+## Settings page - palette (swatches with amber, purple, green, blue, red, yellow, pink, white)
 
-# Instead of percentages, fudge factor should be in inches, with half inch increments. This way it's equal on both axes, regardless of the stock dimensions. This is a much more realistic way to account for misalignment, mismeasurement, or misshapen stock.
+# BUGS
 
-# Add tooltips to all input fields. Work with me to determine the content of each tooltip. 
+## Stock section shrinks once you enter dimensions. It should stay the same size.
 
-# Center the rendering in the preview window, both vertically and horizontally.
+## Investigate erroneous red input boxes
+Some of the input boxes are red with the default values. Depth of pass=0.01, Feed rate=125, Safe Z=0.125
 
-# Stock dimensions in preview should appear above all other elements.
-
-# For the raster effect trail, maybe it could be implemented as additional copies of the mai effect, staggered back in time and increasingly faded out. What do you think?
-
-# Stock section shrinks once you enter dimensions. It should stay the same size.
+## On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
 
 # Add stepper to stepover field, stepping in 5% increments.

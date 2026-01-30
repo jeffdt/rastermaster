@@ -9,6 +9,11 @@ import type { SurfacingParams } from './types'
 function init() {
   const app = document.querySelector<HTMLDivElement>('#app')!
 
+  // Add dev mode indicator
+  if (import.meta.env.DEV) {
+    document.body.classList.add('is-dev')
+  }
+
   app.innerHTML = `
     <div class="app-content">
       <div class="header">

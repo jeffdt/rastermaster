@@ -6,6 +6,9 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   const { bounds, params } = toolpath
   const padding = 20
 
+  // Get accent color from CSS variables (for dev/prod theme support)
+  const accentColor = getComputedStyle(document.body).getPropertyValue('--color-accent-amber').trim() || '#f59e0b'
+
   // Calculate preview bounds to include fudge zone if present
   let previewBounds = { ...bounds }
   if (params.fudgeFactor > 0) {
@@ -45,7 +48,8 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   lines.push('  .arrow { fill: #2196F3; opacity: 0.8; }')
   lines.push('  .start { fill: #4CAF50; }')
   lines.push('  .end { fill: #F44336; }')
-  lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; }')
+  lines.push('  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }')
+  lines.push('  .dimension-halo { stroke: white; stroke-width: 4px; stroke-linejoin: round; stroke-linecap: round; fill: white; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }')
   lines.push('</style>')
 
   // Original stock rectangle (gray)
@@ -68,19 +72,19 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
     const fudgeAmountY = params.fudgeFactor
 
     // Top strip
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Bottom strip
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMinY)}" width="${fudgedWidth * scale}" height="${fudgeAmountY * scale}" />`)
 
     // Left strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
     // Right strip (vertical, excluding top/bottom corners already covered)
-    lines.push(`<rect fill="#fbbf24" opacity="0.2" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
+    lines.push(`<rect fill="${accentColor}" opacity="0.2" x="${tx(origMaxX)}" y="${ty(origMaxY)}" width="${fudgeAmountX * scale}" height="${origHeight * scale}" />`)
 
     // Dashed outline around entire fudge zone
-    lines.push(`<rect fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
+    lines.push(`<rect fill="none" stroke="${accentColor}" stroke-width="2" stroke-dasharray="4,4" x="${tx(origMinX - fudgeAmountX)}" y="${ty(origMaxY + fudgeAmountY)}" width="${fudgedWidth * scale}" height="${fudgedHeight * scale}" />`)
   }
 
 
@@ -165,12 +169,18 @@ export function generatePreviewSVG(toolpath: Toolpath, width: number, height: nu
   // Width label - centered on bottom edge
   const widthTextX = (stockX1 + stockX2) / 2
   const widthTextY = stockY2 - 10  // 10px above bottom edge
-  lines.push(`<text class="dimension-text" x="${widthTextX}" y="${widthTextY}" text-anchor="middle">${formatDimension(params.stockWidth)}</text>`)
+  const widthDim = formatDimension(params.stockWidth)
+  // Draw halo then text
+  lines.push(`<text class="dimension-halo" x="${widthTextX}" y="${widthTextY}" text-anchor="middle">${widthDim}</text>`)
+  lines.push(`<text class="dimension-text" x="${widthTextX}" y="${widthTextY}" text-anchor="middle">${widthDim}</text>`)
 
   // Height label - centered on left edge (horizontal text)
   const heightTextX = stockX1 + 10  // 10px from left edge
   const heightTextY = (stockY1 + stockY2) / 2
-  lines.push(`<text class="dimension-text" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${formatDimension(params.stockHeight)}</text>`)
+  const heightDim = formatDimension(params.stockHeight)
+  // Draw halo then text
+  lines.push(`<text class="dimension-halo" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${heightDim}</text>`)
+  lines.push(`<text class="dimension-text" x="${heightTextX}" y="${heightTextY}" text-anchor="start" dominant-baseline="middle">${heightDim}</text>`)
 
   lines.push('</svg>')
 
