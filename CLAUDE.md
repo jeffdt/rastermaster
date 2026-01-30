@@ -26,6 +26,10 @@ RasterMaster is a single-page web application that generates GRBL-compatible GCo
 - **Branch**: `gh-pages` branch contains only the built `index.html` (auto-managed by workflow)
 - **DNS**: CNAME record points `rastermaster.jeffdt.com` to `jeffdt.github.io`
 
+## Project Management
+
+Tasks are tracked in `docs/todo.md`.
+
 ## Architecture
 
 ### Build System
