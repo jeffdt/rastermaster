@@ -71,39 +71,35 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
       <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Tool</h3>
         <div class="tool-subgrid">
-          <div class="tool-subcolumn">
-            <div class="form-row">
-              <label for="bitDiameter">Bit Diameter</label>
-              <input type="text" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">in</span>
-            </div>
-            <div class="form-row">
-              <label for="stepoverPercent">Stepover</label>
-              <input type="text" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">%</span>
-            </div>
-            <div class="form-row">
-              <label for="feedRate">Feed Rate</label>
-              <input type="text" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">in/min</span>
-            </div>
+          <div class="form-row">
+            <label for="bitDiameter">Bit Diameter</label>
+            <input type="text" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">in</span>
           </div>
-          <div class="tool-subcolumn">
-            <div class="form-row">
-              <label for="plungeRate">Plunge Rate</label>
-              <input type="text" id="plungeRate" value="${DEFAULT_PARAMS.plungeRate}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">in/min</span>
-            </div>
-            <div class="form-row">
-              <label for="spindleRpm">Spindle Speed</label>
-              <input type="text" id="spindleRpm" value="${DEFAULT_PARAMS.spindleRpm}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">RPM</span>
-            </div>
-            <div class="form-row">
-              <label for="retractHeight">Retract Height</label>
-              <input type="text" id="retractHeight" value="${DEFAULT_PARAMS.retractHeight}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
-              <span class="unit">in</span>
-            </div>
+          <div class="form-row">
+            <label for="stepoverPercent">Stepover</label>
+            <input type="text" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">%</span>
+          </div>
+          <div class="form-row">
+            <label for="feedRate">Feed Rate</label>
+            <input type="text" id="feedRate" value="${DEFAULT_PARAMS.feedRate}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">in/min</span>
+          </div>
+          <div class="form-row">
+            <label for="plungeRate">Plunge Rate</label>
+            <input type="text" id="plungeRate" value="${DEFAULT_PARAMS.plungeRate}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">in/min</span>
+          </div>
+          <div class="form-row">
+            <label for="spindleRpm">Spindle Speed</label>
+            <input type="text" id="spindleRpm" value="${DEFAULT_PARAMS.spindleRpm}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">RPM</span>
+          </div>
+          <div class="form-row">
+            <label for="retractHeight">Retract Height</label>
+            <input type="text" id="retractHeight" value="${DEFAULT_PARAMS.retractHeight}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <span class="unit">in</span>
           </div>
         </div>
       </div>

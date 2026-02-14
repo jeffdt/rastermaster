@@ -9,6 +9,8 @@ For future sessions.
 
 ## Add buttons next to each field to reset to default value
 
+## Add stepper to stepover field, stepping in 5% increments.
+
 ## Save/Load Project (json) buttons
 
 # COSMETIC
@@ -16,8 +18,6 @@ For future sessions.
 ## The H1 should pulse from a light to dark color (orange for production, purple for dev). And/or explore leveraging gradients for an interesting dynamic effect here (swirling through as the gradient settings cycle through phases).
 
 ## For the raster effect trail, maybe it could be implemented as additional copies of the main effect, staggered back in time and increasingly faded out. What do you think?
-
-## Settings page - palette (swatches with amber, purple, green, blue, red, yellow, pink, white)
 
 # BUGS
 
@@ -28,4 +28,4 @@ Some of the input boxes are red with the default values. Depth of pass=0.01, Fee
 
 ## On Mobile, the stock does not appear in the preview window after dimensions are entered. Once I toggle between X-Axis and Y-Axis, the stock appears.
 
-# Add stepper to stepover field, stepping in 5% increments.
+## Tool settings on rightmost side are not visible.
