@@ -1,0 +1,3 @@
+[test]
+# Preload happy-dom to provide browser APIs (window, document, getComputedStyle, etc.)
+preload = ["./test-setup.ts"]

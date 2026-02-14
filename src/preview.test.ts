@@ -131,8 +131,8 @@ describe('fudge zone rendering', () => {
 
     // Should contain original stock rect with inline fill
     expect(svg).toContain('fill="#e5e7eb"')
-    // Should contain fudge zone rects with inline fill
-    expect(svg).toContain('fill="#fbbf24"')
+    // Should contain fudge zone rects with inline fill (fallback color in test env)
+    expect(svg).toContain('fill="#f59e0b"')
     // Should have multiple rect elements (original stock + 4 fudge zones)
     expect(svg).toContain('<rect')
   })
@@ -148,8 +148,8 @@ describe('fudge zone rendering', () => {
 
     // Should contain original stock rect
     expect(svg).toContain('fill="#e5e7eb"')
-    // Should not contain fudge zone fill color
-    expect(svg).not.toContain('fill="#fbbf24"')
+    // Should not contain fudge zone fill color (fallback color in test env)
+    expect(svg).not.toContain('fill="#f59e0b"')
     // Verify it doesn't crash and renders something
     expect(svg.length).toBeGreaterThan(0)
   })
