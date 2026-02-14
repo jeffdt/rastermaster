@@ -27,3 +27,13 @@ export type PartialParams = Partial<SurfacingParams> & {
   stockWidth: number
   stockHeight: number
 }
+
+export interface ToolSettings {
+  bitDiameter: number
+  stepoverPercent: number
+  feedRate: number
+  plungeRate: number
+  spindleRpm: number
+  retractHeight: number
+  depthPerPass: number
+}

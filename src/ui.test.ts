@@ -1,8 +1,9 @@
 // src/ui.test.ts (create new file)
 import { describe, expect, test, beforeEach } from 'bun:test'
 import { Window } from 'happy-dom'
-import { updateFormVisibility, createForm, getFormValues, validateParams } from './ui'
+import { updateFormVisibility, createForm, getFormValues, validateParams, setFormValues } from './ui'
 import { mergeWithDefaults } from './defaults'
+import type { ToolSettings } from './types'
 
 // Set up DOM environment
 let window: Window
@@ -199,5 +200,40 @@ describe('validateParams', () => {
 
     const result = validateParams(params)
     expect(result.length).toBe(0)
+  })
+})
+
+describe('setFormValues', () => {
+  test('updates form inputs with tool settings', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <input type="number" id="bitDiameter" value="">
+      <input type="number" id="stepoverPercent" value="">
+      <input type="number" id="feedRate" value="">
+      <input type="number" id="plungeRate" value="">
+      <input type="number" id="spindleRpm" value="">
+      <input type="number" id="retractHeight" value="">
+      <input type="number" id="depthPerPass" value="">
+    `
+
+    const settings: Partial<ToolSettings> = {
+      bitDiameter: 1.25,
+      stepoverPercent: 50,
+      feedRate: 100,
+      plungeRate: 30,
+      spindleRpm: 18000,
+      retractHeight: 0.1,
+      depthPerPass: 0.02,
+    }
+
+    setFormValues(form, settings)
+
+    expect((form.querySelector('#bitDiameter') as HTMLInputElement).value).toBe('1.25')
+    expect((form.querySelector('#stepoverPercent') as HTMLInputElement).value).toBe('50')
+    expect((form.querySelector('#feedRate') as HTMLInputElement).value).toBe('100')
+    expect((form.querySelector('#plungeRate') as HTMLInputElement).value).toBe('30')
+    expect((form.querySelector('#spindleRpm') as HTMLInputElement).value).toBe('18000')
+    expect((form.querySelector('#retractHeight') as HTMLInputElement).value).toBe('0.1')
+    expect((form.querySelector('#depthPerPass') as HTMLInputElement).value).toBe('0.02')
   })
 })

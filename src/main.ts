@@ -1,11 +1,28 @@
 // src/main.ts
-import { createForm, getFormValues, isFormValid, resetForm } from './ui'
+import { createForm, getFormValues, isFormValid, resetForm, setFormValues } from './ui'
 import { calculateToolpath } from './toolpath'
 import { generateGCode } from './gcode'
 import { generatePreviewSVG } from './preview'
 import { mergeWithDefaults } from './defaults'
 import type { SurfacingParams } from './types'
 import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
+import { loadToolSettings, saveToolSettings, extractToolSettings, exportToURL, importFromURL } from './settings'
+
+function showToast(message: string, type: 'success' | 'error' = 'success') {
+  const toast = document.createElement('div')
+  toast.className = `toast toast-${type}`
+  toast.textContent = message
+  document.body.appendChild(toast)
+
+  // Trigger animation
+  setTimeout(() => toast.classList.add('show'), 10)
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove('show')
+    setTimeout(() => toast.remove(), 300)
+  }, 3000)
+}
 
 function init() {
   const app = document.querySelector<HTMLDivElement>('#app')!
@@ -33,13 +50,13 @@ function init() {
               <span>⟳</span>
               <span>New</span>
             </button>
-            <button class="menu-item menu-item-disabled" disabled>
-              <span>↓</span>
-              <span>Save</span>
+            <button class="menu-item" id="copyToolUrlMenuItem">
+              <span>🔗</span>
+              <span>Copy Tool URL</span>
             </button>
-            <button class="menu-item menu-item-disabled" disabled>
-              <span>↑</span>
-              <span>Load</span>
+            <button class="menu-item" id="importToolUrlMenuItem">
+              <span>📋</span>
+              <span>Import Tool URL</span>
             </button>
             <button class="menu-item" id="settingsMenuItem">
               <span>⚙</span>
@@ -90,6 +107,8 @@ function init() {
   const menuTrigger = app.querySelector('#menuTrigger') as HTMLButtonElement
   const menuDropdown = app.querySelector('#menuDropdown') as HTMLDivElement
   const newMenuItem = app.querySelector('#newMenuItem') as HTMLButtonElement
+  const copyToolUrlMenuItem = app.querySelector('#copyToolUrlMenuItem') as HTMLButtonElement
+  const importToolUrlMenuItem = app.querySelector('#importToolUrlMenuItem') as HTMLButtonElement
   const settingsMenuItem = app.querySelector('#settingsMenuItem') as HTMLButtonElement
   const settingsModal = app.querySelector('#settingsModal') as HTMLDivElement
   const settingsClose = app.querySelector('#settingsClose') as HTMLButtonElement
@@ -125,11 +144,50 @@ function init() {
     generateBtn.disabled = false
   }
 
+  // Debounced auto-save for tool settings
+  let saveTimeout: number | undefined
+  function debouncedSave(params: Partial<SurfacingParams>) {
+    if (saveTimeout) clearTimeout(saveTimeout)
+    saveTimeout = setTimeout(() => {
+      const toolSettings = extractToolSettings(params)
+      // Only save if at least one tool field is present
+      if (Object.values(toolSettings).some(v => v !== undefined)) {
+        saveToolSettings(toolSettings as any) // Will save partial settings
+      }
+    }, 500) // 500ms debounce
+  }
+
   const form = createForm((params) => {
     currentParams = params
     updatePreview()
+    debouncedSave(params)
   })
   formContainer.appendChild(form)
+
+  // Auto-import from URL hash if present (takes precedence over saved settings)
+  if (window.location.hash.startsWith('#tool=')) {
+    try {
+      const imported = importFromURL(window.location.hash)
+      saveToolSettings(imported)
+      setFormValues(form, imported)
+      currentParams = getFormValues(form)
+      updatePreview()
+      // Clear hash after import to avoid re-importing on reload
+      window.history.replaceState(null, '', window.location.pathname)
+      console.log('Tool settings imported from URL')
+    } catch (e) {
+      console.error('Failed to import from URL hash:', e)
+    }
+  } else {
+    // Load saved tool settings and apply to form
+    const savedSettings = loadToolSettings()
+    if (savedSettings) {
+      setFormValues(form, savedSettings)
+      // Trigger update to apply loaded values
+      currentParams = getFormValues(form)
+      updatePreview()
+    }
+  }
 
   // Menu toggle
   menuTrigger.addEventListener('click', (e) => {
@@ -155,6 +213,53 @@ function init() {
       currentParams = params
       updatePreview()
     })
+    // Restore saved tool settings after reset
+    const savedSettings = loadToolSettings()
+    if (savedSettings) {
+      setFormValues(form, savedSettings)
+      currentParams = getFormValues(form)
+      updatePreview()
+    }
+    menuDropdown.classList.remove('open')
+    menuTrigger.classList.remove('active')
+  })
+
+  // Copy Tool URL action
+  copyToolUrlMenuItem.addEventListener('click', async () => {
+    const toolSettings = extractToolSettings(currentParams)
+    // Only export if at least one tool field is present
+    if (Object.values(toolSettings).some(v => v !== undefined)) {
+      const url = window.location.origin + window.location.pathname + exportToURL(toolSettings as any)
+      try {
+        await navigator.clipboard.writeText(url)
+        showToast('Tool URL copied to clipboard')
+      } catch (e) {
+        console.error('Failed to copy URL:', e)
+        showToast('Failed to copy URL', 'error')
+      }
+    }
+    menuDropdown.classList.remove('open')
+    menuTrigger.classList.remove('active')
+  })
+
+  // Import Tool URL action
+  importToolUrlMenuItem.addEventListener('click', () => {
+    const url = prompt('Paste the tool URL:')
+    if (url) {
+      try {
+        // Extract hash from full URL or use as-is if already a hash
+        const hash = url.includes('#') ? '#' + url.split('#')[1] : url
+        const imported = importFromURL(hash)
+        saveToolSettings(imported)
+        setFormValues(form, imported)
+        currentParams = getFormValues(form)
+        updatePreview()
+        showToast('Tool settings imported successfully')
+      } catch (e) {
+        console.error('Failed to import URL:', e)
+        showToast('Invalid tool URL', 'error')
+      }
+    }
     menuDropdown.classList.remove('open')
     menuTrigger.classList.remove('active')
   })

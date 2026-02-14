@@ -1,5 +1,5 @@
 // src/ui.ts
-import type { SurfacingParams } from './types'
+import type { SurfacingParams, ToolSettings } from './types'
 import { DEFAULT_PARAMS } from './defaults'
 
 export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void): HTMLElement {
@@ -277,6 +277,36 @@ export function resetForm(form: HTMLElement, onUpdate: (params: Partial<Surfacin
 
   // Trigger update
   onUpdate(getFormValues(form))
+}
+
+export function setFormValues(form: HTMLElement, settings: Partial<ToolSettings>): void {
+  const setValue = (id: string, value: string) => {
+    const input = form.querySelector(`#${id}`) as HTMLInputElement
+    if (input) input.value = value
+  }
+
+  // Set all tool settings fields that are provided
+  if (settings.bitDiameter !== undefined) {
+    setValue('bitDiameter', settings.bitDiameter.toString())
+  }
+  if (settings.stepoverPercent !== undefined) {
+    setValue('stepoverPercent', settings.stepoverPercent.toString())
+  }
+  if (settings.feedRate !== undefined) {
+    setValue('feedRate', settings.feedRate.toString())
+  }
+  if (settings.plungeRate !== undefined) {
+    setValue('plungeRate', settings.plungeRate.toString())
+  }
+  if (settings.spindleRpm !== undefined) {
+    setValue('spindleRpm', settings.spindleRpm.toString())
+  }
+  if (settings.retractHeight !== undefined) {
+    setValue('retractHeight', settings.retractHeight.toString())
+  }
+  if (settings.depthPerPass !== undefined) {
+    setValue('depthPerPass', settings.depthPerPass.toString())
+  }
 }
 
 export function validateParams(params: Partial<SurfacingParams>): string[] {
