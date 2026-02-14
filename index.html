@@ -28,9 +28,9 @@
       --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
 
-    /* Development Environment Theme (Purple) */
+    /* Development Environment Theme (Purple) - only when no user theme is set */
 
-    body.is-dev {
+    body.is-dev:not([data-user-theme]) {
       --color-accent-amber: #a855f7;
       --color-accent-amber-glow: rgba(168, 85, 247, 0.15);
     }
@@ -271,12 +271,10 @@
       flex-shrink: 0;
 
       /* Blueprint corner notches via clip-path */
-      clip-path: polygon(
-        0 4px, 4px 4px, 4px 0,
-        calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
-        100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
-        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
-      );
+      clip-path: polygon(0 4px, 4px 4px, 4px 0,
+          calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+          100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
+          calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
     }
 
     .menu-trigger:hover {
@@ -319,12 +317,10 @@
       z-index: 1000;
 
       /* Blueprint corner notches */
-      clip-path: polygon(
-        0 4px, 4px 4px, 4px 0,
-        calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
-        100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
-        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
-      );
+      clip-path: polygon(0 4px, 4px 4px, 4px 0,
+          calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+          100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px),
+          calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
 
       /* Grid texture */
       background-image:
@@ -854,6 +850,165 @@
       font-size: 12px;
       margin-top: 4px;
       font-family: var(--font-mono);
+    }
+
+    /* Settings Modal */
+
+    .settings-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 14, 20, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+    }
+
+    .settings-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .settings-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      max-width: 500px;
+      width: 100%;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Blueprint corner notches */
+      clip-path: polygon(0 8px, 8px 8px, 8px 0,
+          calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px,
+          100% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px),
+          calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 8px), 0 calc(100% - 8px));
+    }
+
+    .settings-modal.open .settings-panel {
+      transform: scale(1) translateY(0);
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .settings-header h2 {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .settings-header h2::before {
+      content: '⚙';
+      font-size: 22px;
+      color: var(--color-accent-amber);
+    }
+
+    .settings-close {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+
+    .settings-close:hover {
+      border-color: var(--color-accent-amber);
+      color: var(--color-accent-amber);
+      background: var(--color-accent-amber-glow);
+    }
+
+    .settings-content {
+      padding: 24px;
+    }
+
+    .settings-section {
+      margin-bottom: 24px;
+    }
+
+    .settings-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-section h3 {
+      margin: 0 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .palette-swatch {
+      aspect-ratio: 1;
+      border: 2px solid var(--color-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      background: var(--swatch-color);
+    }
+
+    .palette-swatch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .palette-swatch.active {
+      border-color: var(--swatch-color);
+      box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--swatch-color);
+    }
+
+    .palette-swatch.active::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--color-bg);
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Special styling for gray swatch to show checkmark better */
+
+    .palette-swatch[data-color="gray"].active::after {
+      color: var(--color-surface);
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
     }
 
     /* Tablet breakpoint */
@@ -1395,7 +1550,7 @@
       }
     }
   </style>
-  <script type="module" crossorigin>(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))u(i);new MutationObserver(i=>{for(const s of i)if(s.type==="childList")for(const a of s.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&u(a)}).observe(document,{childList:!0,subtree:!0});function n(i){const s={};return i.integrity&&(s.integrity=i.integrity),i.referrerPolicy&&(s.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?s.credentials="include":i.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function u(i){if(i.ep)return;i.ep=!0;const s=n(i);fetch(i.href,s)}})();const f={fudgeFactor:.25,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function K(t){return{...f,...t}}function nt(t){const e=document.createElement("div");return e.className="form-container",e.innerHTML=`
+  <script type="module" crossorigin>(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))p(i);new MutationObserver(i=>{for(const n of i)if(n.type==="childList")for(const o of n.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&p(o)}).observe(document,{childList:!0,subtree:!0});function s(i){const n={};return i.integrity&&(n.integrity=i.integrity),i.referrerPolicy&&(n.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?n.credentials="include":i.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function p(i){if(i.ep)return;i.ep=!0;const n=s(i);fetch(i.href,n)}})();const b={fudgeFactor:.25,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function J(t){return{...b,...t}}function ot(t){const e=document.createElement("div");return e.className="form-container",e.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
@@ -1437,21 +1592,21 @@
           <label for="numPasses"># Passes</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="numPasses" value="${f.numPasses}" step="1" min="1" data-tooltip="Depth passes to complete the cut. Total depth = passes × depth per pass. Excludes skim pass.">
+            <input type="number" id="numPasses" value="${b.numPasses}" step="1" min="1" data-tooltip="Depth passes to complete the cut. Total depth = passes × depth per pass. Excludes skim pass.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit"></span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Depth per Pass</label>
-          <input type="text" id="depthPerPass" value="${f.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+          <input type="text" id="depthPerPass" value="${b.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="pauseInterval" value="${f.pauseInterval}" step="1" min="0" data-tooltip="Inserts M0 pause after every N passes. Set to 0 to disable.">
+            <input type="number" id="pauseInterval" value="${b.pauseInterval}" step="1" min="0" data-tooltip="Inserts M0 pause after every N passes. Set to 0 to disable.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit">passes</span>
@@ -1464,41 +1619,41 @@
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="bitDiameter">Bit Diameter</label>
-              <input type="text" id="bitDiameter" value="${f.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="bitDiameter" value="${b.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
             <div class="form-row">
               <label for="stepoverPercent">Stepover</label>
-              <input type="text" id="stepoverPercent" value="${f.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="stepoverPercent" value="${b.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">%</span>
             </div>
             <div class="form-row">
               <label for="feedRate">Feed Rate</label>
-              <input type="text" id="feedRate" value="${f.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="feedRate" value="${b.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
           </div>
           <div class="tool-subcolumn">
             <div class="form-row">
               <label for="plungeRate">Plunge Rate</label>
-              <input type="text" id="plungeRate" value="${f.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="plungeRate" value="${b.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in/min</span>
             </div>
             <div class="form-row">
               <label for="spindleRpm">Spindle Speed</label>
-              <input type="text" id="spindleRpm" value="${f.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="spindleRpm" value="${b.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">RPM</span>
             </div>
             <div class="form-row">
               <label for="retractHeight">Retract Height</label>
-              <input type="text" id="retractHeight" value="${f.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+              <input type="text" id="retractHeight" value="${b.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
               <span class="unit">in</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,e.querySelectorAll("input").forEach(i=>{i.addEventListener("input",()=>{_(e),t(z(e))}),i.addEventListener("change",()=>{_(e),t(z(e))})}),e.querySelectorAll(".number-control").forEach(i=>{const s=i.querySelector('input[type="number"]'),a=i.querySelector('button[data-action="decrement"]'),r=i.querySelector('button[data-action="increment"]');if(!s||!a||!r)return;const p=d=>{const o=parseFloat(s.step)||1,b=s.min?parseFloat(s.min):-1/0,c=s.max?parseFloat(s.max):1/0;let m=parseFloat(s.value)||0;d?m+=o:m-=o,m=Math.round(m*100)/100,m<b&&(m=b),m>c&&(m=c),s.value=m.toString(),s.dispatchEvent(new Event("input")),s.dispatchEvent(new Event("change"))};a.addEventListener("click",()=>p(!1)),r.addEventListener("click",()=>p(!0))}),it(e),e}function _(t){const e=p=>{const d=t.querySelector(`#${p}`);return parseFloat(d?.value||"0")},n=e("stockWidth"),u=e("stockHeight");if(!(n>0&&u>0))return;const s=t.querySelectorAll(".form-column"),a=s[1],r=s[2];if(!(!a||!r)&&a.classList.contains("form-column-hidden")){a.classList.remove("form-column-hidden"),a.classList.add("form-column-reveal-job"),a.removeAttribute("aria-hidden"),r.classList.remove("form-column-hidden"),r.classList.add("form-column-reveal-tool"),r.removeAttribute("aria-hidden");const p=()=>{a.style&&(a.style.willChange="auto"),r.style&&(r.style.willChange="auto")};r.addEventListener("animationend",p,{once:!0})}}function z(t){const e=i=>{const s=t.querySelector(`#${i}`);return parseFloat(s.value)},n=i=>t.querySelector(`#${i}`).checked,u=i=>t.querySelector(`input[name="${i}"]:checked`)?.value||"";return{stockWidth:e("stockWidth"),stockHeight:e("stockHeight"),fudgeFactor:e("fudgeFactor"),bitDiameter:e("bitDiameter"),stepoverPercent:e("stepoverPercent"),rasterDirection:u("rasterDirection"),skimPass:n("skimPass"),numPasses:e("numPasses"),depthPerPass:e("depthPerPass"),pauseInterval:e("pauseInterval"),feedRate:e("feedRate"),plungeRate:e("plungeRate"),spindleRpm:e("spindleRpm"),retractHeight:e("retractHeight")}}function Q(t){return!!(t.stockWidth&&t.stockWidth>0&&t.stockHeight&&t.stockHeight>0)}function st(t,e){const n=(s,a)=>{const r=t.querySelector(`#${s}`);r&&(r.value=a)},u=(s,a)=>{const r=t.querySelector(`#${s}`);r&&(r.checked=a)},i=(s,a)=>{const r=t.querySelector(`input[name="${s}"][value="${a}"]`);r&&(r.checked=!0)};n("stockWidth",""),n("stockHeight",""),n("fudgeFactor",f.fudgeFactor.toString()),n("bitDiameter",f.bitDiameter.toString()),n("stepoverPercent",f.stepoverPercent.toString()),n("numPasses",f.numPasses.toString()),n("depthPerPass",f.depthPerPass.toString()),n("pauseInterval",f.pauseInterval.toString()),n("feedRate",f.feedRate.toString()),n("plungeRate",f.plungeRate.toString()),n("spindleRpm",f.spindleRpm.toString()),n("retractHeight",f.retractHeight.toString()),i("rasterDirection",f.rasterDirection),u("skimPass",f.skimPass),e(z(t))}function it(t){const e=document.createElement("div");e.className="blueprint-tooltip",e.innerHTML=`
+  `,e.querySelectorAll("input").forEach(i=>{i.addEventListener("input",()=>{Q(e),t(O(e))}),i.addEventListener("change",()=>{Q(e),t(O(e))})}),e.querySelectorAll(".number-control").forEach(i=>{const n=i.querySelector('input[type="number"]'),o=i.querySelector('button[data-action="decrement"]'),l=i.querySelector('button[data-action="increment"]');if(!n||!o||!l)return;const h=u=>{const d=parseFloat(n.step)||1,v=n.min?parseFloat(n.min):-1/0,r=n.max?parseFloat(n.max):1/0;let f=parseFloat(n.value)||0;u?f+=d:f-=d,f=Math.round(f*100)/100,f<v&&(f=v),f>r&&(f=r),n.value=f.toString(),n.dispatchEvent(new Event("input")),n.dispatchEvent(new Event("change"))};o.addEventListener("click",()=>h(!1)),l.addEventListener("click",()=>h(!0))}),at(e),e}function Q(t){const e=h=>{const u=t.querySelector(`#${h}`);return parseFloat(u?.value||"0")},s=e("stockWidth"),p=e("stockHeight");if(!(s>0&&p>0))return;const n=t.querySelectorAll(".form-column"),o=n[1],l=n[2];if(!(!o||!l)&&o.classList.contains("form-column-hidden")){o.classList.remove("form-column-hidden"),o.classList.add("form-column-reveal-job"),o.removeAttribute("aria-hidden"),l.classList.remove("form-column-hidden"),l.classList.add("form-column-reveal-tool"),l.removeAttribute("aria-hidden");const h=()=>{o.style&&(o.style.willChange="auto"),l.style&&(l.style.willChange="auto")};l.addEventListener("animationend",h,{once:!0})}}function O(t){const e=i=>{const n=t.querySelector(`#${i}`);return parseFloat(n.value)},s=i=>t.querySelector(`#${i}`).checked,p=i=>t.querySelector(`input[name="${i}"]:checked`)?.value||"";return{stockWidth:e("stockWidth"),stockHeight:e("stockHeight"),fudgeFactor:e("fudgeFactor"),bitDiameter:e("bitDiameter"),stepoverPercent:e("stepoverPercent"),rasterDirection:p("rasterDirection"),skimPass:s("skimPass"),numPasses:e("numPasses"),depthPerPass:e("depthPerPass"),pauseInterval:e("pauseInterval"),feedRate:e("feedRate"),plungeRate:e("plungeRate"),spindleRpm:e("spindleRpm"),retractHeight:e("retractHeight")}}function tt(t){return!!(t.stockWidth&&t.stockWidth>0&&t.stockHeight&&t.stockHeight>0)}function rt(t,e){const s=(n,o)=>{const l=t.querySelector(`#${n}`);l&&(l.value=o)},p=(n,o)=>{const l=t.querySelector(`#${n}`);l&&(l.checked=o)},i=(n,o)=>{const l=t.querySelector(`input[name="${n}"][value="${o}"]`);l&&(l.checked=!0)};s("stockWidth",""),s("stockHeight",""),s("fudgeFactor",b.fudgeFactor.toString()),s("bitDiameter",b.bitDiameter.toString()),s("stepoverPercent",b.stepoverPercent.toString()),s("numPasses",b.numPasses.toString()),s("depthPerPass",b.depthPerPass.toString()),s("pauseInterval",b.pauseInterval.toString()),s("feedRate",b.feedRate.toString()),s("plungeRate",b.plungeRate.toString()),s("spindleRpm",b.spindleRpm.toString()),s("retractHeight",b.retractHeight.toString()),i("rasterDirection",b.rasterDirection),p("skimPass",b.skimPass),e(O(t))}function at(t){const e=document.createElement("div");e.className="blueprint-tooltip",e.innerHTML=`
     <div class="blueprint-tooltip-leader"></div>
     <div class="blueprint-tooltip-content">
       <div class="blueprint-tooltip-corner blueprint-tooltip-corner-tl"></div>
@@ -1507,9 +1662,9 @@
       <div class="blueprint-tooltip-corner blueprint-tooltip-corner-br"></div>
       <div class="blueprint-tooltip-text"></div>
     </div>
-  `,document.body.appendChild(e);let n=null,u=null,i=!1;const s=(p,d=!1)=>{const o=p.getAttribute("data-tooltip");if(!o)return;n=p;const b=e.querySelector(".blueprint-tooltip-text");b.textContent=o;const c=d?0:200;u&&clearTimeout(u),u=window.setTimeout(()=>{r(p,e),e.classList.add("visible")},c)},a=()=>{u&&clearTimeout(u),e.classList.remove("visible"),n=null,i=!1},r=(p,d)=>{const o=p.getBoundingClientRect(),b=d.querySelector(".blueprint-tooltip-content");d.style.visibility="hidden",d.style.display="block";const c=b.getBoundingClientRect();d.style.visibility="",d.style.display="";const m=16,v=32,E=window.innerWidth-o.right,Y=o.left,h=o.top;window.innerHeight-o.bottom;let g,l,M;E>c.width+m+v?(M="right",l=o.right+m+v,g=o.top+o.height/2-c.height/2):Y>c.width+m+v?(M="left",l=o.left-m-v-c.width,g=o.top+o.height/2-c.height/2):h>c.height+m+v?(M="above",l=o.left+o.width/2-c.width/2,g=o.top-m-v-c.height):(M="below",l=o.left+o.width/2-c.width/2,g=o.bottom+m+v),l=Math.max(8,Math.min(l,window.innerWidth-c.width-8)),g=Math.max(8,Math.min(g,window.innerHeight-c.height-8)),d.setAttribute("data-position",M),d.style.left=`${l}px`,d.style.top=`${g}px`;const L=d.querySelector(".blueprint-tooltip-leader");if(M==="right"||M==="left"){const k=o.top+o.height/2-g;if(L.style.top=`${k}px`,M==="right"){const H=l-o.right;L.style.left=`-${H}px`,L.style.width=`${H}px`}else{const H=o.left-(l+c.width);L.style.left=`${c.width}px`,L.style.width=`${H}px`}}else{const k=o.left+o.width/2-l;L.style.left=`${k}px`,L.style.top=M==="below"?`-${v}px`:`${c.height}px`}};t.addEventListener("mouseenter",p=>{const d=p.target.closest("[data-tooltip]");d&&!n&&(i=!0,s(d,!1))},!0),t.addEventListener("mouseleave",p=>{const d=p.target.closest("[data-tooltip]");d&&n===d&&(i=!1,setTimeout(()=>{i||a()},50))},!0),t.addEventListener("focusin",p=>{const d=p.target.closest("[data-tooltip]");d&&s(d,!0)},!0),t.addEventListener("focusout",p=>{const d=p.target.closest("[data-tooltip]");d&&n===d&&setTimeout(()=>{document.activeElement&&!document.activeElement.hasAttribute("data-tooltip")&&a()},50)},!0),window.addEventListener("scroll",()=>{n&&r(n,e)},!0),window.addEventListener("resize",()=>{n&&r(n,e)})}function tt(t){const e=t.fudgeFactor,n=t.fudgeFactor,u=-e,i=t.stockWidth+e,s=-n,a=t.stockHeight+n,r=t.bitDiameter*(t.stepoverPercent/100),p=t.bitDiameter/2,d=p-r;let o,b,c,m;t.rasterDirection==="x"?(o=u-p,b=i+p,c=s-d,m=a+d):(o=u-d,b=i+d,c=s-p,m=a+p);let v=[];if(t.rasterDirection==="x"){let h=c;do v.push(h),h+=r;while(v[v.length-1]<m)}else{let h=o;do v.push(h),h+=r;while(v[v.length-1]<b)}const E=[],Y=t.numPasses+(t.skimPass?1:0);for(let h=0;h<Y;h++){const g=t.skimPass&&h===0,l=t.skimPass?h:h+1,M=g?0:-(l*t.depthPerPass),L=v.map((H,W)=>{const B=W%2===0;return t.rasterDirection==="x"?{y:H,xStart:B?o:b,xEnd:B?b:o,direction:B?"positive":"negative"}:{x:H,yStart:B?c:m,yEnd:B?m:c,direction:B?"positive":"negative"}}),k=t.pauseInterval>0&&(h+1)%t.pauseInterval===0&&h<Y-1;E.push({z:M,lines:L,pauseAfter:k})}return{passes:E,bounds:{xMin:o,xMax:b,yMin:c,yMax:m},originalStockBounds:{xMin:0,xMax:t.stockWidth,yMin:0,yMax:t.stockHeight},params:t}}function ot(t){const{params:e}=t,n=[];n.push("; Surfacing operation"),n.push(`; Stock: ${e.stockWidth}" x ${e.stockHeight}"`),n.push(`; Bit: ${e.bitDiameter}" fly cutter`),n.push(`; Stepover: ${e.stepoverPercent}%`),n.push(""),n.push("G90 ; Absolute positioning"),n.push("G20 ; Inches"),n.push(`M3 S${e.spindleRpm} ; Spindle on`),n.push(`G0 Z${$(e.retractHeight)} ; Retract to safe Z`);const u=t.passes[0]?.lines[0],i=e.rasterDirection==="x"?u?.xStart??t.bounds.xMin:u?.x??t.bounds.xMin,s=e.rasterDirection==="x"?u?.y??t.bounds.yMin:u?.yStart??t.bounds.yMin;return n.push(`G0 X${$(i)} Y${$(s)} ; Move to start`),n.push(""),t.passes.forEach((a,r)=>{n.push(`; Pass ${r+1} at Z=${$(a.z)}`),n.push(...rt(a,e.retractHeight,e.feedRate,e.plungeRate,e.rasterDirection)),a.pauseAfter&&n.push("M0 ; Pause - press resume to continue or stop to end"),n.push("")}),n.push(`G0 Z${$(e.retractHeight)} ; Final retract`),n.push("M5 ; Spindle off"),n.push("M30 ; Program end"),n.join(`
-`)}function rt(t,e,n,u,i){const s=[];return t.lines.forEach((a,r)=>{i==="x"?r===0?(s.push(`G0 Y${$(a.y)}`),s.push(`G0 X${$(a.xStart)}`),s.push(`G1 Z${$(t.z)} F${u} ; Plunge`),s.push(`G1 X${$(a.xEnd)} F${n} ; Cut`)):(s.push(`G1 Y${$(a.y)} F${n} ; Stepover`),s.push(`G1 X${$(a.xEnd)} F${n} ; Cut`)):r===0?(s.push(`G0 X${$(a.x)}`),s.push(`G0 Y${$(a.yStart)}`),s.push(`G1 Z${$(t.z)} F${u} ; Plunge`),s.push(`G1 Y${$(a.yEnd)} F${n} ; Cut`)):(s.push(`G1 X${$(a.x)} F${n} ; Stepover`),s.push(`G1 Y${$(a.yEnd)} F${n} ; Cut`))}),s}function $(t){return t.toFixed(4).replace(/\.?0+$/,"")}function et(t){const e=Math.round(t*100)/100;return e%1===0?`${e}"`:`${e.toFixed(2).replace(/\.?0+$/,"")}"`}function at(t,e,n){const{bounds:u,params:i}=t,s=20,a=getComputedStyle(document.body).getPropertyValue("--color-accent-amber").trim()||"#f59e0b";let r={...u};if(i.fudgeFactor>0){const x=i.fudgeFactor;r.xMin=Math.min(u.xMin,t.originalStockBounds.xMin-x),r.xMax=Math.max(u.xMax,t.originalStockBounds.xMax+x),r.yMin=Math.min(u.yMin,t.originalStockBounds.yMin-x),r.yMax=Math.max(u.yMax,t.originalStockBounds.yMax+x)}const p=r.xMax-r.xMin,d=r.yMax-r.yMin,o=(e-2*s)/p,b=(n-2*s)/d,c=Math.min(o,b),m=p*c,v=d*c,E=(e-m)/2,Y=(n-v)/2,h=x=>E+(x-r.xMin)*c,g=x=>n-Y-(x-r.yMin)*c,l=[];l.push(`<svg width="${e}" height="${n}" xmlns="http://www.w3.org/2000/svg">`),l.push("<style>"),l.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),l.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),l.push("  .start { fill: #4CAF50; }"),l.push("  .end { fill: #F44336; }"),l.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),l.push("  .dimension-halo { stroke: white; stroke-width: 4px; stroke-linejoin: round; stroke-linecap: round; fill: white; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),l.push("</style>");const M=t.originalStockBounds.xMax-t.originalStockBounds.xMin,L=t.originalStockBounds.yMax-t.originalStockBounds.yMin;if(l.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${h(t.originalStockBounds.xMin)}" y="${g(t.originalStockBounds.yMax)}" width="${M*c}" height="${L*c}" />`),i.fudgeFactor>0){const x=t.originalStockBounds.xMin,T=t.originalStockBounds.xMax,y=t.originalStockBounds.yMin,w=t.originalStockBounds.yMax,q=T-x,D=w-y,C=q+2*i.fudgeFactor,R=D+2*i.fudgeFactor,S=i.fudgeFactor,P=i.fudgeFactor;l.push(`<rect fill="${a}" opacity="0.2" x="${h(x-S)}" y="${g(w+P)}" width="${C*c}" height="${P*c}" />`),l.push(`<rect fill="${a}" opacity="0.2" x="${h(x-S)}" y="${g(y)}" width="${C*c}" height="${P*c}" />`),l.push(`<rect fill="${a}" opacity="0.2" x="${h(x-S)}" y="${g(w)}" width="${S*c}" height="${D*c}" />`),l.push(`<rect fill="${a}" opacity="0.2" x="${h(T)}" y="${g(w)}" width="${S*c}" height="${D*c}" />`),l.push(`<rect fill="none" stroke="${a}" stroke-width="2" stroke-dasharray="4,4" x="${h(x-S)}" y="${g(w+P)}" width="${C*c}" height="${R*c}" />`)}const k=t.passes[0];if(k){k.lines.forEach((y,w)=>{if(i.rasterDirection==="x"){const q=h(y.xStart),D=g(y.y),C=h(y.xEnd),R=g(y.y);l.push(`<line class="raster" x1="${q}" y1="${D}" x2="${C}" y2="${R}" />`);const S=(q+C)/2,P=(D+R)/2,F=6,X=y.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${S+X*F},${P} ${S-X*F/2},${P-F/2} ${S-X*F/2},${P+F/2}" />`),w<k.lines.length-1){const A=k.lines[w+1],G=h(A.xStart),I=g(A.y);l.push(`<line class="stepover" x1="${C}" y1="${R}" x2="${G}" y2="${I}" />`)}}else{const q=h(y.x),D=g(y.yStart),C=h(y.x),R=g(y.yEnd);l.push(`<line class="raster" x1="${q}" y1="${D}" x2="${C}" y2="${R}" />`);const S=(q+C)/2,P=(D+R)/2,F=6,X=y.direction==="positive"?1:-1;if(l.push(`<polygon class="arrow" points="${S},${P-X*F} ${S-F/2},${P+X*F/2} ${S+F/2},${P+X*F/2}" />`),w<k.lines.length-1){const A=k.lines[w+1],G=h(A.x),I=g(A.yStart);l.push(`<line class="stepover" x1="${C}" y1="${R}" x2="${G}" y2="${I}" />`)}}});const x=k.lines[0];if(x){const y=i.rasterDirection==="x"?x.xStart:x.x,w=i.rasterDirection==="x"?x.y:x.yStart;l.push(`<circle class="start" cx="${h(y)}" cy="${g(w)}" r="5" />`)}const T=k.lines[k.lines.length-1];if(T){const y=i.rasterDirection==="x"?T.xEnd:T.x,w=i.rasterDirection==="x"?T.y:T.yEnd;l.push(`<circle class="end" cx="${h(y)}" cy="${g(w)}" r="5" />`)}}const H=h(t.originalStockBounds.xMin),W=h(t.originalStockBounds.xMax),B=g(t.originalStockBounds.yMax),V=g(t.originalStockBounds.yMin),O=(H+W)/2,j=V-10,N=et(i.stockWidth);l.push(`<text class="dimension-halo" x="${O}" y="${j}" text-anchor="middle">${N}</text>`),l.push(`<text class="dimension-text" x="${O}" y="${j}" text-anchor="middle">${N}</text>`);const Z=H+10,U=(B+V)/2,J=et(i.stockHeight);return l.push(`<text class="dimension-halo" x="${Z}" y="${U}" text-anchor="start" dominant-baseline="middle">${J}</text>`),l.push(`<text class="dimension-text" x="${Z}" y="${U}" text-anchor="start" dominant-baseline="middle">${J}</text>`),l.push("</svg>"),l.join(`
-`)}function ct(){const t=document.querySelector("#app");t.innerHTML=`
+  `,document.body.appendChild(e);let s=null,p=null,i=!1;const n=(h,u=!1)=>{const d=h.getAttribute("data-tooltip");if(!d)return;s=h;const v=e.querySelector(".blueprint-tooltip-text");v.textContent=d;const r=u?0:200;p&&clearTimeout(p),p=window.setTimeout(()=>{l(h,e),e.classList.add("visible")},r)},o=()=>{p&&clearTimeout(p),e.classList.remove("visible"),s=null,i=!1},l=(h,u)=>{const d=h.getBoundingClientRect(),v=u.querySelector(".blueprint-tooltip-content");u.style.visibility="hidden",u.style.display="block";const r=v.getBoundingClientRect();u.style.visibility="",u.style.display="";const f=16,x=32,R=window.innerWidth-d.right,m=d.left,c=d.top;window.innerHeight-d.bottom;let g,a,k;R>r.width+f+x?(k="right",a=d.right+f+x,g=d.top+d.height/2-r.height/2):m>r.width+f+x?(k="left",a=d.left-f-x-r.width,g=d.top+d.height/2-r.height/2):c>r.height+f+x?(k="above",a=d.left+d.width/2-r.width/2,g=d.top-f-x-r.height):(k="below",a=d.left+d.width/2-r.width/2,g=d.bottom+f+x),a=Math.max(8,Math.min(a,window.innerWidth-r.width-8)),g=Math.max(8,Math.min(g,window.innerHeight-r.height-8)),u.setAttribute("data-position",k),u.style.left=`${a}px`,u.style.top=`${g}px`;const S=u.querySelector(".blueprint-tooltip-leader");if(k==="right"||k==="left"){const M=d.top+d.height/2-g;if(S.style.top=`${M}px`,k==="right"){const H=a-d.right;S.style.left=`-${H}px`,S.style.width=`${H}px`}else{const H=d.left-(a+r.width);S.style.left=`${r.width}px`,S.style.width=`${H}px`}}else{const M=d.left+d.width/2-a;S.style.left=`${M}px`,S.style.top=k==="below"?`-${x}px`:`${r.height}px`}};t.addEventListener("mouseenter",h=>{const u=h.target.closest("[data-tooltip]");u&&!s&&(i=!0,n(u,!1))},!0),t.addEventListener("mouseleave",h=>{const u=h.target.closest("[data-tooltip]");u&&s===u&&(i=!1,setTimeout(()=>{i||o()},50))},!0),t.addEventListener("focusin",h=>{const u=h.target.closest("[data-tooltip]");u&&n(u,!0)},!0),t.addEventListener("focusout",h=>{const u=h.target.closest("[data-tooltip]");u&&s===u&&setTimeout(()=>{document.activeElement&&!document.activeElement.hasAttribute("data-tooltip")&&o()},50)},!0),window.addEventListener("scroll",()=>{s&&l(s,e)},!0),window.addEventListener("resize",()=>{s&&l(s,e)})}function et(t){const e=t.fudgeFactor,s=t.fudgeFactor,p=-e,i=t.stockWidth+e,n=-s,o=t.stockHeight+s,l=t.bitDiameter*(t.stepoverPercent/100),h=t.bitDiameter/2,u=h-l;let d,v,r,f;t.rasterDirection==="x"?(d=p-h,v=i+h,r=n-u,f=o+u):(d=p-u,v=i+u,r=n-h,f=o+h);let x=[];if(t.rasterDirection==="x"){let c=r;do x.push(c),c+=l;while(x[x.length-1]<f)}else{let c=d;do x.push(c),c+=l;while(x[x.length-1]<v)}const R=[],m=t.numPasses+(t.skimPass?1:0);for(let c=0;c<m;c++){const g=t.skimPass&&c===0,a=t.skimPass?c:c+1,k=g?0:-(a*t.depthPerPass),S=x.map((H,G)=>{const A=G%2===0;return t.rasterDirection==="x"?{y:H,xStart:A?d:v,xEnd:A?v:d,direction:A?"positive":"negative"}:{x:H,yStart:A?r:f,yEnd:A?f:r,direction:A?"positive":"negative"}}),M=t.pauseInterval>0&&(c+1)%t.pauseInterval===0&&c<m-1;R.push({z:k,lines:S,pauseAfter:M})}return{passes:R,bounds:{xMin:d,xMax:v,yMin:r,yMax:f},originalStockBounds:{xMin:0,xMax:t.stockWidth,yMin:0,yMax:t.stockHeight},params:t}}function ct(t){const{params:e}=t,s=[];s.push("; Surfacing operation"),s.push(`; Stock: ${e.stockWidth}" x ${e.stockHeight}"`),s.push(`; Bit: ${e.bitDiameter}" fly cutter`),s.push(`; Stepover: ${e.stepoverPercent}%`),s.push(""),s.push("G90 ; Absolute positioning"),s.push("G20 ; Inches"),s.push(`M3 S${e.spindleRpm} ; Spindle on`),s.push(`G0 Z${w(e.retractHeight)} ; Retract to safe Z`);const p=t.passes[0]?.lines[0],i=e.rasterDirection==="x"?p?.xStart??t.bounds.xMin:p?.x??t.bounds.xMin,n=e.rasterDirection==="x"?p?.y??t.bounds.yMin:p?.yStart??t.bounds.yMin;return s.push(`G0 X${w(i)} Y${w(n)} ; Move to start`),s.push(""),t.passes.forEach((o,l)=>{s.push(`; Pass ${l+1} at Z=${w(o.z)}`),s.push(...lt(o,e.retractHeight,e.feedRate,e.plungeRate,e.rasterDirection)),o.pauseAfter&&s.push("M0 ; Pause - press resume to continue or stop to end"),s.push("")}),s.push(`G0 Z${w(e.retractHeight)} ; Final retract`),s.push("M5 ; Spindle off"),s.push("M30 ; Program end"),s.join(`
+`)}function lt(t,e,s,p,i){const n=[];return t.lines.forEach((o,l)=>{i==="x"?l===0?(n.push(`G0 Y${w(o.y)}`),n.push(`G0 X${w(o.xStart)}`),n.push(`G1 Z${w(t.z)} F${p} ; Plunge`),n.push(`G1 X${w(o.xEnd)} F${s} ; Cut`)):(n.push(`G1 Y${w(o.y)} F${s} ; Stepover`),n.push(`G1 X${w(o.xEnd)} F${s} ; Cut`)):l===0?(n.push(`G0 X${w(o.x)}`),n.push(`G0 Y${w(o.yStart)}`),n.push(`G1 Z${w(t.z)} F${p} ; Plunge`),n.push(`G1 Y${w(o.yEnd)} F${s} ; Cut`)):(n.push(`G1 X${w(o.x)} F${s} ; Stepover`),n.push(`G1 Y${w(o.yEnd)} F${s} ; Cut`))}),n}function w(t){return t.toFixed(4).replace(/\.?0+$/,"")}function st(t){const e=Math.round(t*100)/100;return e%1===0?`${e}"`:`${e.toFixed(2).replace(/\.?0+$/,"")}"`}function dt(t,e,s){const{bounds:p,params:i}=t,n=20,o=getComputedStyle(document.body).getPropertyValue("--color-accent-amber").trim()||"#f59e0b";let l={...p};if(i.fudgeFactor>0){const y=i.fudgeFactor;l.xMin=Math.min(p.xMin,t.originalStockBounds.xMin-y),l.xMax=Math.max(p.xMax,t.originalStockBounds.xMax+y),l.yMin=Math.min(p.yMin,t.originalStockBounds.yMin-y),l.yMax=Math.max(p.yMax,t.originalStockBounds.yMax+y)}const h=l.xMax-l.xMin,u=l.yMax-l.yMin,d=(e-2*n)/h,v=(s-2*n)/u,r=Math.min(d,v),f=h*r,x=u*r,R=(e-f)/2,m=(s-x)/2,c=y=>R+(y-l.xMin)*r,g=y=>s-m-(y-l.yMin)*r,a=[];a.push(`<svg width="${e}" height="${s}" xmlns="http://www.w3.org/2000/svg">`),a.push("<style>"),a.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),a.push("  .start { fill: #4CAF50; }"),a.push("  .end { fill: #F44336; }"),a.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),a.push("  .dimension-halo { stroke: white; stroke-width: 4px; stroke-linejoin: round; stroke-linecap: round; fill: white; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),a.push("</style>");const k=t.originalStockBounds.xMax-t.originalStockBounds.xMin,S=t.originalStockBounds.yMax-t.originalStockBounds.yMin;if(a.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${c(t.originalStockBounds.xMin)}" y="${g(t.originalStockBounds.yMax)}" width="${k*r}" height="${S*r}" />`),i.fudgeFactor>0){const y=t.originalStockBounds.xMin,q=t.originalStockBounds.xMax,$=t.originalStockBounds.yMin,L=t.originalStockBounds.yMax,B=q-y,D=L-$,C=B+2*i.fudgeFactor,T=D+2*i.fudgeFactor,P=i.fudgeFactor,E=i.fudgeFactor;a.push(`<rect fill="${o}" opacity="0.2" x="${c(y-P)}" y="${g(L+E)}" width="${C*r}" height="${E*r}" />`),a.push(`<rect fill="${o}" opacity="0.2" x="${c(y-P)}" y="${g($)}" width="${C*r}" height="${E*r}" />`),a.push(`<rect fill="${o}" opacity="0.2" x="${c(y-P)}" y="${g(L)}" width="${P*r}" height="${D*r}" />`),a.push(`<rect fill="${o}" opacity="0.2" x="${c(q)}" y="${g(L)}" width="${P*r}" height="${D*r}" />`),a.push(`<rect fill="none" stroke="${o}" stroke-width="2" stroke-dasharray="4,4" x="${c(y-P)}" y="${g(L+E)}" width="${C*r}" height="${T*r}" />`)}const M=t.passes[0];if(M){M.lines.forEach(($,L)=>{if(i.rasterDirection==="x"){const B=c($.xStart),D=g($.y),C=c($.xEnd),T=g($.y);a.push(`<line class="raster" x1="${B}" y1="${D}" x2="${C}" y2="${T}" />`);const P=(B+C)/2,E=(D+T)/2,F=6,Y=$.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${P+Y*F},${E} ${P-Y*F/2},${E-F/2} ${P-Y*F/2},${E+F/2}" />`),L<M.lines.length-1){const X=M.lines[L+1],I=c(X.xStart),z=g(X.y);a.push(`<line class="stepover" x1="${C}" y1="${T}" x2="${I}" y2="${z}" />`)}}else{const B=c($.x),D=g($.yStart),C=c($.x),T=g($.yEnd);a.push(`<line class="raster" x1="${B}" y1="${D}" x2="${C}" y2="${T}" />`);const P=(B+C)/2,E=(D+T)/2,F=6,Y=$.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${P},${E-Y*F} ${P-F/2},${E+Y*F/2} ${P+F/2},${E+Y*F/2}" />`),L<M.lines.length-1){const X=M.lines[L+1],I=c(X.x),z=g(X.yStart);a.push(`<line class="stepover" x1="${C}" y1="${T}" x2="${I}" y2="${z}" />`)}}});const y=M.lines[0];if(y){const $=i.rasterDirection==="x"?y.xStart:y.x,L=i.rasterDirection==="x"?y.y:y.yStart;a.push(`<circle class="start" cx="${c($)}" cy="${g(L)}" r="5" />`)}const q=M.lines[M.lines.length-1];if(q){const $=i.rasterDirection==="x"?q.xEnd:q.x,L=i.rasterDirection==="x"?q.y:q.yEnd;a.push(`<circle class="end" cx="${c($)}" cy="${g(L)}" r="5" />`)}}const H=c(t.originalStockBounds.xMin),G=c(t.originalStockBounds.xMax),A=g(t.originalStockBounds.yMax),V=g(t.originalStockBounds.yMin),j=(H+G)/2,Z=V-10,U=st(i.stockWidth);a.push(`<text class="dimension-halo" x="${j}" y="${Z}" text-anchor="middle">${U}</text>`),a.push(`<text class="dimension-text" x="${j}" y="${Z}" text-anchor="middle">${U}</text>`);const N=H+10,K=(A+V)/2,_=st(i.stockHeight);return a.push(`<text class="dimension-halo" x="${N}" y="${K}" text-anchor="start" dominant-baseline="middle">${_}</text>`),a.push(`<text class="dimension-text" x="${N}" y="${K}" text-anchor="start" dominant-baseline="middle">${_}</text>`),a.push("</svg>"),a.join(`
+`)}const W={amber:{hex:"#f59e0b",glow:"rgba(245, 158, 11, 0.15)"},purple:{hex:"#a855f7",glow:"rgba(168, 85, 247, 0.15)"},green:{hex:"#10b981",glow:"rgba(16, 185, 129, 0.15)"},blue:{hex:"#3b82f6",glow:"rgba(59, 130, 246, 0.15)"},red:{hex:"#ef4444",glow:"rgba(239, 68, 68, 0.15)"},yellow:{hex:"#eab308",glow:"rgba(234, 179, 8, 0.15)"},pink:{hex:"#ec4899",glow:"rgba(236, 72, 153, 0.15)"},gray:{hex:"#d1d5db",glow:"rgba(209, 213, 219, 0.15)"}},nt="rastermaster-theme";function it(t){const e=W[t];if(!e){console.warn(`Unknown color: ${t}`);return}document.documentElement.style.setProperty("--color-accent-amber",e.hex),document.documentElement.style.setProperty("--color-accent-amber-glow",e.glow),document.body.setAttribute("data-user-theme",t)}function ut(t){try{localStorage.setItem(nt,t)}catch(e){console.warn("Failed to save theme:",e)}}function pt(){try{const t=localStorage.getItem(nt);if(t&&t in W)return it(t),t}catch(t){console.warn("Failed to load theme:",t)}return null}function ht(){const t=document.body.getAttribute("data-user-theme");return t&&t in W?t:document.body.classList.contains("is-dev")?"purple":"amber"}function mt(){const t=document.querySelector("#app");pt(),t.innerHTML=`
     <div class="app-content">
       <div class="header">
         <h1 class="title">RasterMaster</h1>
@@ -1532,7 +1687,7 @@
               <span>↑</span>
               <span>Load</span>
             </button>
-            <button class="menu-item menu-item-disabled" disabled>
+            <button class="menu-item" id="settingsMenuItem">
               <span>⚙</span>
               <span>Settings</span>
             </button>
@@ -1547,7 +1702,33 @@
         </div>
       </div>
     </div>
-  `;const e=t.querySelector("#form-container"),n=t.querySelector("#preview"),u=t.querySelector("#generateBtn"),i=t.querySelector("#menuTrigger"),s=t.querySelector("#menuDropdown"),a=t.querySelector("#newMenuItem");let r={};function p(){if(!Q(r)){n.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',u.disabled=!0;return}const o=K(r),b=tt(o),c=n.getBoundingClientRect(),m=at(b,c.width||500,c.height||375);n.innerHTML=m,u.disabled=!1}const d=nt(o=>{r=o,p()});e.appendChild(d),i.addEventListener("click",o=>{o.stopPropagation(),s.classList.toggle("open"),i.classList.toggle("active")}),document.addEventListener("click",()=>{s.classList.remove("open"),i.classList.remove("active")}),s.addEventListener("click",o=>{o.stopPropagation()}),a.addEventListener("click",()=>{st(d,o=>{r=o,p()}),s.classList.remove("open"),i.classList.remove("active")}),u.addEventListener("click",()=>{if(!Q(r))return;const o=K(r),b=tt(o),c=ot(b),m=new Blob([c],{type:"text/plain"}),v=URL.createObjectURL(m),E=document.createElement("a");E.href=v,E.download=`rastermaster-${o.stockWidth}x${o.stockHeight}.gcode`,E.click(),URL.revokeObjectURL(v)}),p()}ct();</script>
+    
+    \x3C!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+      <div class="settings-panel">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button class="settings-close" id="settingsClose">×</button>
+        </div>
+        <div class="settings-content">
+          <div class="settings-section">
+            <h3>Color Palette</h3>
+            <div class="palette-grid" id="paletteGrid">
+              ${Object.entries(W).map(([m,c])=>`
+                <button 
+                  class="palette-swatch" 
+                  data-color="${m}"
+                  style="--swatch-color: ${c.hex}"
+                  title="${m.charAt(0).toUpperCase()+m.slice(1)}"
+                  aria-label="Select ${m} theme"
+                ></button>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;const e=t.querySelector("#form-container"),s=t.querySelector("#preview"),p=t.querySelector("#generateBtn"),i=t.querySelector("#menuTrigger"),n=t.querySelector("#menuDropdown"),o=t.querySelector("#newMenuItem"),l=t.querySelector("#settingsMenuItem"),h=t.querySelector("#settingsModal"),u=t.querySelector("#settingsClose"),d=t.querySelectorAll(".palette-swatch");let v={};function r(){const m=ht();d.forEach(c=>{c.getAttribute("data-color")===m?c.classList.add("active"):c.classList.remove("active")})}function f(){if(!tt(v)){s.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',p.disabled=!0;return}const m=J(v),c=et(m),g=s.getBoundingClientRect(),a=dt(c,g.width||500,g.height||375);s.innerHTML=a,p.disabled=!1}const x=ot(m=>{v=m,f()});e.appendChild(x),i.addEventListener("click",m=>{m.stopPropagation(),n.classList.toggle("open"),i.classList.toggle("active")}),document.addEventListener("click",()=>{n.classList.remove("open"),i.classList.remove("active")}),n.addEventListener("click",m=>{m.stopPropagation()}),o.addEventListener("click",()=>{rt(x,m=>{v=m,f()}),n.classList.remove("open"),i.classList.remove("active")}),l.addEventListener("click",()=>{h.classList.add("open"),r(),n.classList.remove("open"),i.classList.remove("active")});function R(){h.classList.remove("open")}u.addEventListener("click",R),h.addEventListener("click",m=>{m.target===h&&R()}),h.querySelector(".settings-panel").addEventListener("click",m=>{m.stopPropagation()}),d.forEach(m=>{m.addEventListener("click",()=>{const c=m.getAttribute("data-color");c&&(it(c),ut(c),r())})}),r(),p.addEventListener("click",()=>{if(!tt(v))return;const m=J(v),c=et(m),g=ct(c),a=new Blob([g],{type:"text/plain"}),k=URL.createObjectURL(a),S=document.createElement("a");S.href=k,S.download=`rastermaster-${m.stockWidth}x${m.stockHeight}.gcode`,S.click(),URL.revokeObjectURL(k)}),f()}mt();</script>
 </head>
 
 <body>
