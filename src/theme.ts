@@ -1,5 +1,5 @@
 // src/theme.ts
-export type ColorName = 'amber' | 'purple' | 'green' | 'blue' | 'red' | 'yellow' | 'pink' | 'gray'
+export type ColorName = 'amber' | 'purple' | 'green' | 'blue' | 'red' | 'cyan' | 'pink' | 'gray'
 
 interface ColorPalette {
     hex: string
@@ -27,9 +27,9 @@ export const PALETTES: Record<ColorName, ColorPalette> = {
         hex: '#ef4444',
         glow: 'rgba(239, 68, 68, 0.15)'
     },
-    yellow: {
-        hex: '#eab308',
-        glow: 'rgba(234, 179, 8, 0.15)'
+    cyan: {
+        hex: '#06b6d4',
+        glow: 'rgba(6, 182, 212, 0.15)'
     },
     pink: {
         hex: '#ec4899',
