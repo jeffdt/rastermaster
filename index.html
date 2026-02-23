@@ -852,6 +852,106 @@
       font-family: var(--font-mono);
     }
 
+    /* Pass Schedule */
+
+    .pass-schedule {
+      margin-top: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pass-schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--color-surface-elevated);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-schedule-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+    }
+
+    .pass-schedule-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .pass-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .pass-table thead tr {
+      background: var(--color-surface-elevated);
+    }
+
+    .pass-table th {
+      padding: 6px 14px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-table td {
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pass-num {
+      color: var(--color-text-muted);
+      width: 32px;
+    }
+
+    .pass-type {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      width: 64px;
+    }
+
+    .pass-z {
+      color: var(--color-text-primary);
+    }
+
+    .pass-row-skim .pass-type {
+      color: var(--color-accent-amber);
+    }
+
+    .pass-row-depth .pass-type {
+      color: var(--color-steel-blue);
+    }
+
+    .pass-pause-mark {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 3px;
+      padding: 1px 4px;
+      margin-left: 6px;
+    }
+
     /* Settings Modal */
 
     .settings-modal {
@@ -1580,7 +1680,7 @@
       }
     }
   </style>
-  <script type="module" crossorigin>(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))d(o);new MutationObserver(o=>{for(const s of o)if(s.type==="childList")for(const r of s.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&d(r)}).observe(document,{childList:!0,subtree:!0});function n(o){const s={};return o.integrity&&(s.integrity=o.integrity),o.referrerPolicy&&(s.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?s.credentials="include":o.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function d(o){if(o.ep)return;o.ep=!0;const s=n(o);fetch(o.href,s)}})();const x={fudgeFactor:.25,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!1,numPasses:1,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function et(t){return{...x,...t}}function pt(t){const e=document.createElement("div");return e.className="form-container",e.innerHTML=`
+  <script type="module" crossorigin>(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))u(o);new MutationObserver(o=>{for(const n of o)if(n.type==="childList")for(const r of n.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&u(r)}).observe(document,{childList:!0,subtree:!0});function s(o){const n={};return o.integrity&&(n.integrity=o.integrity),o.referrerPolicy&&(n.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?n.credentials="include":o.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function u(o){if(o.ep)return;o.ep=!0;const n=s(o);fetch(o.href,n)}})();const S={fudgeFactor:.25,bitDiameter:1.25,stepoverPercent:50,rasterDirection:"x",skimPass:!0,totalDepth:0,depthPerPass:.01,pauseInterval:0,feedRate:125,plungeRate:12,spindleRpm:18e3,retractHeight:.125};function et(t){return{...S,...t}}function pt(t){const e=document.createElement("div");return e.className="form-container",e.innerHTML=`
     <div class="form-grid">
       <div class="form-column">
         <h3>Stock</h3>
@@ -1615,28 +1715,24 @@
       <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Job</h3>
         <div class="form-row checkbox-row">
-          <input type="checkbox" id="skimPass" data-tooltip="First pass at Z=0 before depth cuts. Prevents deep initial engagement on uneven stock.">
+          <input type="checkbox" id="skimPass" checked data-tooltip="First pass at Z=0 before depth cuts. Prevents deep initial engagement on uneven stock.">
           <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
-          <label for="numPasses"># Passes</label>
-          <div class="number-control">
-            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="numPasses" value="${x.numPasses}" step="1" min="1" data-tooltip="Depth passes to complete the cut. Total depth = passes × depth per pass. Excludes skim pass.">
-            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
-          </div>
-          <span class="unit"></span>
+          <label for="totalDepth">Total Depth</label>
+          <input type="text" id="totalDepth" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?" data-tooltip="Total material to remove. Leave blank for skim-only run.">
+          <span class="unit">in</span>
         </div>
         <div class="form-row">
-          <label for="depthPerPass">Depth per Pass</label>
-          <input type="text" id="depthPerPass" value="${x.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+          <label for="depthPerPass">Max Depth/Pass</label>
+          <input type="text" id="depthPerPass" value="${S.depthPerPass}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="pauseInterval">Pause every</label>
           <div class="number-control">
             <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="pauseInterval" value="${x.pauseInterval}" step="1" min="0" data-tooltip="Inserts M0 pause after every N passes. Set to 0 to disable.">
+            <input type="number" id="pauseInterval" value="${S.pauseInterval}" step="1" min="0" data-tooltip="Inserts M0 pause after every N passes. Set to 0 to disable.">
             <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
           </div>
           <span class="unit">passes</span>
@@ -1648,38 +1744,38 @@
         <div class="tool-subgrid">
           <div class="form-row">
             <label for="bitDiameter">Bit Diameter</label>
-            <input type="text" id="bitDiameter" value="${x.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="bitDiameter" value="${S.bitDiameter}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">in</span>
           </div>
           <div class="form-row">
             <label for="stepoverPercent">Stepover</label>
-            <input type="text" id="stepoverPercent" value="${x.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="stepoverPercent" value="${S.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">%</span>
           </div>
           <div class="form-row">
             <label for="feedRate">Feed Rate</label>
-            <input type="text" id="feedRate" value="${x.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="feedRate" value="${S.feedRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">in/min</span>
           </div>
           <div class="form-row">
             <label for="plungeRate">Plunge Rate</label>
-            <input type="text" id="plungeRate" value="${x.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="plungeRate" value="${S.plungeRate}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">in/min</span>
           </div>
           <div class="form-row">
             <label for="spindleRpm">Spindle Speed</label>
-            <input type="text" id="spindleRpm" value="${x.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="spindleRpm" value="${S.spindleRpm}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">RPM</span>
           </div>
           <div class="form-row">
             <label for="retractHeight">Retract Height</label>
-            <input type="text" id="retractHeight" value="${x.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
+            <input type="text" id="retractHeight" value="${S.retractHeight}" inputmode="decimal" pattern="[0-9]+(.[0-9]+)?">
             <span class="unit">in</span>
           </div>
         </div>
       </div>
     </div>
-  `,e.querySelectorAll("input").forEach(o=>{o.addEventListener("input",()=>{nt(e),t(Y(e))}),o.addEventListener("change",()=>{nt(e),t(Y(e))})}),e.querySelectorAll(".number-control").forEach(o=>{const s=o.querySelector('input[type="number"]'),r=o.querySelector('button[data-action="decrement"]'),l=o.querySelector('button[data-action="increment"]');if(!s||!r||!l)return;const v=g=>{const u=parseFloat(s.step)||1,w=s.min?parseFloat(s.min):-1/0,a=s.max?parseFloat(s.max):1/0;let p=parseFloat(s.value)||0;g?p+=u:p-=u,p=Math.round(p*100)/100,p<w&&(p=w),p>a&&(p=a),s.value=p.toString(),s.dispatchEvent(new Event("input")),s.dispatchEvent(new Event("change"))};r.addEventListener("click",()=>v(!1)),l.addEventListener("click",()=>v(!0))}),mt(e),e}function nt(t){const e=v=>{const g=t.querySelector(`#${v}`);return parseFloat(g?.value||"0")},n=e("stockWidth"),d=e("stockHeight");if(!(n>0&&d>0))return;const s=t.querySelectorAll(".form-column"),r=s[1],l=s[2];if(!(!r||!l)&&r.classList.contains("form-column-hidden")){r.classList.remove("form-column-hidden"),r.classList.add("form-column-reveal-job"),r.removeAttribute("aria-hidden"),l.classList.remove("form-column-hidden"),l.classList.add("form-column-reveal-tool"),l.removeAttribute("aria-hidden");const v=()=>{r.style&&(r.style.willChange="auto"),l.style&&(l.style.willChange="auto")};l.addEventListener("animationend",v,{once:!0})}}function Y(t){const e=o=>{const s=t.querySelector(`#${o}`);return parseFloat(s.value)},n=o=>t.querySelector(`#${o}`).checked,d=o=>t.querySelector(`input[name="${o}"]:checked`)?.value||"";return{stockWidth:e("stockWidth"),stockHeight:e("stockHeight"),fudgeFactor:e("fudgeFactor"),bitDiameter:e("bitDiameter"),stepoverPercent:e("stepoverPercent"),rasterDirection:d("rasterDirection"),skimPass:n("skimPass"),numPasses:e("numPasses"),depthPerPass:e("depthPerPass"),pauseInterval:e("pauseInterval"),feedRate:e("feedRate"),plungeRate:e("plungeRate"),spindleRpm:e("spindleRpm"),retractHeight:e("retractHeight")}}function st(t){return!!(t.stockWidth&&t.stockWidth>0&&t.stockHeight&&t.stockHeight>0)}function ht(t,e){const n=(s,r)=>{const l=t.querySelector(`#${s}`);l&&(l.value=r)},d=(s,r)=>{const l=t.querySelector(`#${s}`);l&&(l.checked=r)},o=(s,r)=>{const l=t.querySelector(`input[name="${s}"][value="${r}"]`);l&&(l.checked=!0)};n("stockWidth",""),n("stockHeight",""),n("fudgeFactor",x.fudgeFactor.toString()),n("bitDiameter",x.bitDiameter.toString()),n("stepoverPercent",x.stepoverPercent.toString()),n("numPasses",x.numPasses.toString()),n("depthPerPass",x.depthPerPass.toString()),n("pauseInterval",x.pauseInterval.toString()),n("feedRate",x.feedRate.toString()),n("plungeRate",x.plungeRate.toString()),n("spindleRpm",x.spindleRpm.toString()),n("retractHeight",x.retractHeight.toString()),o("rasterDirection",x.rasterDirection),d("skimPass",x.skimPass),e(Y(t))}function U(t,e){const n=(d,o)=>{const s=t.querySelector(`#${d}`);s&&(s.value=o)};e.bitDiameter!==void 0&&n("bitDiameter",e.bitDiameter.toString()),e.stepoverPercent!==void 0&&n("stepoverPercent",e.stepoverPercent.toString()),e.feedRate!==void 0&&n("feedRate",e.feedRate.toString()),e.plungeRate!==void 0&&n("plungeRate",e.plungeRate.toString()),e.spindleRpm!==void 0&&n("spindleRpm",e.spindleRpm.toString()),e.retractHeight!==void 0&&n("retractHeight",e.retractHeight.toString()),e.depthPerPass!==void 0&&n("depthPerPass",e.depthPerPass.toString())}function mt(t){const e=document.createElement("div");e.className="blueprint-tooltip",e.innerHTML=`
+  `,e.querySelectorAll("input").forEach(o=>{o.addEventListener("input",()=>{st(e),t(B(e))}),o.addEventListener("change",()=>{st(e),t(B(e))})}),e.querySelectorAll(".number-control").forEach(o=>{const n=o.querySelector('input[type="number"]'),r=o.querySelector('button[data-action="decrement"]'),l=o.querySelector('button[data-action="increment"]');if(!n||!r||!l)return;const m=h=>{const p=parseFloat(n.step)||1,x=n.min?parseFloat(n.min):-1/0,d=n.max?parseFloat(n.max):1/0;let v=parseFloat(n.value)||0;h?v+=p:v-=p,v=Math.round(v*100)/100,v<x&&(v=x),v>d&&(v=d),n.value=v.toString(),n.dispatchEvent(new Event("input")),n.dispatchEvent(new Event("change"))};r.addEventListener("click",()=>m(!1)),l.addEventListener("click",()=>m(!0))}),mt(e),e}function st(t){const e=m=>{const h=t.querySelector(`#${m}`);return parseFloat(h?.value||"0")},s=e("stockWidth"),u=e("stockHeight");if(!(s>0&&u>0))return;const n=t.querySelectorAll(".form-column"),r=n[1],l=n[2];if(!(!r||!l)&&r.classList.contains("form-column-hidden")){r.classList.remove("form-column-hidden"),r.classList.add("form-column-reveal-job"),r.removeAttribute("aria-hidden"),l.classList.remove("form-column-hidden"),l.classList.add("form-column-reveal-tool"),l.removeAttribute("aria-hidden");const m=()=>{r.style&&(r.style.willChange="auto"),l.style&&(l.style.willChange="auto")};l.addEventListener("animationend",m,{once:!0})}}function B(t){const e=o=>{const n=t.querySelector(`#${o}`);return parseFloat(n.value)},s=o=>t.querySelector(`#${o}`).checked,u=o=>t.querySelector(`input[name="${o}"]:checked`)?.value||"";return{stockWidth:e("stockWidth"),stockHeight:e("stockHeight"),fudgeFactor:e("fudgeFactor"),bitDiameter:e("bitDiameter"),stepoverPercent:e("stepoverPercent"),rasterDirection:u("rasterDirection"),skimPass:s("skimPass"),totalDepth:isNaN(e("totalDepth"))?0:e("totalDepth"),depthPerPass:e("depthPerPass"),pauseInterval:e("pauseInterval"),feedRate:e("feedRate"),plungeRate:e("plungeRate"),spindleRpm:e("spindleRpm"),retractHeight:e("retractHeight")}}function nt(t){return!!(t.stockWidth&&t.stockWidth>0&&t.stockHeight&&t.stockHeight>0)}function ht(t,e){const s=(n,r)=>{const l=t.querySelector(`#${n}`);l&&(l.value=r)},u=(n,r)=>{const l=t.querySelector(`#${n}`);l&&(l.checked=r)},o=(n,r)=>{const l=t.querySelector(`input[name="${n}"][value="${r}"]`);l&&(l.checked=!0)};s("stockWidth",""),s("stockHeight",""),s("fudgeFactor",S.fudgeFactor.toString()),s("bitDiameter",S.bitDiameter.toString()),s("stepoverPercent",S.stepoverPercent.toString()),s("totalDepth",""),s("depthPerPass",S.depthPerPass.toString()),s("pauseInterval",S.pauseInterval.toString()),s("feedRate",S.feedRate.toString()),s("plungeRate",S.plungeRate.toString()),s("spindleRpm",S.spindleRpm.toString()),s("retractHeight",S.retractHeight.toString()),o("rasterDirection",S.rasterDirection),u("skimPass",S.skimPass),e(B(t))}function G(t,e){const s=(u,o)=>{const n=t.querySelector(`#${u}`);n&&(n.value=o)};e.bitDiameter!==void 0&&s("bitDiameter",e.bitDiameter.toString()),e.stepoverPercent!==void 0&&s("stepoverPercent",e.stepoverPercent.toString()),e.feedRate!==void 0&&s("feedRate",e.feedRate.toString()),e.plungeRate!==void 0&&s("plungeRate",e.plungeRate.toString()),e.spindleRpm!==void 0&&s("spindleRpm",e.spindleRpm.toString()),e.retractHeight!==void 0&&s("retractHeight",e.retractHeight.toString()),e.depthPerPass!==void 0&&s("depthPerPass",e.depthPerPass.toString())}function mt(t){const e=document.createElement("div");e.className="blueprint-tooltip",e.innerHTML=`
     <div class="blueprint-tooltip-leader"></div>
     <div class="blueprint-tooltip-content">
       <div class="blueprint-tooltip-corner blueprint-tooltip-corner-tl"></div>
@@ -1688,9 +1784,31 @@
       <div class="blueprint-tooltip-corner blueprint-tooltip-corner-br"></div>
       <div class="blueprint-tooltip-text"></div>
     </div>
-  `,document.body.appendChild(e);let n=null,d=null,o=!1;const s=(v,g=!1)=>{const u=v.getAttribute("data-tooltip");if(!u)return;n=v;const w=e.querySelector(".blueprint-tooltip-text");w.textContent=u;const a=g?0:200;d&&clearTimeout(d),d=window.setTimeout(()=>{l(v,e),e.classList.add("visible")},a)},r=()=>{d&&clearTimeout(d),e.classList.remove("visible"),n=null,o=!1},l=(v,g)=>{const u=v.getBoundingClientRect(),w=g.querySelector(".blueprint-tooltip-content");g.style.visibility="hidden",g.style.display="block";const a=w.getBoundingClientRect();g.style.visibility="",g.style.display="";const p=16,y=32,L=window.innerWidth-u.right,H=u.left,f=u.top;window.innerHeight-u.bottom;let h,c,i;L>a.width+p+y?(i="right",c=u.right+p+y,h=u.top+u.height/2-a.height/2):H>a.width+p+y?(i="left",c=u.left-p-y-a.width,h=u.top+u.height/2-a.height/2):f>a.height+p+y?(i="above",c=u.left+u.width/2-a.width/2,h=u.top-p-y-a.height):(i="below",c=u.left+u.width/2-a.width/2,h=u.bottom+p+y),c=Math.max(8,Math.min(c,window.innerWidth-a.width-8)),h=Math.max(8,Math.min(h,window.innerHeight-a.height-8)),g.setAttribute("data-position",i),g.style.left=`${c}px`,g.style.top=`${h}px`;const m=g.querySelector(".blueprint-tooltip-leader");if(i==="right"||i==="left"){const b=u.top+u.height/2-h;if(m.style.top=`${b}px`,i==="right"){const P=c-u.right;m.style.left=`-${P}px`,m.style.width=`${P}px`}else{const P=u.left-(c+a.width);m.style.left=`${a.width}px`,m.style.width=`${P}px`}}else{const b=u.left+u.width/2-c;m.style.left=`${b}px`,m.style.top=i==="below"?`-${y}px`:`${a.height}px`}};t.addEventListener("mouseenter",v=>{const g=v.target.closest("[data-tooltip]");g&&!n&&(o=!0,s(g,!1))},!0),t.addEventListener("mouseleave",v=>{const g=v.target.closest("[data-tooltip]");g&&n===g&&(o=!1,setTimeout(()=>{o||r()},50))},!0),t.addEventListener("focusin",v=>{const g=v.target.closest("[data-tooltip]");g&&s(g,!0)},!0),t.addEventListener("focusout",v=>{const g=v.target.closest("[data-tooltip]");g&&n===g&&setTimeout(()=>{document.activeElement&&!document.activeElement.hasAttribute("data-tooltip")&&r()},50)},!0),window.addEventListener("scroll",()=>{n&&l(n,e)},!0),window.addEventListener("resize",()=>{n&&l(n,e)})}function ot(t){const e=t.fudgeFactor,n=t.fudgeFactor,d=-e,o=t.stockWidth+e,s=-n,r=t.stockHeight+n,l=t.bitDiameter*(t.stepoverPercent/100),v=t.bitDiameter/2,g=v-l;let u,w,a,p;t.rasterDirection==="x"?(u=d-v,w=o+v,a=s-g,p=r+g):(u=d-g,w=o+g,a=s-v,p=r+v);let y=[];if(t.rasterDirection==="x"){let f=a;do y.push(f),f+=l;while(y[y.length-1]<p)}else{let f=u;do y.push(f),f+=l;while(y[y.length-1]<w)}const L=[],H=t.numPasses+(t.skimPass?1:0);for(let f=0;f<H;f++){const h=t.skimPass&&f===0,c=t.skimPass?f:f+1,i=h?0:-(c*t.depthPerPass),m=y.map((P,X)=>{const E=X%2===0;return t.rasterDirection==="x"?{y:P,xStart:E?u:w,xEnd:E?w:u,direction:E?"positive":"negative"}:{x:P,yStart:E?a:p,yEnd:E?p:a,direction:E?"positive":"negative"}}),b=t.pauseInterval>0&&(f+1)%t.pauseInterval===0&&f<H-1;L.push({z:i,lines:m,pauseAfter:b})}return{passes:L,bounds:{xMin:u,xMax:w,yMin:a,yMax:p},originalStockBounds:{xMin:0,xMax:t.stockWidth,yMin:0,yMax:t.stockHeight},params:t}}function gt(t){const{params:e}=t,n=[];n.push("; Surfacing operation"),n.push(`; Stock: ${e.stockWidth}" x ${e.stockHeight}"`),n.push(`; Bit: ${e.bitDiameter}" fly cutter`),n.push(`; Stepover: ${e.stepoverPercent}%`),n.push(""),n.push("G90 ; Absolute positioning"),n.push("G20 ; Inches"),n.push(`M3 S${e.spindleRpm} ; Spindle on`),n.push(`G0 Z${k(e.retractHeight)} ; Retract to safe Z`);const d=t.passes[0]?.lines[0],o=e.rasterDirection==="x"?d?.xStart??t.bounds.xMin:d?.x??t.bounds.xMin,s=e.rasterDirection==="x"?d?.y??t.bounds.yMin:d?.yStart??t.bounds.yMin;return n.push(`G0 X${k(o)} Y${k(s)} ; Move to start`),n.push(""),t.passes.forEach((r,l)=>{n.push(`; Pass ${l+1} at Z=${k(r.z)}`),n.push(...ft(r,e.retractHeight,e.feedRate,e.plungeRate,e.rasterDirection)),r.pauseAfter&&n.push("M0 ; Pause - press resume to continue or stop to end"),n.push("")}),n.push(`G0 Z${k(e.retractHeight)} ; Final retract`),n.push("M5 ; Spindle off"),n.push("M30 ; Program end"),n.join(`
-`)}function ft(t,e,n,d,o){const s=[];return t.lines.forEach((r,l)=>{o==="x"?l===0?(s.push(`G0 Y${k(r.y)}`),s.push(`G0 X${k(r.xStart)}`),s.push(`G1 Z${k(t.z)} F${d} ; Plunge`),s.push(`G1 X${k(r.xEnd)} F${n} ; Cut`)):(s.push(`G1 Y${k(r.y)} F${n} ; Stepover`),s.push(`G1 X${k(r.xEnd)} F${n} ; Cut`)):l===0?(s.push(`G0 X${k(r.x)}`),s.push(`G0 Y${k(r.yStart)}`),s.push(`G1 Z${k(t.z)} F${d} ; Plunge`),s.push(`G1 Y${k(r.yEnd)} F${n} ; Cut`)):(s.push(`G1 X${k(r.x)} F${n} ; Stepover`),s.push(`G1 Y${k(r.yEnd)} F${n} ; Cut`))}),s}function k(t){return t.toFixed(4).replace(/\.?0+$/,"")}function it(t){const e=Math.round(t*100)/100;return e%1===0?`${e}"`:`${e.toFixed(2).replace(/\.?0+$/,"")}"`}function vt(t,e,n){const{bounds:d,params:o}=t,s=20,r=getComputedStyle(document.body).getPropertyValue("--color-accent-amber").trim()||"#f59e0b";let l={...d};if(o.fudgeFactor>0){const $=o.fudgeFactor;l.xMin=Math.min(d.xMin,t.originalStockBounds.xMin-$),l.xMax=Math.max(d.xMax,t.originalStockBounds.xMax+$),l.yMin=Math.min(d.yMin,t.originalStockBounds.yMin-$),l.yMax=Math.max(d.yMax,t.originalStockBounds.yMax+$)}const v=l.xMax-l.xMin,g=l.yMax-l.yMin,u=(e-2*s)/v,w=(n-2*s)/g,a=Math.min(u,w),p=v*a,y=g*a,L=(e-p)/2,H=(n-y)/2,f=$=>L+($-l.xMin)*a,h=$=>n-H-($-l.yMin)*a,c=[];c.push(`<svg width="${e}" height="${n}" xmlns="http://www.w3.org/2000/svg">`),c.push("<style>"),c.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),c.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),c.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),c.push("  .start { fill: #4CAF50; }"),c.push("  .end { fill: #F44336; }"),c.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),c.push("  .dimension-halo { stroke: white; stroke-width: 4px; stroke-linejoin: round; stroke-linecap: round; fill: white; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),c.push("</style>");const i=t.originalStockBounds.xMax-t.originalStockBounds.xMin,m=t.originalStockBounds.yMax-t.originalStockBounds.yMin;if(c.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${f(t.originalStockBounds.xMin)}" y="${h(t.originalStockBounds.yMax)}" width="${i*a}" height="${m*a}" />`),o.fudgeFactor>0){const $=t.originalStockBounds.xMin,A=t.originalStockBounds.xMax,S=t.originalStockBounds.yMin,M=t.originalStockBounds.yMax,I=A-$,D=M-S,F=I+2*o.fudgeFactor,q=D+2*o.fudgeFactor,R=o.fudgeFactor,T=o.fudgeFactor;c.push(`<rect fill="${r}" opacity="0.2" x="${f($-R)}" y="${h(M+T)}" width="${F*a}" height="${T*a}" />`),c.push(`<rect fill="${r}" opacity="0.2" x="${f($-R)}" y="${h(S)}" width="${F*a}" height="${T*a}" />`),c.push(`<rect fill="${r}" opacity="0.2" x="${f($-R)}" y="${h(M)}" width="${R*a}" height="${D*a}" />`),c.push(`<rect fill="${r}" opacity="0.2" x="${f(A)}" y="${h(M)}" width="${R*a}" height="${D*a}" />`),c.push(`<rect fill="none" stroke="${r}" stroke-width="2" stroke-dasharray="4,4" x="${f($-R)}" y="${h(M+T)}" width="${F*a}" height="${q*a}" />`)}const b=t.passes[0];if(b){b.lines.forEach((S,M)=>{if(o.rasterDirection==="x"){const I=f(S.xStart),D=h(S.y),F=f(S.xEnd),q=h(S.y);c.push(`<line class="raster" x1="${I}" y1="${D}" x2="${F}" y2="${q}" />`);const R=(I+F)/2,T=(D+q)/2,C=6,B=S.direction==="positive"?1:-1;if(c.push(`<polygon class="arrow" points="${R+B*C},${T} ${R-B*C/2},${T-C/2} ${R-B*C/2},${T+C/2}" />`),M<b.lines.length-1){const W=b.lines[M+1],j=f(W.xStart),z=h(W.y);c.push(`<line class="stepover" x1="${F}" y1="${q}" x2="${j}" y2="${z}" />`)}}else{const I=f(S.x),D=h(S.yStart),F=f(S.x),q=h(S.yEnd);c.push(`<line class="raster" x1="${I}" y1="${D}" x2="${F}" y2="${q}" />`);const R=(I+F)/2,T=(D+q)/2,C=6,B=S.direction==="positive"?1:-1;if(c.push(`<polygon class="arrow" points="${R},${T-B*C} ${R-C/2},${T+B*C/2} ${R+C/2},${T+B*C/2}" />`),M<b.lines.length-1){const W=b.lines[M+1],j=f(W.x),z=h(W.yStart);c.push(`<line class="stepover" x1="${F}" y1="${q}" x2="${j}" y2="${z}" />`)}}});const $=b.lines[0];if($){const S=o.rasterDirection==="x"?$.xStart:$.x,M=o.rasterDirection==="x"?$.y:$.yStart;c.push(`<circle class="start" cx="${f(S)}" cy="${h(M)}" r="5" />`)}const A=b.lines[b.lines.length-1];if(A){const S=o.rasterDirection==="x"?A.xEnd:A.x,M=o.rasterDirection==="x"?A.y:A.yEnd;c.push(`<circle class="end" cx="${f(S)}" cy="${h(M)}" r="5" />`)}}const P=f(t.originalStockBounds.xMin),X=f(t.originalStockBounds.xMax),E=h(t.originalStockBounds.yMax),N=h(t.originalStockBounds.yMin),Z=(P+X)/2,J=N-10,K=it(o.stockWidth);c.push(`<text class="dimension-halo" x="${Z}" y="${J}" text-anchor="middle">${K}</text>`),c.push(`<text class="dimension-text" x="${Z}" y="${J}" text-anchor="middle">${K}</text>`);const _=P+10,Q=(E+N)/2,tt=it(o.stockHeight);return c.push(`<text class="dimension-halo" x="${_}" y="${Q}" text-anchor="start" dominant-baseline="middle">${tt}</text>`),c.push(`<text class="dimension-text" x="${_}" y="${Q}" text-anchor="start" dominant-baseline="middle">${tt}</text>`),c.push("</svg>"),c.join(`
-`)}const O={amber:{hex:"#f59e0b",glow:"rgba(245, 158, 11, 0.15)"},purple:{hex:"#a855f7",glow:"rgba(168, 85, 247, 0.15)"},green:{hex:"#10b981",glow:"rgba(16, 185, 129, 0.15)"},blue:{hex:"#3b82f6",glow:"rgba(59, 130, 246, 0.15)"},red:{hex:"#ef4444",glow:"rgba(239, 68, 68, 0.15)"},cyan:{hex:"#06b6d4",glow:"rgba(6, 182, 212, 0.15)"},pink:{hex:"#ec4899",glow:"rgba(236, 72, 153, 0.15)"},gray:{hex:"#d1d5db",glow:"rgba(209, 213, 219, 0.15)"}},lt="rastermaster-theme";function dt(t){const e=O[t];if(!e){console.warn(`Unknown color: ${t}`);return}document.documentElement.style.setProperty("--color-accent-amber",e.hex),document.documentElement.style.setProperty("--color-accent-amber-glow",e.glow),document.body.setAttribute("data-user-theme",t)}function bt(t){try{localStorage.setItem(lt,t)}catch(e){console.warn("Failed to save theme:",e)}}function yt(){try{const t=localStorage.getItem(lt);if(t&&t in O)return dt(t),t}catch(t){console.warn("Failed to load theme:",t)}return null}function xt(){const t=document.body.getAttribute("data-user-theme");return t&&t in O?t:document.body.classList.contains("is-dev")?"purple":"amber"}const ut="rastermaster-tool-settings";function V(t){try{localStorage.setItem(ut,JSON.stringify(t))}catch(e){console.warn("Failed to save tool settings:",e)}}function rt(){try{const t=localStorage.getItem(ut);if(!t)return null;const e=JSON.parse(t),n=["bitDiameter","stepoverPercent","feedRate","plungeRate","spindleRpm","retractHeight","depthPerPass"];for(const d of n)if(typeof e[d]!="number")return null;return e}catch(t){return console.warn("Failed to load tool settings:",t),null}}function $t(t){const e=JSON.stringify(t);return`#tool=${btoa(e)}`}function at(t){if(!t.startsWith("#tool="))throw new Error("Invalid URL format: must start with #tool=");const e=t.slice(6),n=atob(e),d=JSON.parse(n),o=["bitDiameter","stepoverPercent","feedRate","plungeRate","spindleRpm","retractHeight","depthPerPass"];for(const s of o)if(typeof d[s]!="number")throw new Error(`Invalid or missing field: ${s}`);return d}function ct(t){return{bitDiameter:t.bitDiameter,stepoverPercent:t.stepoverPercent,feedRate:t.feedRate,plungeRate:t.plungeRate,spindleRpm:t.spindleRpm,retractHeight:t.retractHeight,depthPerPass:t.depthPerPass}}function G(t,e="success"){const n=document.createElement("div");n.className=`toast toast-${e}`,n.textContent=t,document.body.appendChild(n),setTimeout(()=>n.classList.add("show"),10),setTimeout(()=>{n.classList.remove("show"),setTimeout(()=>n.remove(),300)},3e3)}function wt(){const t=document.querySelector("#app");yt(),t.innerHTML=`
+  `,document.body.appendChild(e);let s=null,u=null,o=!1;const n=(m,h=!1)=>{const p=m.getAttribute("data-tooltip");if(!p)return;s=m;const x=e.querySelector(".blueprint-tooltip-text");x.textContent=p;const d=h?0:200;u&&clearTimeout(u),u=window.setTimeout(()=>{l(m,e),e.classList.add("visible")},d)},r=()=>{u&&clearTimeout(u),e.classList.remove("visible"),s=null,o=!1},l=(m,h)=>{const p=m.getBoundingClientRect(),x=h.querySelector(".blueprint-tooltip-content");h.style.visibility="hidden",h.style.display="block";const d=x.getBoundingClientRect();h.style.visibility="",h.style.display="";const v=16,g=32,F=window.innerWidth-p.right,R=p.left,b=p.top;window.innerHeight-p.bottom;let y,a,f;F>d.width+v+g?(f="right",a=p.right+v+g,y=p.top+p.height/2-d.height/2):R>d.width+v+g?(f="left",a=p.left-v-g-d.width,y=p.top+p.height/2-d.height/2):b>d.height+v+g?(f="above",a=p.left+p.width/2-d.width/2,y=p.top-v-g-d.height):(f="below",a=p.left+p.width/2-d.width/2,y=p.bottom+v+g),a=Math.max(8,Math.min(a,window.innerWidth-d.width-8)),y=Math.max(8,Math.min(y,window.innerHeight-d.height-8)),h.setAttribute("data-position",f),h.style.left=`${a}px`,h.style.top=`${y}px`;const i=h.querySelector(".blueprint-tooltip-leader");if(f==="right"||f==="left"){const c=p.top+p.height/2-y;if(i.style.top=`${c}px`,f==="right"){const $=a-p.right;i.style.left=`-${$}px`,i.style.width=`${$}px`}else{const $=p.left-(a+d.width);i.style.left=`${d.width}px`,i.style.width=`${$}px`}}else{const c=p.left+p.width/2-a;i.style.left=`${c}px`,i.style.top=f==="below"?`-${g}px`:`${d.height}px`}};t.addEventListener("mouseenter",m=>{const h=m.target.closest("[data-tooltip]");h&&!s&&(o=!0,n(h,!1))},!0),t.addEventListener("mouseleave",m=>{const h=m.target.closest("[data-tooltip]");h&&s===h&&(o=!1,setTimeout(()=>{o||r()},50))},!0),t.addEventListener("focusin",m=>{const h=m.target.closest("[data-tooltip]");h&&n(h,!0)},!0),t.addEventListener("focusout",m=>{const h=m.target.closest("[data-tooltip]");h&&s===h&&setTimeout(()=>{document.activeElement&&!document.activeElement.hasAttribute("data-tooltip")&&r()},50)},!0),window.addEventListener("scroll",()=>{s&&l(s,e)},!0),window.addEventListener("resize",()=>{s&&l(s,e)})}function ot(t){const e=t.fudgeFactor,s=t.fudgeFactor,u=-e,o=t.stockWidth+e,n=-s,r=t.stockHeight+s,l=t.bitDiameter*(t.stepoverPercent/100),m=t.bitDiameter/2,h=m-l;let p,x,d,v;t.rasterDirection==="x"?(p=u-m,x=o+m,d=n-h,v=r+h):(p=u-h,x=o+h,d=n-m,v=r+m);let g=[];if(t.rasterDirection==="x"){let f=d;do g.push(f),f+=l;while(g[g.length-1]<v)}else{let f=p;do g.push(f),f+=l;while(g[g.length-1]<x)}const F=()=>g.map((f,i)=>{const c=i%2===0;return t.rasterDirection==="x"?{y:f,xStart:c?p:x,xEnd:c?x:p,direction:c?"positive":"negative"}:{x:f,yStart:c?d:v,yEnd:c?v:d,direction:c?"positive":"negative"}}),R=t.totalDepth>0?Math.ceil(t.totalDepth/t.depthPerPass-1e-9):0,b=[];t.skimPass&&b.push({z:0,type:"skim"});for(let f=1;f<=R;f++){const i=-Math.min(f*t.depthPerPass,t.totalDepth);b.push({z:i,type:"depth"})}const y=b.length;return{passes:b.map((f,i)=>{const c=t.pauseInterval>0&&(i+1)%t.pauseInterval===0&&i<y-1;return{z:f.z,type:f.type,lines:F(),pauseAfter:c}}),bounds:{xMin:p,xMax:x,yMin:d,yMax:v},originalStockBounds:{xMin:0,xMax:t.stockWidth,yMin:0,yMax:t.stockHeight},params:t}}function gt(t){const{params:e}=t,s=[];s.push("; Surfacing operation"),s.push(`; Stock: ${e.stockWidth}" x ${e.stockHeight}"`),s.push(`; Bit: ${e.bitDiameter}" fly cutter`),s.push(`; Stepover: ${e.stepoverPercent}%`),s.push(""),s.push("G90 ; Absolute positioning"),s.push("G20 ; Inches"),s.push(`M3 S${e.spindleRpm} ; Spindle on`),s.push(`G0 Z${L(e.retractHeight)} ; Retract to safe Z`);const u=t.passes[0]?.lines[0],o=e.rasterDirection==="x"?u?.xStart??t.bounds.xMin:u?.x??t.bounds.xMin,n=e.rasterDirection==="x"?u?.y??t.bounds.yMin:u?.yStart??t.bounds.yMin;return s.push(`G0 X${L(o)} Y${L(n)} ; Move to start`),s.push(""),t.passes.forEach((r,l)=>{s.push(`; Pass ${l+1} at Z=${L(r.z)}`),s.push(...ft(r,e.retractHeight,e.feedRate,e.plungeRate,e.rasterDirection)),r.pauseAfter&&s.push("M0 ; Pause - press resume to continue or stop to end"),s.push("")}),s.push(`G0 Z${L(e.retractHeight)} ; Final retract`),s.push("M5 ; Spindle off"),s.push("M30 ; Program end"),s.join(`
+`)}function ft(t,e,s,u,o){const n=[];return t.lines.forEach((r,l)=>{o==="x"?l===0?(n.push(`G0 Y${L(r.y)}`),n.push(`G0 X${L(r.xStart)}`),n.push(`G1 Z${L(t.z)} F${u} ; Plunge`),n.push(`G1 X${L(r.xEnd)} F${s} ; Cut`)):(n.push(`G1 Y${L(r.y)} F${s} ; Stepover`),n.push(`G1 X${L(r.xEnd)} F${s} ; Cut`)):l===0?(n.push(`G0 X${L(r.x)}`),n.push(`G0 Y${L(r.yStart)}`),n.push(`G1 Z${L(t.z)} F${u} ; Plunge`),n.push(`G1 Y${L(r.yEnd)} F${s} ; Cut`)):(n.push(`G1 X${L(r.x)} F${s} ; Stepover`),n.push(`G1 Y${L(r.yEnd)} F${s} ; Cut`))}),n}function L(t){return t.toFixed(4).replace(/\.?0+$/,"")}function it(t){const e=Math.round(t*100)/100;return e%1===0?`${e}"`:`${e.toFixed(2).replace(/\.?0+$/,"")}"`}function vt(t){const{passes:e,params:s}=t;if(e.length===0)return"";const u=e.map((r,l)=>{const m=r.type==="skim"?"pass-row-skim":"pass-row-depth",h=r.type==="skim"?"SKIM":"DEPTH",p=r.z===0?"Z 0":`Z ${r.z.toFixed(4).replace(/0+$/,"").replace(/\.$/,'"')}`,x=r.pauseAfter?' <span class="pass-pause-mark" title="Pause after this pass">M0</span>':"";return`<tr class="pass-row ${m}">
+      <td class="pass-num">${l+1}</td>
+      <td class="pass-type">${h}</td>
+      <td class="pass-z">${p}"${x}</td>
+    </tr>`}).join(`
+`),o=s.totalDepth>0?`${s.totalDepth}"`:"";return`<div class="pass-schedule">
+  <div class="pass-schedule-header">
+    <span class="pass-schedule-title">Pass Schedule</span>
+    <span class="pass-schedule-subtitle">${o?`${e.length} passes &mdash; ${o} total`:`${e.length} pass`}</span>
+  </div>
+  <table class="pass-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>TYPE</th>
+        <th>Z DEPTH</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${u}
+    </tbody>
+  </table>
+</div>`}function yt(t,e,s){const{bounds:u,params:o}=t,n=20,r=getComputedStyle(document.body).getPropertyValue("--color-accent-amber").trim()||"#f59e0b";let l={...u};if(o.fudgeFactor>0){const w=o.fudgeFactor;l.xMin=Math.min(u.xMin,t.originalStockBounds.xMin-w),l.xMax=Math.max(u.xMax,t.originalStockBounds.xMax+w),l.yMin=Math.min(u.yMin,t.originalStockBounds.yMin-w),l.yMax=Math.max(u.yMax,t.originalStockBounds.yMax+w)}const m=l.xMax-l.xMin,h=l.yMax-l.yMin,p=(e-2*n)/m,x=(s-2*n)/h,d=Math.min(p,x),v=m*d,g=h*d,F=(e-v)/2,R=(s-g)/2,b=w=>F+(w-l.xMin)*d,y=w=>s-R-(w-l.yMin)*d,a=[];a.push(`<svg width="${e}" height="${s}" xmlns="http://www.w3.org/2000/svg">`),a.push("<style>"),a.push("  .raster { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .stepover { stroke: #2196F3; stroke-width: 1.5; opacity: 0.7; }"),a.push("  .arrow { fill: #2196F3; opacity: 0.8; }"),a.push("  .start { fill: #4CAF50; }"),a.push("  .end { fill: #F44336; }"),a.push("  .dimension-text { fill: #666; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),a.push("  .dimension-halo { stroke: white; stroke-width: 4px; stroke-linejoin: round; stroke-linecap: round; fill: white; font-size: 14px; font-family: Arial, sans-serif; font-weight: bold; }"),a.push("</style>");const f=t.originalStockBounds.xMax-t.originalStockBounds.xMin,i=t.originalStockBounds.yMax-t.originalStockBounds.yMin;if(a.push(`<rect fill="#e5e7eb" stroke="#8b7355" stroke-width="2" x="${b(t.originalStockBounds.xMin)}" y="${y(t.originalStockBounds.yMax)}" width="${f*d}" height="${i*d}" />`),o.fudgeFactor>0){const w=t.originalStockBounds.xMin,q=t.originalStockBounds.xMax,k=t.originalStockBounds.yMin,M=t.originalStockBounds.yMax,A=q-w,C=M-k,E=A+2*o.fudgeFactor,H=C+2*o.fudgeFactor,P=o.fudgeFactor,T=o.fudgeFactor;a.push(`<rect fill="${r}" opacity="0.2" x="${b(w-P)}" y="${y(M+T)}" width="${E*d}" height="${T*d}" />`),a.push(`<rect fill="${r}" opacity="0.2" x="${b(w-P)}" y="${y(k)}" width="${E*d}" height="${T*d}" />`),a.push(`<rect fill="${r}" opacity="0.2" x="${b(w-P)}" y="${y(M)}" width="${P*d}" height="${C*d}" />`),a.push(`<rect fill="${r}" opacity="0.2" x="${b(q)}" y="${y(M)}" width="${P*d}" height="${C*d}" />`),a.push(`<rect fill="none" stroke="${r}" stroke-width="2" stroke-dasharray="4,4" x="${b(w-P)}" y="${y(M+T)}" width="${E*d}" height="${H*d}" />`)}const c=t.passes[0];if(c){c.lines.forEach((k,M)=>{if(o.rasterDirection==="x"){const A=b(k.xStart),C=y(k.y),E=b(k.xEnd),H=y(k.y);a.push(`<line class="raster" x1="${A}" y1="${C}" x2="${E}" y2="${H}" />`);const P=(A+E)/2,T=(C+H)/2,D=6,I=k.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${P+I*D},${T} ${P-I*D/2},${T-D/2} ${P-I*D/2},${T+D/2}" />`),M<c.lines.length-1){const W=c.lines[M+1],j=b(W.xStart),V=y(W.y);a.push(`<line class="stepover" x1="${E}" y1="${H}" x2="${j}" y2="${V}" />`)}}else{const A=b(k.x),C=y(k.yStart),E=b(k.x),H=y(k.yEnd);a.push(`<line class="raster" x1="${A}" y1="${C}" x2="${E}" y2="${H}" />`);const P=(A+E)/2,T=(C+H)/2,D=6,I=k.direction==="positive"?1:-1;if(a.push(`<polygon class="arrow" points="${P},${T-I*D} ${P-D/2},${T+I*D/2} ${P+D/2},${T+I*D/2}" />`),M<c.lines.length-1){const W=c.lines[M+1],j=b(W.x),V=y(W.yStart);a.push(`<line class="stepover" x1="${E}" y1="${H}" x2="${j}" y2="${V}" />`)}}});const w=c.lines[0];if(w){const k=o.rasterDirection==="x"?w.xStart:w.x,M=o.rasterDirection==="x"?w.y:w.yStart;a.push(`<circle class="start" cx="${b(k)}" cy="${y(M)}" r="5" />`)}const q=c.lines[c.lines.length-1];if(q){const k=o.rasterDirection==="x"?q.xEnd:q.x,M=o.rasterDirection==="x"?q.y:q.yEnd;a.push(`<circle class="end" cx="${b(k)}" cy="${y(M)}" r="5" />`)}}const $=b(t.originalStockBounds.xMin),X=b(t.originalStockBounds.xMax),U=y(t.originalStockBounds.yMax),Y=y(t.originalStockBounds.yMin),Z=($+X)/2,J=Y-10,K=it(o.stockWidth);a.push(`<text class="dimension-halo" x="${Z}" y="${J}" text-anchor="middle">${K}</text>`),a.push(`<text class="dimension-text" x="${Z}" y="${J}" text-anchor="middle">${K}</text>`);const _=$+10,Q=(U+Y)/2,tt=it(o.stockHeight);return a.push(`<text class="dimension-halo" x="${_}" y="${Q}" text-anchor="start" dominant-baseline="middle">${tt}</text>`),a.push(`<text class="dimension-text" x="${_}" y="${Q}" text-anchor="start" dominant-baseline="middle">${tt}</text>`),a.push("</svg>"),a.join(`
+`)}const O={amber:{hex:"#f59e0b",glow:"rgba(245, 158, 11, 0.15)"},purple:{hex:"#a855f7",glow:"rgba(168, 85, 247, 0.15)"},green:{hex:"#10b981",glow:"rgba(16, 185, 129, 0.15)"},blue:{hex:"#3b82f6",glow:"rgba(59, 130, 246, 0.15)"},red:{hex:"#ef4444",glow:"rgba(239, 68, 68, 0.15)"},cyan:{hex:"#06b6d4",glow:"rgba(6, 182, 212, 0.15)"},pink:{hex:"#ec4899",glow:"rgba(236, 72, 153, 0.15)"},gray:{hex:"#d1d5db",glow:"rgba(209, 213, 219, 0.15)"}},lt="rastermaster-theme";function dt(t){const e=O[t];if(!e){console.warn(`Unknown color: ${t}`);return}document.documentElement.style.setProperty("--color-accent-amber",e.hex),document.documentElement.style.setProperty("--color-accent-amber-glow",e.glow),document.body.setAttribute("data-user-theme",t)}function bt(t){try{localStorage.setItem(lt,t)}catch(e){console.warn("Failed to save theme:",e)}}function xt(){try{const t=localStorage.getItem(lt);if(t&&t in O)return dt(t),t}catch(t){console.warn("Failed to load theme:",t)}return null}function $t(){const t=document.body.getAttribute("data-user-theme");return t&&t in O?t:document.body.classList.contains("is-dev")?"purple":"amber"}const ut="rastermaster-tool-settings";function N(t){try{localStorage.setItem(ut,JSON.stringify(t))}catch(e){console.warn("Failed to save tool settings:",e)}}function rt(){try{const t=localStorage.getItem(ut);if(!t)return null;const e=JSON.parse(t),s=["bitDiameter","stepoverPercent","feedRate","plungeRate","spindleRpm","retractHeight","depthPerPass"];for(const u of s)if(typeof e[u]!="number")return null;return e}catch(t){return console.warn("Failed to load tool settings:",t),null}}function wt(t){const e=JSON.stringify(t);return`#tool=${btoa(e)}`}function at(t){if(!t.startsWith("#tool="))throw new Error("Invalid URL format: must start with #tool=");const e=t.slice(6),s=atob(e),u=JSON.parse(s),o=["bitDiameter","stepoverPercent","feedRate","plungeRate","spindleRpm","retractHeight","depthPerPass"];for(const n of o)if(typeof u[n]!="number")throw new Error(`Invalid or missing field: ${n}`);return u}function ct(t){return{bitDiameter:t.bitDiameter,stepoverPercent:t.stepoverPercent,feedRate:t.feedRate,plungeRate:t.plungeRate,spindleRpm:t.spindleRpm,retractHeight:t.retractHeight,depthPerPass:t.depthPerPass}}function z(t,e="success"){const s=document.createElement("div");s.className=`toast toast-${e}`,s.textContent=t,document.body.appendChild(s),setTimeout(()=>s.classList.add("show"),10),setTimeout(()=>{s.classList.remove("show"),setTimeout(()=>s.remove(),300)},3e3)}function St(){const t=document.querySelector("#app");xt(),t.innerHTML=`
     <div class="app-content">
       <div class="header">
         <h1 class="title">RasterMaster</h1>
@@ -1724,6 +1842,7 @@
         <div id="form-container"></div>
         <div class="preview-container">
           <div id="preview"></div>
+          <div id="pass-list"></div>
           <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
         </div>
       </div>
@@ -1740,11 +1859,11 @@
           <div class="settings-section">
             <h3>Color Palette</h3>
             <div class="palette-grid" id="paletteGrid">
-              ${Object.entries(O).map(([i,m])=>`
+              ${Object.entries(O).map(([i,c])=>`
                 <button 
                   class="palette-swatch" 
                   data-color="${i}"
-                  style="--swatch-color: ${m.hex}"
+                  style="--swatch-color: ${c.hex}"
                   title="${i.charAt(0).toUpperCase()+i.slice(1)}"
                   aria-label="Select ${i} theme"
                 ></button>
@@ -1754,7 +1873,7 @@
         </div>
       </div>
     </div>
-  `;const e=t.querySelector("#form-container"),n=t.querySelector("#preview"),d=t.querySelector("#generateBtn"),o=t.querySelector("#menuTrigger"),s=t.querySelector("#menuDropdown"),r=t.querySelector("#newMenuItem"),l=t.querySelector("#copyToolUrlMenuItem"),v=t.querySelector("#importToolUrlMenuItem"),g=t.querySelector("#settingsMenuItem"),u=t.querySelector("#settingsModal"),w=t.querySelector("#settingsClose"),a=t.querySelectorAll(".palette-swatch");let p={};function y(){const i=xt();a.forEach(m=>{m.getAttribute("data-color")===i?m.classList.add("active"):m.classList.remove("active")})}function L(){if(!st(p)){n.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',d.disabled=!0;return}const i=et(p),m=ot(i),b=n.getBoundingClientRect(),P=vt(m,b.width||500,b.height||375);n.innerHTML=P,d.disabled=!1}let H;function f(i){H&&clearTimeout(H),H=setTimeout(()=>{const m=ct(i);Object.values(m).some(b=>b!==void 0)&&V(m)},500)}const h=pt(i=>{p=i,L(),f(i)});if(e.appendChild(h),window.location.hash.startsWith("#tool="))try{const i=at(window.location.hash);V(i),U(h,i),p=Y(h),L(),window.history.replaceState(null,"",window.location.pathname),console.log("Tool settings imported from URL")}catch(i){console.error("Failed to import from URL hash:",i)}else{const i=rt();i&&(U(h,i),p=Y(h),L())}o.addEventListener("click",i=>{i.stopPropagation(),s.classList.toggle("open"),o.classList.toggle("active")}),document.addEventListener("click",()=>{s.classList.remove("open"),o.classList.remove("active")}),s.addEventListener("click",i=>{i.stopPropagation()}),r.addEventListener("click",()=>{ht(h,m=>{p=m,L()});const i=rt();i&&(U(h,i),p=Y(h),L()),s.classList.remove("open"),o.classList.remove("active")}),l.addEventListener("click",async()=>{const i=ct(p);if(Object.values(i).some(m=>m!==void 0)){const m=window.location.origin+window.location.pathname+$t(i);try{await navigator.clipboard.writeText(m),G("Tool URL copied to clipboard")}catch(b){console.error("Failed to copy URL:",b),G("Failed to copy URL","error")}}s.classList.remove("open"),o.classList.remove("active")}),v.addEventListener("click",()=>{const i=prompt("Paste the tool URL:");if(i)try{const m=i.includes("#")?"#"+i.split("#")[1]:i,b=at(m);V(b),U(h,b),p=Y(h),L(),G("Tool settings imported successfully")}catch(m){console.error("Failed to import URL:",m),G("Invalid tool URL","error")}s.classList.remove("open"),o.classList.remove("active")}),g.addEventListener("click",()=>{u.classList.add("open"),y(),s.classList.remove("open"),o.classList.remove("active")});function c(){u.classList.remove("open")}w.addEventListener("click",c),u.addEventListener("click",i=>{i.target===u&&c()}),u.querySelector(".settings-panel").addEventListener("click",i=>{i.stopPropagation()}),a.forEach(i=>{i.addEventListener("click",()=>{const m=i.getAttribute("data-color");m&&(dt(m),bt(m),y())})}),y(),d.addEventListener("click",()=>{if(!st(p))return;const i=et(p),m=ot(i),b=gt(m),P=new Blob([b],{type:"text/plain"}),X=URL.createObjectURL(P),E=document.createElement("a");E.href=X,E.download=`rastermaster-${i.stockWidth}x${i.stockHeight}.gcode`,E.click(),URL.revokeObjectURL(X)}),L()}wt();</script>
+  `;const e=t.querySelector("#form-container"),s=t.querySelector("#preview"),u=t.querySelector("#pass-list"),o=t.querySelector("#generateBtn"),n=t.querySelector("#menuTrigger"),r=t.querySelector("#menuDropdown"),l=t.querySelector("#newMenuItem"),m=t.querySelector("#copyToolUrlMenuItem"),h=t.querySelector("#importToolUrlMenuItem"),p=t.querySelector("#settingsMenuItem"),x=t.querySelector("#settingsModal"),d=t.querySelector("#settingsClose"),v=t.querySelectorAll(".palette-swatch");let g={};function F(){const i=$t();v.forEach(c=>{c.getAttribute("data-color")===i?c.classList.add("active"):c.classList.remove("active")})}function R(){if(!nt(g)){s.innerHTML='<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>',u.innerHTML="",o.disabled=!0;return}const i=et(g),c=ot(i),$=s.getBoundingClientRect(),X=yt(c,$.width||500,$.height||375);s.innerHTML=X,u.innerHTML=vt(c),o.disabled=!1}let b;function y(i){b&&clearTimeout(b),b=setTimeout(()=>{const c=ct(i);Object.values(c).some($=>$!==void 0)&&N(c)},500)}const a=pt(i=>{g=i,R(),y(i)});if(e.appendChild(a),window.location.hash.startsWith("#tool="))try{const i=at(window.location.hash);N(i),G(a,i),g=B(a),R(),window.history.replaceState(null,"",window.location.pathname),console.log("Tool settings imported from URL")}catch(i){console.error("Failed to import from URL hash:",i)}else{const i=rt();i&&(G(a,i),g=B(a),R())}n.addEventListener("click",i=>{i.stopPropagation(),r.classList.toggle("open"),n.classList.toggle("active")}),document.addEventListener("click",()=>{r.classList.remove("open"),n.classList.remove("active")}),r.addEventListener("click",i=>{i.stopPropagation()}),l.addEventListener("click",()=>{ht(a,c=>{g=c,R()});const i=rt();i&&(G(a,i),g=B(a),R()),r.classList.remove("open"),n.classList.remove("active")}),m.addEventListener("click",async()=>{const i=ct(g);if(Object.values(i).some(c=>c!==void 0)){const c=window.location.origin+window.location.pathname+wt(i);try{await navigator.clipboard.writeText(c),z("Tool URL copied to clipboard")}catch($){console.error("Failed to copy URL:",$),z("Failed to copy URL","error")}}r.classList.remove("open"),n.classList.remove("active")}),h.addEventListener("click",()=>{const i=prompt("Paste the tool URL:");if(i)try{const c=i.includes("#")?"#"+i.split("#")[1]:i,$=at(c);N($),G(a,$),g=B(a),R(),z("Tool settings imported successfully")}catch(c){console.error("Failed to import URL:",c),z("Invalid tool URL","error")}r.classList.remove("open"),n.classList.remove("active")}),p.addEventListener("click",()=>{x.classList.add("open"),F(),r.classList.remove("open"),n.classList.remove("active")});function f(){x.classList.remove("open")}d.addEventListener("click",f),x.addEventListener("click",i=>{i.target===x&&f()}),x.querySelector(".settings-panel").addEventListener("click",i=>{i.stopPropagation()}),v.forEach(i=>{i.addEventListener("click",()=>{const c=i.getAttribute("data-color");c&&(dt(c),bt(c),F())})}),F(),o.addEventListener("click",()=>{if(!nt(g))return;const i=et(g),c=ot(i),$=gt(c),X=new Blob([$],{type:"text/plain"}),U=URL.createObjectURL(X),Y=document.createElement("a");Y.href=U,Y.download=`rastermaster-${i.stockWidth}x${i.stockHeight}.gcode`,Y.click(),URL.revokeObjectURL(U)}),R()}St();</script>
 </head>
 
 <body>
