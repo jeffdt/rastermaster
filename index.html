@@ -833,6 +833,105 @@
       font-family: var(--font-mono);
     }
 
+    /* Pass Schedule */
+    .pass-schedule {
+      margin-top: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pass-schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--color-surface-elevated);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-schedule-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+    }
+
+    .pass-schedule-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .pass-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .pass-table thead tr {
+      background: var(--color-surface-elevated);
+    }
+
+    .pass-table th {
+      padding: 6px 14px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-table td {
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pass-num {
+      color: var(--color-text-muted);
+      width: 32px;
+    }
+
+    .pass-type {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      width: 64px;
+    }
+
+    .pass-z {
+      color: var(--color-text-primary);
+    }
+
+    .pass-row-skim .pass-type {
+      color: var(--color-accent-amber);
+    }
+
+    .pass-row-depth .pass-type {
+      color: var(--color-steel-blue);
+    }
+
+    .pass-pause-mark {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 3px;
+      padding: 1px 4px;
+      margin-left: 6px;
+    }
+
     /* Settings Modal */
     .settings-modal {
       position: fixed;

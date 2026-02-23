@@ -98,7 +98,9 @@ describe('generateGCode', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      numPasses: 2,
+      skimPass: false,
+      totalDepth: 0.02,
+      depthPerPass: 0.01,
       pauseInterval: 1, // pause every pass
     })
     const toolpath = calculateToolpath(params)
@@ -133,8 +135,9 @@ describe('generateGCode', () => {
       bitDiameter: 1,
       stepoverPercent: 50,
       rasterDirection: 'x',
-      numPasses: 1,
       skimPass: false,
+      totalDepth: 0.01,
+      depthPerPass: 0.01,
     })
     const toolpath = calculateToolpath(params)
     const gcode = generateGCode(toolpath)
@@ -152,8 +155,9 @@ describe('generateGCode', () => {
       bitDiameter: 1,
       stepoverPercent: 50,
       rasterDirection: 'y',
-      numPasses: 1,
       skimPass: false,
+      totalDepth: 0.01,
+      depthPerPass: 0.01,
     })
     const toolpath = calculateToolpath(params)
     const gcode = generateGCode(toolpath)

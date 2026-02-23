@@ -40,20 +40,16 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
       <div class="form-column form-column-hidden" aria-hidden="true">
         <h3>Job</h3>
         <div class="form-row checkbox-row">
-          <input type="checkbox" id="skimPass" data-tooltip="First pass at Z=0 before depth cuts. Prevents deep initial engagement on uneven stock.">
+          <input type="checkbox" id="skimPass" checked data-tooltip="First pass at Z=0 before depth cuts. Prevents deep initial engagement on uneven stock.">
           <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
-          <label for="numPasses"># Passes</label>
-          <div class="number-control">
-            <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
-            <input type="number" id="numPasses" value="${DEFAULT_PARAMS.numPasses}" step="1" min="1" data-tooltip="Depth passes to complete the cut. Total depth = passes × depth per pass. Excludes skim pass.">
-            <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
-          </div>
-          <span class="unit"></span>
+          <label for="totalDepth">Total Depth</label>
+          <input type="text" id="totalDepth" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" data-tooltip="Total material to remove. Leave blank for skim-only run.">
+          <span class="unit">in</span>
         </div>
         <div class="form-row">
-          <label for="depthPerPass">Depth per Pass</label>
+          <label for="depthPerPass">Max Depth/Pass</label>
           <input type="text" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
           <span class="unit">in</span>
         </div>
@@ -222,7 +218,7 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
     stepoverPercent: getValue('stepoverPercent'),
     rasterDirection: getRadio('rasterDirection') as 'x' | 'y',
     skimPass: getChecked('skimPass'),
-    numPasses: getValue('numPasses'),
+    totalDepth: isNaN(getValue('totalDepth')) ? 0 : getValue('totalDepth'),
     depthPerPass: getValue('depthPerPass'),
     pauseInterval: getValue('pauseInterval'),
     feedRate: getValue('feedRate'),
@@ -261,7 +257,7 @@ export function resetForm(form: HTMLElement, onUpdate: (params: Partial<Surfacin
   setValue('fudgeFactor', DEFAULT_PARAMS.fudgeFactor.toString())
   setValue('bitDiameter', DEFAULT_PARAMS.bitDiameter.toString())
   setValue('stepoverPercent', DEFAULT_PARAMS.stepoverPercent.toString())
-  setValue('numPasses', DEFAULT_PARAMS.numPasses.toString())
+  setValue('totalDepth', '')
   setValue('depthPerPass', DEFAULT_PARAMS.depthPerPass.toString())
   setValue('pauseInterval', DEFAULT_PARAMS.pauseInterval.toString())
   setValue('feedRate', DEFAULT_PARAMS.feedRate.toString())
@@ -270,7 +266,7 @@ export function resetForm(form: HTMLElement, onUpdate: (params: Partial<Surfacin
   setValue('retractHeight', DEFAULT_PARAMS.retractHeight.toString())
 
   setRadio('rasterDirection', DEFAULT_PARAMS.rasterDirection)
-  setChecked('skimPass', DEFAULT_PARAMS.skimPass)
+  setChecked('skimPass', DEFAULT_PARAMS.skimPass) // defaults to true
 
   // Note: We do NOT re-hide the Job/Tool columns - animation should not repeat
   // The columns stay visible after first reveal
@@ -324,11 +320,15 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
   if (!params.stepoverPercent || params.stepoverPercent < 10 || params.stepoverPercent > 100 || isNaN(params.stepoverPercent)) {
     errors.push('Stepover must be between 10% and 100%')
   }
-  if (!params.numPasses || params.numPasses < 1 || isNaN(params.numPasses)) {
-    errors.push('Number of passes must be at least 1')
+  const hasDepth = params.totalDepth !== undefined && params.totalDepth > 0 && !isNaN(params.totalDepth)
+  const hasSkim = params.skimPass === true
+  if (!hasDepth && !hasSkim) {
+    errors.push('Enable skim pass or set a total depth greater than 0')
   }
-  if (!params.depthPerPass || params.depthPerPass <= 0 || isNaN(params.depthPerPass)) {
-    errors.push('Depth per pass must be greater than 0')
+  if (hasDepth) {
+    if (!params.depthPerPass || params.depthPerPass <= 0 || isNaN(params.depthPerPass)) {
+      errors.push('Max depth per pass must be greater than 0')
+    }
   }
   if (!params.feedRate || params.feedRate <= 0 || isNaN(params.feedRate)) {
     errors.push('Feed rate must be greater than 0')

@@ -6,8 +6,8 @@ export const DEFAULT_PARAMS: Omit<SurfacingParams, 'stockWidth' | 'stockHeight'>
   bitDiameter: 1.25,
   stepoverPercent: 50,
   rasterDirection: 'x',
-  skimPass: false,
-  numPasses: 1,
+  skimPass: true,
+  totalDepth: 0,
   depthPerPass: 0.01,
   pauseInterval: 0, // 0 = disabled (no pauses)
   feedRate: 125,

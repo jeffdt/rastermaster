@@ -15,6 +15,7 @@ export interface RasterLine {
 
 export interface ZPass {
   z: number
+  type: 'skim' | 'depth'
   lines: RasterLine[]
   pauseAfter: boolean
 }
@@ -102,41 +103,52 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
     } while (linePositions[linePositions.length - 1] < xMax)
   }
 
-  // Generate Z passes
-  const passes: ZPass[] = []
-  const totalPasses = params.numPasses + (params.skimPass ? 1 : 0)
+  // Build raster lines template (same for every pass)
+  const buildLines = (): RasterLine[] => linePositions.map((pos, lineIndex) => {
+    const isEven = lineIndex % 2 === 0
 
-  for (let i = 0; i < totalPasses; i++) {
-    const isSkimPass = params.skimPass && i === 0
-    const adjustedIndex = params.skimPass ? i : i + 1
-    const z = isSkimPass ? 0 : -(adjustedIndex * params.depthPerPass)
-
-    const lines: RasterLine[] = linePositions.map((pos, lineIndex) => {
-      const isEven = lineIndex % 2 === 0
-
-      if (params.rasterDirection === 'x') {
-        return {
-          y: pos,
-          xStart: isEven ? xMin : xMax,
-          xEnd: isEven ? xMax : xMin,
-          direction: isEven ? 'positive' : 'negative',
-        }
-      } else {
-        return {
-          x: pos,
-          yStart: isEven ? yMin : yMax,
-          yEnd: isEven ? yMax : yMin,
-          direction: isEven ? 'positive' : 'negative',
-        }
+    if (params.rasterDirection === 'x') {
+      return {
+        y: pos,
+        xStart: isEven ? xMin : xMax,
+        xEnd: isEven ? xMax : xMin,
+        direction: isEven ? 'positive' : 'negative',
       }
-    })
+    } else {
+      return {
+        x: pos,
+        yStart: isEven ? yMin : yMax,
+        yEnd: isEven ? yMax : yMin,
+        direction: isEven ? 'positive' : 'negative',
+      }
+    }
+  })
 
+  // Build pass descriptors (z and type)
+  const depthPassCount = params.totalDepth > 0
+    ? Math.ceil(params.totalDepth / params.depthPerPass - 1e-9)
+    : 0
+
+  const passDescriptors: { z: number; type: 'skim' | 'depth' }[] = []
+
+  if (params.skimPass) {
+    passDescriptors.push({ z: 0, type: 'skim' })
+  }
+
+  for (let i = 1; i <= depthPassCount; i++) {
+    const z = -Math.min(i * params.depthPerPass, params.totalDepth)
+    passDescriptors.push({ z, type: 'depth' })
+  }
+
+  // Generate Z passes
+  const totalPasses = passDescriptors.length
+  const passes: ZPass[] = passDescriptors.map((desc, i) => {
     const shouldPause = params.pauseInterval > 0 &&
       (i + 1) % params.pauseInterval === 0 &&
       i < totalPasses - 1
 
-    passes.push({ z, lines, pauseAfter: shouldPause })
-  }
+    return { z: desc.z, type: desc.type, lines: buildLines(), pauseAfter: shouldPause }
+  })
 
   return {
     passes,

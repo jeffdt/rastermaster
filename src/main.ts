@@ -2,7 +2,7 @@
 import { createForm, getFormValues, isFormValid, resetForm, setFormValues } from './ui'
 import { calculateToolpath } from './toolpath'
 import { generateGCode } from './gcode'
-import { generatePreviewSVG } from './preview'
+import { generatePreviewSVG, generatePassScheduleHTML } from './preview'
 import { mergeWithDefaults } from './defaults'
 import type { SurfacingParams } from './types'
 import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
@@ -69,6 +69,7 @@ function init() {
         <div id="form-container"></div>
         <div class="preview-container">
           <div id="preview"></div>
+          <div id="pass-list"></div>
           <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
         </div>
       </div>
@@ -103,6 +104,7 @@ function init() {
 
   const formContainer = app.querySelector('#form-container')!
   const previewContainer = app.querySelector('#preview')!
+  const passListContainer = app.querySelector('#pass-list')!
   const generateBtn = app.querySelector('#generateBtn') as HTMLButtonElement
   const menuTrigger = app.querySelector('#menuTrigger') as HTMLButtonElement
   const menuDropdown = app.querySelector('#menuDropdown') as HTMLDivElement
@@ -132,6 +134,7 @@ function init() {
   function updatePreview() {
     if (!isFormValid(currentParams)) {
       previewContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>'
+      passListContainer.innerHTML = ''
       generateBtn.disabled = true
       return
     }
@@ -141,6 +144,7 @@ function init() {
     const rect = previewContainer.getBoundingClientRect()
     const svg = generatePreviewSVG(toolpath, rect.width || 500, rect.height || 375)
     previewContainer.innerHTML = svg
+    passListContainer.innerHTML = generatePassScheduleHTML(toolpath)
     generateBtn.disabled = false
   }
 

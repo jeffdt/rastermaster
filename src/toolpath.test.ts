@@ -10,7 +10,7 @@ describe('calculateToolpath', () => {
       stockHeight: 5,
       bitDiameter: 1,
       stepoverPercent: 50,
-      numPasses: 1,
+      totalDepth: 0.01,
       depthPerPass: 0.01,
       skimPass: false,
     })
@@ -54,7 +54,7 @@ describe('skim pass', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: true,
-      numPasses: 2,
+      totalDepth: 0.02,
       depthPerPass: 0.01,
     })
 
@@ -62,8 +62,11 @@ describe('skim pass', () => {
 
     expect(toolpath.passes.length).toBe(3) // skim + 2 regular
     expect(toolpath.passes[0].z).toBe(0)
+    expect(toolpath.passes[0].type).toBe('skim')
     expect(toolpath.passes[1].z).toBe(-0.01)
+    expect(toolpath.passes[1].type).toBe('depth')
     expect(toolpath.passes[2].z).toBe(-0.02)
+    expect(toolpath.passes[2].type).toBe('depth')
   })
 
   test('does not add skim pass when skimPass is false', () => {
@@ -71,7 +74,7 @@ describe('skim pass', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
-      numPasses: 2,
+      totalDepth: 0.02,
       depthPerPass: 0.01,
     })
 
@@ -81,6 +84,94 @@ describe('skim pass', () => {
     expect(toolpath.passes[0].z).toBe(-0.01)
     expect(toolpath.passes[1].z).toBe(-0.02)
   })
+
+  test('skim-only: skimPass true with totalDepth 0 produces 1 pass at Z=0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: true,
+      totalDepth: 0,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    expect(toolpath.passes.length).toBe(1)
+    expect(toolpath.passes[0].z).toBe(0)
+    expect(toolpath.passes[0].type).toBe('skim')
+  })
+
+  test('no passes when skimPass false and totalDepth 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    expect(toolpath.passes.length).toBe(0)
+  })
+})
+
+describe('totalDepth pass calculation', () => {
+  test('last pass clamps exactly to totalDepth when division is uneven', () => {
+    // 0.1 / 0.03 = 3.333... -> 4 passes
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0.1,
+      depthPerPass: 0.03,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    expect(toolpath.passes.length).toBe(4)
+    expect(toolpath.passes[0].z).toBeCloseTo(-0.03, 5)
+    expect(toolpath.passes[1].z).toBeCloseTo(-0.06, 5)
+    expect(toolpath.passes[2].z).toBeCloseTo(-0.09, 5)
+    expect(toolpath.passes[3].z).toBeCloseTo(-0.1, 5) // clamped to totalDepth
+  })
+
+  test('exact division produces correct pass count without extra pass', () => {
+    // 0.1 / 0.05 = 2 exactly -> 2 passes
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0.1,
+      depthPerPass: 0.05,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    expect(toolpath.passes.length).toBe(2)
+    expect(toolpath.passes[0].z).toBeCloseTo(-0.05, 5)
+    expect(toolpath.passes[1].z).toBeCloseTo(-0.1, 5)
+  })
+
+  test('skim + depth combo: skim at Z=0, then depth passes', () => {
+    // skim + totalDepth=0.1, depthPerPass=0.03 -> SKIM at 0, DEPTH at -0.03, -0.06, -0.09, -0.1
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: true,
+      totalDepth: 0.1,
+      depthPerPass: 0.03,
+    })
+
+    const toolpath = calculateToolpath(params)
+
+    expect(toolpath.passes.length).toBe(5) // 1 skim + 4 depth
+    expect(toolpath.passes[0].z).toBe(0)
+    expect(toolpath.passes[0].type).toBe('skim')
+    expect(toolpath.passes[1].z).toBeCloseTo(-0.03, 5)
+    expect(toolpath.passes[1].type).toBe('depth')
+    expect(toolpath.passes[2].z).toBeCloseTo(-0.06, 5)
+    expect(toolpath.passes[3].z).toBeCloseTo(-0.09, 5)
+    expect(toolpath.passes[4].z).toBeCloseTo(-0.1, 5)
+  })
 })
 
 describe('pause intervals', () => {
@@ -88,12 +179,15 @@ describe('pause intervals', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      numPasses: 6,
+      totalDepth: 0.06,
+      depthPerPass: 0.01,
+      skimPass: false,
       pauseInterval: 2, // pause every 2 passes
     })
 
     const toolpath = calculateToolpath(params)
 
+    expect(toolpath.passes.length).toBe(6)
     expect(toolpath.passes[0].pauseAfter).toBe(false) // pass 1
     expect(toolpath.passes[1].pauseAfter).toBe(true)  // pass 2 - pause
     expect(toolpath.passes[2].pauseAfter).toBe(false) // pass 3
@@ -106,7 +200,9 @@ describe('pause intervals', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
-      numPasses: 3,
+      totalDepth: 0.03,
+      depthPerPass: 0.01,
+      skimPass: false,
       pauseInterval: 0, // 0 = disabled
     })
 
@@ -145,6 +241,9 @@ describe('overhang coverage', () => {
       stepoverPercent: 50,
       rasterDirection: 'x',
       fudgeFactor: 0,
+      skimPass: false,
+      totalDepth: 0.01,
+      depthPerPass: 0.01,
     })
 
     const toolpath = calculateToolpath(params)
@@ -191,6 +290,9 @@ describe('overhang coverage', () => {
         stepoverPercent,
         rasterDirection: 'x',
         fudgeFactor: 0,
+        skimPass: false,
+        totalDepth: 0.01,
+        depthPerPass: 0.01,
       })
 
       const toolpath = calculateToolpath(params)
@@ -226,7 +328,7 @@ describe('fudge factor', () => {
     // Bit radius = 1", stepover = 1"
     // X (raster): overhang = bitRadius = 1"
     // Y (stepping): overhang = bitRadius - stepover = 0"
-    // Bounds: 
+    // Bounds:
     // X Min = -0.5 - 1 = -1.5
     // X Max = 10.5 + 1 = 11.5
     // Y Min = -0.5 - 0 = -0.5
@@ -366,6 +468,7 @@ describe('regular stepover spacing', () => {
       stepoverPercent: 50,  // stepover = 0.625"
       rasterDirection: 'x',
       fudgeFactor: 0,
+      skimPass: true,
     })
 
     const toolpath = calculateToolpath(params)

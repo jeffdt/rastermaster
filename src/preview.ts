@@ -2,6 +2,48 @@
 import type { Toolpath } from './toolpath'
 import { formatDimension } from './format'
 
+export function generatePassScheduleHTML(toolpath: Toolpath): string {
+  const { passes, params } = toolpath
+
+  if (passes.length === 0) {
+    return ''
+  }
+
+  const rows = passes.map((pass, i) => {
+    const rowClass = pass.type === 'skim' ? 'pass-row-skim' : 'pass-row-depth'
+    const typeLabel = pass.type === 'skim' ? 'SKIM' : 'DEPTH'
+    const zLabel = pass.z === 0 ? 'Z 0' : `Z ${pass.z.toFixed(4).replace(/0+$/, '').replace(/\.$/, '"')}`
+    const pauseIndicator = pass.pauseAfter ? ' <span class="pass-pause-mark" title="Pause after this pass">M0</span>' : ''
+    return `<tr class="pass-row ${rowClass}">
+      <td class="pass-num">${i + 1}</td>
+      <td class="pass-type">${typeLabel}</td>
+      <td class="pass-z">${zLabel}"${pauseIndicator}</td>
+    </tr>`
+  }).join('\n')
+
+  const depthTotal = params.totalDepth > 0 ? `${params.totalDepth}"` : ''
+  const subtitle = depthTotal ? `${passes.length} passes &mdash; ${depthTotal} total` : `${passes.length} pass`
+
+  return `<div class="pass-schedule">
+  <div class="pass-schedule-header">
+    <span class="pass-schedule-title">Pass Schedule</span>
+    <span class="pass-schedule-subtitle">${subtitle}</span>
+  </div>
+  <table class="pass-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>TYPE</th>
+        <th>Z DEPTH</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+    </tbody>
+  </table>
+</div>`
+}
+
 export function generatePreviewSVG(toolpath: Toolpath, width: number, height: number): string {
   const { bounds, params } = toolpath
   const padding = 20

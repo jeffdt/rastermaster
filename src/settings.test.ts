@@ -137,7 +137,7 @@ describe('settings', () => {
       fudgeFactor: 0.5,
       rasterDirection: 'x',
       skimPass: true,
-      numPasses: 5,
+      totalDepth: 0.1,
       pauseInterval: 2,
     }
 

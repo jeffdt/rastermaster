@@ -7,8 +7,8 @@ describe('DEFAULT_PARAMS', () => {
     expect(DEFAULT_PARAMS.bitDiameter).toBe(1.25)
     expect(DEFAULT_PARAMS.stepoverPercent).toBe(50)
     expect(DEFAULT_PARAMS.rasterDirection).toBe('x')
-    expect(DEFAULT_PARAMS.skimPass).toBe(false)
-    expect(DEFAULT_PARAMS.numPasses).toBe(1)
+    expect(DEFAULT_PARAMS.skimPass).toBe(true)
+    expect(DEFAULT_PARAMS.totalDepth).toBe(0)
     expect(DEFAULT_PARAMS.depthPerPass).toBe(0.01)
     expect(DEFAULT_PARAMS.pauseInterval).toBe(0) // 0 = disabled
     expect(DEFAULT_PARAMS.feedRate).toBe(125)

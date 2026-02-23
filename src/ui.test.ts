@@ -104,7 +104,7 @@ describe('getFormValues', () => {
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
       <input type="text" id="retractHeight" value="0.125">
-      <input type="number" id="numPasses" value="3">
+      <input type="text" id="totalDepth" value="0.05">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">
       <input type="radio" name="rasterDirection" value="x" checked>
@@ -122,7 +122,7 @@ describe('getFormValues', () => {
     expect(values.plungeRate).toBe(30)
     expect(values.spindleRpm).toBe(18000)
     expect(values.retractHeight).toBe(0.125)
-    expect(values.numPasses).toBe(3)
+    expect(values.totalDepth).toBe(0.05)
     expect(values.pauseInterval).toBe(0)
   })
 
@@ -139,7 +139,7 @@ describe('getFormValues', () => {
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
       <input type="text" id="retractHeight" value="0.125">
-      <input type="number" id="numPasses" value="3">
+      <input type="text" id="totalDepth" value="">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">
       <input type="radio" name="rasterDirection" value="x" checked>
@@ -196,6 +196,72 @@ describe('validateParams', () => {
       stockWidth: 10,
       stockHeight: 5,
       fudgeFactor: 10,
+      skimPass: true,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBe(0)
+  })
+
+  test('validates skim-only: skimPass true, totalDepth 0 is valid', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: true,
+      totalDepth: 0,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBe(0)
+  })
+
+  test('validates depth-only: skimPass false, totalDepth > 0 is valid', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0.1,
+      depthPerPass: 0.05,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBe(0)
+  })
+
+  test('rejects no skim and no depth', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0,
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result.some(e => e.toLowerCase().includes('skim') || e.toLowerCase().includes('depth'))).toBe(true)
+  })
+
+  test('requires depthPerPass when totalDepth > 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: false,
+      totalDepth: 0.1,
+      depthPerPass: 0, // invalid
+    })
+
+    const result = validateParams(params)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result.some(e => e.toLowerCase().includes('depth per pass') || e.toLowerCase().includes('max depth'))).toBe(true)
+  })
+
+  test('does not require depthPerPass for skim-only', () => {
+    // depthPerPass defaults to 0.01 in defaults, so this tests that skim-only passes
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      skimPass: true,
+      totalDepth: 0,
     })
 
     const result = validateParams(params)

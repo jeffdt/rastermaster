@@ -12,7 +12,7 @@ export interface SurfacingParams {
   // Toolpath settings
   rasterDirection: 'x' | 'y'
   skimPass: boolean
-  numPasses: number
+  totalDepth: number
   depthPerPass: number
   pauseInterval: number // 0 = disabled
 
