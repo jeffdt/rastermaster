@@ -1,7 +1,7 @@
 // src/ui.test.ts (create new file)
 import { describe, expect, test, beforeEach } from 'bun:test'
 import { Window } from 'happy-dom'
-import { updateFormVisibility, createForm, getFormValues, validateParams, setFormValues } from './ui'
+import { updateFormVisibility, createForm, getFormValues, validateParams, setFormValues, updateResolvedHint } from './ui'
 import { mergeWithDefaults } from './defaults'
 import type { ToolSettings } from './types'
 
@@ -164,6 +164,33 @@ describe('getFormValues', () => {
     const values = getFormValues(formElement)
     expect(values.fudgeFactor).toBe(10)
   })
+
+  test('parses fractional text input for inch fields', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <input type="text" id="stockWidth" value="10 5/8">
+      <input type="text" id="stockHeight" value="8">
+      <input type="number" id="fudgeFactor" value="0.25">
+      <input type="text" id="bitDiameter" value="1 1/4">
+      <input type="text" id="stepoverPercent" value="50">
+      <input type="text" id="depthPerPass" value="0.02">
+      <input type="text" id="feedRate" value="100">
+      <input type="text" id="plungeRate" value="30">
+      <input type="text" id="spindleRpm" value="18000">
+      <input type="text" id="retractHeight" value="1/4">
+      <input type="text" id="totalDepth" value="3/8">
+      <input type="number" id="pauseInterval" value="0">
+      <input type="checkbox" id="skimPass">
+      <input type="radio" name="rasterDirection" value="x" checked>
+    `
+
+    const values = getFormValues(form)
+
+    expect(values.stockWidth).toBe(10.625)
+    expect(values.bitDiameter).toBe(1.25)
+    expect(values.retractHeight).toBe(0.25)
+    expect(values.totalDepth).toBe(0.375)
+  })
 })
 
 describe('validateParams', () => {
@@ -266,6 +293,81 @@ describe('validateParams', () => {
 
     const result = validateParams(params)
     expect(result.length).toBe(0)
+  })
+})
+
+describe('resolved value hint', () => {
+  test('shows resolved decimal when fraction is typed', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <div class="input-stack">
+        <input type="text" id="stockWidth" value="">
+        <div class="resolved-value" id="stockWidth-hint" style="display:none"></div>
+      </div>
+    `
+
+    const input = form.querySelector('#stockWidth') as HTMLInputElement
+    const hint = form.querySelector('#stockWidth-hint') as HTMLElement
+
+    input.value = '10 5/8'
+    updateResolvedHint(input)
+
+    expect(hint.style.display).not.toBe('none')
+    expect(hint.textContent).toBe('= 10.625')
+  })
+
+  test('hides hint for plain decimal', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <div class="input-stack">
+        <input type="text" id="stockWidth" value="">
+        <div class="resolved-value" id="stockWidth-hint" style="display:block"></div>
+      </div>
+    `
+
+    const input = form.querySelector('#stockWidth') as HTMLInputElement
+    const hint = form.querySelector('#stockWidth-hint') as HTMLElement
+
+    input.value = '10.625'
+    updateResolvedHint(input)
+
+    expect(hint.style.display).toBe('none')
+  })
+
+  test('hides hint for invalid fraction', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <div class="input-stack">
+        <input type="text" id="stockWidth" value="">
+        <div class="resolved-value" id="stockWidth-hint" style="display:block"></div>
+      </div>
+    `
+
+    const input = form.querySelector('#stockWidth') as HTMLInputElement
+    const hint = form.querySelector('#stockWidth-hint') as HTMLElement
+
+    input.value = '10 0/0'
+    updateResolvedHint(input)
+
+    expect(hint.style.display).toBe('none')
+  })
+
+  test('displays limited precision for repeating decimal fraction', () => {
+    const form = document.createElement('div')
+    form.innerHTML = `
+      <div class="input-stack">
+        <input type="text" id="stockWidth" value="">
+        <div class="resolved-value" id="stockWidth-hint" style="display:none"></div>
+      </div>
+    `
+    const input = form.querySelector('#stockWidth') as HTMLInputElement
+    const hint = form.querySelector('#stockWidth-hint') as HTMLElement
+
+    input.value = '1/3'
+    updateResolvedHint(input)
+
+    expect(hint.style.display).not.toBe('none')
+    expect(hint.textContent).toBe('= 0.3333333333')
   })
 })
 

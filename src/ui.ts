@@ -1,6 +1,7 @@
 // src/ui.ts
 import type { SurfacingParams, ToolSettings } from './types'
 import { DEFAULT_PARAMS } from './defaults'
+import { parseMeasurement } from './utils'
 
 export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void): HTMLElement {
   const form = document.createElement('div')
@@ -11,12 +12,18 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         <h3>Stock</h3>
         <div class="form-row">
           <label for="stockWidth">Width</label>
-          <input type="text" id="stockWidth" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required data-tooltip="Measure widest dimension of your stock.">
+          <div class="input-stack">
+            <input type="text" id="stockWidth" inputmode="text" required data-tooltip="Measure widest dimension of your stock.">
+            <div class="resolved-value" id="stockWidth-hint"></div>
+          </div>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="stockHeight">Height</label>
-          <input type="text" id="stockHeight" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" required data-tooltip="Measure tallest dimension of your stock.">
+          <div class="input-stack">
+            <input type="text" id="stockHeight" inputmode="text" required data-tooltip="Measure tallest dimension of your stock.">
+            <div class="resolved-value" id="stockHeight-hint"></div>
+          </div>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
@@ -45,12 +52,18 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         </div>
         <div class="form-row">
           <label for="totalDepth">Total Depth</label>
-          <input type="text" id="totalDepth" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?" data-tooltip="Total material to remove. Leave blank for skim-only run.">
+          <div class="input-stack">
+            <input type="text" id="totalDepth" inputmode="text" data-tooltip="Total material to remove. Leave blank for skim-only run.">
+            <div class="resolved-value" id="totalDepth-hint"></div>
+          </div>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
           <label for="depthPerPass">Max Depth/Pass</label>
-          <input type="text" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+          <div class="input-stack">
+            <input type="text" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" inputmode="text">
+            <div class="resolved-value" id="depthPerPass-hint"></div>
+          </div>
           <span class="unit">in</span>
         </div>
         <div class="form-row">
@@ -69,7 +82,10 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
         <div class="tool-subgrid">
           <div class="form-row">
             <label for="bitDiameter">Bit Diameter</label>
-            <input type="text" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <div class="input-stack">
+              <input type="text" id="bitDiameter" value="${DEFAULT_PARAMS.bitDiameter}" inputmode="text">
+              <div class="resolved-value" id="bitDiameter-hint"></div>
+            </div>
             <span class="unit">in</span>
           </div>
           <div class="form-row">
@@ -94,7 +110,10 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           </div>
           <div class="form-row">
             <label for="retractHeight">Retract Height</label>
-            <input type="text" id="retractHeight" value="${DEFAULT_PARAMS.retractHeight}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <div class="input-stack">
+              <input type="text" id="retractHeight" value="${DEFAULT_PARAMS.retractHeight}" inputmode="text">
+              <div class="resolved-value" id="retractHeight-hint"></div>
+            </div>
             <span class="unit">in</span>
           </div>
         </div>
@@ -108,10 +127,12 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
     input.addEventListener('input', () => {
       updateFormVisibility(form)
       onUpdate(getFormValues(form))
+      updateResolvedHint(input as HTMLInputElement)
     })
     input.addEventListener('change', () => {
       updateFormVisibility(form)
       onUpdate(getFormValues(form))
+      updateResolvedHint(input as HTMLInputElement)
     })
   })
 
@@ -160,7 +181,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
 export function updateFormVisibility(form: HTMLElement): void {
   const getValue = (id: string): number => {
     const input = form.querySelector(`#${id}`) as HTMLInputElement
-    return parseFloat(input?.value || '0')
+    return parseMeasurement(input?.value || '')
   }
 
   const stockWidth = getValue('stockWidth')
@@ -194,8 +215,27 @@ export function updateFormVisibility(form: HTMLElement): void {
   }
 }
 
+export function updateResolvedHint(input: HTMLInputElement): void {
+  const hint = input.parentElement?.querySelector<HTMLElement>('.resolved-value')
+  if (!hint) return
+  if (input.value.includes('/')) {
+    const parsed = parseMeasurement(input.value)
+    if (!isNaN(parsed)) {
+      hint.textContent = `= ${parseFloat(parsed.toPrecision(10))}`
+      hint.style.display = 'block'
+      return
+    }
+  }
+  hint.style.display = 'none'
+}
+
 export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
-  const getValue = (id: string): number => {
+  const getMeasurement = (id: string): number => {
+    const input = form.querySelector(`#${id}`) as HTMLInputElement
+    return parseMeasurement(input.value)
+  }
+
+  const getFloat = (id: string): number => {
     const input = form.querySelector(`#${id}`) as HTMLInputElement
     return parseFloat(input.value)
   }
@@ -210,21 +250,23 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
     return input?.value || ''
   }
 
+  const totalDepthMeasured = getMeasurement('totalDepth')
+
   return {
-    stockWidth: getValue('stockWidth'),
-    stockHeight: getValue('stockHeight'),
-    fudgeFactor: getValue('fudgeFactor'),
-    bitDiameter: getValue('bitDiameter'),
-    stepoverPercent: getValue('stepoverPercent'),
+    stockWidth: getMeasurement('stockWidth'),
+    stockHeight: getMeasurement('stockHeight'),
+    fudgeFactor: getFloat('fudgeFactor'),
+    bitDiameter: getMeasurement('bitDiameter'),
+    stepoverPercent: getFloat('stepoverPercent'),
     rasterDirection: getRadio('rasterDirection') as 'x' | 'y',
     skimPass: getChecked('skimPass'),
-    totalDepth: isNaN(getValue('totalDepth')) ? 0 : getValue('totalDepth'),
-    depthPerPass: getValue('depthPerPass'),
-    pauseInterval: getValue('pauseInterval'),
-    feedRate: getValue('feedRate'),
-    plungeRate: getValue('plungeRate'),
-    spindleRpm: getValue('spindleRpm'),
-    retractHeight: getValue('retractHeight'),
+    totalDepth: isNaN(totalDepthMeasured) ? 0 : totalDepthMeasured,
+    depthPerPass: getMeasurement('depthPerPass'),
+    pauseInterval: getFloat('pauseInterval'),
+    feedRate: getFloat('feedRate'),
+    plungeRate: getFloat('plungeRate'),
+    spindleRpm: getFloat('spindleRpm'),
+    retractHeight: getMeasurement('retractHeight'),
   }
 }
 
