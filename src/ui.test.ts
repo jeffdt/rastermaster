@@ -104,7 +104,8 @@ describe('getFormValues', () => {
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
       <input type="text" id="retractHeight" value="0.125">
-      <input type="text" id="totalDepth" value="0.05">
+      <input type="text" id="depthInput" value="0.05">
+      <input type="hidden" id="passMode" value="totalDepth">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">
       <input type="radio" name="rasterDirection" value="x" checked>
@@ -178,7 +179,8 @@ describe('getFormValues', () => {
       <input type="text" id="plungeRate" value="30">
       <input type="text" id="spindleRpm" value="18000">
       <input type="text" id="retractHeight" value="1/4">
-      <input type="text" id="totalDepth" value="3/8">
+      <input type="text" id="depthInput" value="3/8">
+      <input type="hidden" id="passMode" value="totalDepth">
       <input type="number" id="pauseInterval" value="0">
       <input type="checkbox" id="skimPass">
       <input type="radio" name="rasterDirection" value="x" checked>

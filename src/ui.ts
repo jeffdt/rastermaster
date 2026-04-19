@@ -51,12 +51,13 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <label for="skimPass">Skim pass</label>
         </div>
         <div class="form-row">
-          <label for="totalDepth">Total Depth</label>
-          <div class="input-stack">
-            <input type="text" id="totalDepth" inputmode="text" data-tooltip="Total material to remove. Leave blank for skim-only run.">
-            <div class="resolved-value" id="totalDepth-hint"></div>
+          <div class="pass-mode-pill">
+            <button type="button" class="pass-mode-btn" data-mode="totalDepth">Total Depth</button>
+            <button type="button" class="pass-mode-btn active" data-mode="numPasses"># Passes</button>
           </div>
-          <span class="unit">in</span>
+          <input type="text" id="depthInput" inputmode="numeric" pattern="[0-9]+" data-tooltip="Number of depth passes to make.">
+          <span class="unit" id="depthUnit"></span>
+          <input type="hidden" id="passMode" value="numPasses">
         </div>
         <div class="form-row">
           <label for="depthPerPass">Max Depth/Pass</label>
@@ -172,6 +173,34 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
     incrementBtn.addEventListener('click', () => updateValue(true))
   })
 
+  // Wire up pass-mode pill
+  const pillButtons = form.querySelectorAll('.pass-mode-btn')
+  const depthInput = form.querySelector('#depthInput') as HTMLInputElement
+  const depthUnit = form.querySelector('#depthUnit') as HTMLSpanElement
+  const passModeInput = form.querySelector('#passMode') as HTMLInputElement
+
+  pillButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = (btn as HTMLElement).dataset.mode as 'totalDepth' | 'numPasses'
+      pillButtons.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      passModeInput.value = mode
+      depthInput.value = ''
+      if (mode === 'totalDepth') {
+        depthInput.inputMode = 'decimal'
+        depthInput.pattern = '[0-9]+(\\.[0-9]+)?'
+        depthInput.dataset.tooltip = 'Total material to remove. Leave blank for skim-only run.'
+        depthUnit.textContent = 'in'
+      } else {
+        depthInput.inputMode = 'numeric'
+        depthInput.pattern = '[0-9]+'
+        depthInput.dataset.tooltip = 'Number of depth passes to make.'
+        depthUnit.textContent = ''
+      }
+      onUpdate(getFormValues(form))
+    })
+  })
+
   // Initialize tooltips
   initializeTooltips(form)
 
@@ -250,8 +279,6 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
     return input?.value || ''
   }
 
-  const totalDepthMeasured = getMeasurement('totalDepth')
-
   return {
     stockWidth: getMeasurement('stockWidth'),
     stockHeight: getMeasurement('stockHeight'),
@@ -260,7 +287,19 @@ export function getFormValues(form: HTMLElement): Partial<SurfacingParams> {
     stepoverPercent: getFloat('stepoverPercent'),
     rasterDirection: getRadio('rasterDirection') as 'x' | 'y',
     skimPass: getChecked('skimPass'),
-    totalDepth: isNaN(totalDepthMeasured) ? 0 : totalDepthMeasured,
+    passMode: ((form.querySelector('#passMode') as HTMLInputElement)?.value as 'totalDepth' | 'numPasses') ?? 'numPasses',
+    totalDepth: (() => {
+      const mode = (form.querySelector('#passMode') as HTMLInputElement)?.value
+      if (mode !== 'totalDepth') return 0
+      const v = parseMeasurement((form.querySelector('#depthInput') as HTMLInputElement)?.value)
+      return isNaN(v) ? 0 : v
+    })(),
+    numPasses: (() => {
+      const mode = (form.querySelector('#passMode') as HTMLInputElement)?.value
+      if (mode !== 'numPasses') return 0
+      const v = parseInt((form.querySelector('#depthInput') as HTMLInputElement)?.value, 10)
+      return isNaN(v) ? 0 : v
+    })(),
     depthPerPass: getMeasurement('depthPerPass'),
     pauseInterval: getFloat('pauseInterval'),
     feedRate: getFloat('feedRate'),
@@ -299,7 +338,17 @@ export function resetForm(form: HTMLElement, onUpdate: (params: Partial<Surfacin
   setValue('fudgeFactor', DEFAULT_PARAMS.fudgeFactor.toString())
   setValue('bitDiameter', DEFAULT_PARAMS.bitDiameter.toString())
   setValue('stepoverPercent', DEFAULT_PARAMS.stepoverPercent.toString())
-  setValue('totalDepth', '')
+  const passModeInput = form.querySelector('#passMode') as HTMLInputElement
+  const depthInput = form.querySelector('#depthInput') as HTMLInputElement
+  const depthUnit = form.querySelector('#depthUnit') as HTMLSpanElement
+  const pillButtons = form.querySelectorAll('.pass-mode-btn')
+  if (passModeInput) passModeInput.value = DEFAULT_PARAMS.passMode
+  if (depthInput) depthInput.value = ''
+  if (depthUnit) depthUnit.textContent = DEFAULT_PARAMS.passMode === 'numPasses' ? '' : 'in'
+  pillButtons.forEach(btn => {
+    const mode = (btn as HTMLElement).dataset.mode
+    btn.classList.toggle('active', mode === DEFAULT_PARAMS.passMode)
+  })
   setValue('depthPerPass', DEFAULT_PARAMS.depthPerPass.toString())
   setValue('pauseInterval', DEFAULT_PARAMS.pauseInterval.toString())
   setValue('feedRate', DEFAULT_PARAMS.feedRate.toString())
@@ -362,10 +411,18 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
   if (!params.stepoverPercent || params.stepoverPercent < 10 || params.stepoverPercent > 100 || isNaN(params.stepoverPercent)) {
     errors.push('Stepover must be between 10% and 100%')
   }
-  const hasDepth = params.totalDepth !== undefined && params.totalDepth > 0 && !isNaN(params.totalDepth)
   const hasSkim = params.skimPass === true
+  const hasNumPasses = params.numPasses !== undefined && params.numPasses > 0 && Number.isInteger(params.numPasses)
+  const hasTotalDepth = params.totalDepth !== undefined && params.totalDepth > 0 && !isNaN(params.totalDepth)
+  const hasDepth = params.passMode === 'numPasses'
+    ? (hasNumPasses || hasTotalDepth) // hasTotalDepth for backward compat with pre-pill params
+    : hasTotalDepth
   if (!hasDepth && !hasSkim) {
-    errors.push('Enable skim pass or set a total depth greater than 0')
+    if (params.passMode === 'numPasses' && !hasTotalDepth) {
+      errors.push('Enable skim pass or set a number of passes greater than 0')
+    } else {
+      errors.push('Enable skim pass or set a total depth greater than 0')
+    }
   }
   if (hasDepth) {
     if (!params.depthPerPass || params.depthPerPass <= 0 || isNaN(params.depthPerPass)) {
