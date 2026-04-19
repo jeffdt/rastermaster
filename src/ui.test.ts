@@ -249,6 +249,7 @@ describe('validateParams', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.1,
       depthPerPass: 0.05,
     })
@@ -275,6 +276,7 @@ describe('validateParams', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.1,
       depthPerPass: 0, // invalid
     })
@@ -405,5 +407,75 @@ describe('setFormValues', () => {
     expect((form.querySelector('#spindleRpm') as HTMLInputElement).value).toBe('18000')
     expect((form.querySelector('#retractHeight') as HTMLInputElement).value).toBe('0.1')
     expect((form.querySelector('#depthPerPass') as HTMLInputElement).value).toBe('0.02')
+  })
+})
+
+describe('pass mode pill', () => {
+  test('default mode is numPasses — passMode hidden input is numPasses', () => {
+    const form = createForm(() => {})
+    const passModeInput = form.querySelector('#passMode') as HTMLInputElement
+    expect(passModeInput.value).toBe('numPasses')
+  })
+
+  test('clicking Total Depth pill button sets passMode to totalDepth', () => {
+    const form = createForm(() => {})
+    const totalDepthBtn = form.querySelector('[data-mode="totalDepth"]') as HTMLButtonElement
+    totalDepthBtn.click()
+    const passModeInput = form.querySelector('#passMode') as HTMLInputElement
+    expect(passModeInput.value).toBe('totalDepth')
+  })
+
+  test('clicking # Passes pill button sets passMode to numPasses', () => {
+    const form = createForm(() => {})
+    const totalDepthBtn = form.querySelector('[data-mode="totalDepth"]') as HTMLButtonElement
+    totalDepthBtn.click()
+    const numPassesBtn = form.querySelector('[data-mode="numPasses"]') as HTMLButtonElement
+    numPassesBtn.click()
+    const passModeInput = form.querySelector('#passMode') as HTMLInputElement
+    expect(passModeInput.value).toBe('numPasses')
+  })
+
+  test('switching modes clears the depthInput value', () => {
+    const form = createForm(() => {})
+    const depthInput = form.querySelector('#depthInput') as HTMLInputElement
+    depthInput.value = '5'
+    const totalDepthBtn = form.querySelector('[data-mode="totalDepth"]') as HTMLButtonElement
+    totalDepthBtn.click()
+    expect(depthInput.value).toBe('')
+  })
+
+  test('getFormValues returns numPasses when in numPasses mode', () => {
+    const form = createForm(() => {})
+    const depthInput = form.querySelector('#depthInput') as HTMLInputElement
+    depthInput.value = '3'
+    const values = getFormValues(form)
+    expect(values.passMode).toBe('numPasses')
+    expect(values.numPasses).toBe(3)
+    expect(values.totalDepth).toBe(0)
+  })
+
+  test('getFormValues returns totalDepth when in totalDepth mode', () => {
+    const form = createForm(() => {})
+    const totalDepthBtn = form.querySelector('[data-mode="totalDepth"]') as HTMLButtonElement
+    totalDepthBtn.click()
+    const depthInput = form.querySelector('#depthInput') as HTMLInputElement
+    depthInput.value = '0.05'
+    const values = getFormValues(form)
+    expect(values.passMode).toBe('totalDepth')
+    expect(values.totalDepth).toBe(0.05)
+    expect(values.numPasses).toBe(0)
+  })
+
+  test('active class reflects current mode', () => {
+    const form = createForm(() => {})
+    const totalDepthBtn = form.querySelector('[data-mode="totalDepth"]') as HTMLButtonElement
+    const numPassesBtn = form.querySelector('[data-mode="numPasses"]') as HTMLButtonElement
+    // Default: numPasses active
+    expect(numPassesBtn.classList.contains('active')).toBe(true)
+    expect(totalDepthBtn.classList.contains('active')).toBe(false)
+    // Switch to totalDepth
+    totalDepthBtn.click()
+    expect(totalDepthBtn.classList.contains('active')).toBe(true)
+    expect(numPassesBtn.classList.contains('active')).toBe(false)
   })
 })

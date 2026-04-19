@@ -413,8 +413,8 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
   }
   const hasSkim = params.skimPass === true
   const hasDepth = params.passMode === 'numPasses'
-    ? (hasNumPasses || hasTotalDepth) // hasTotalDepth for backward compat with pre-pill params
-    : hasTotalDepth
+    ? (params.numPasses !== undefined && params.numPasses > 0 && Number.isInteger(params.numPasses))
+    : (params.totalDepth !== undefined && params.totalDepth > 0 && !isNaN(params.totalDepth))
   if (!hasDepth && !hasSkim) {
     if (params.passMode === 'numPasses') {
       errors.push('Enable skim pass or set a number of passes greater than 0')
