@@ -412,13 +412,11 @@ export function validateParams(params: Partial<SurfacingParams>): string[] {
     errors.push('Stepover must be between 10% and 100%')
   }
   const hasSkim = params.skimPass === true
-  const hasNumPasses = params.numPasses !== undefined && params.numPasses > 0 && Number.isInteger(params.numPasses)
-  const hasTotalDepth = params.totalDepth !== undefined && params.totalDepth > 0 && !isNaN(params.totalDepth)
   const hasDepth = params.passMode === 'numPasses'
     ? (hasNumPasses || hasTotalDepth) // hasTotalDepth for backward compat with pre-pill params
     : hasTotalDepth
   if (!hasDepth && !hasSkim) {
-    if (params.passMode === 'numPasses' && !hasTotalDepth) {
+    if (params.passMode === 'numPasses') {
       errors.push('Enable skim pass or set a number of passes greater than 0')
     } else {
       errors.push('Enable skim pass or set a total depth greater than 0')
