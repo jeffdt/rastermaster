@@ -560,4 +560,20 @@ describe('resolveDepthPassCount', () => {
     })
     expect(resolveDepthPassCount(params)).toBe(3)
   })
+
+  test('numPasses mode generates correct z depths via calculateToolpath', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'numPasses',
+      numPasses: 3,
+      depthPerPass: 0.02,
+      skimPass: false,
+    })
+    const toolpath = calculateToolpath(params)
+    expect(toolpath.passes).toHaveLength(3)
+    expect(toolpath.passes[0].z).toBeCloseTo(-0.02)
+    expect(toolpath.passes[1].z).toBeCloseTo(-0.04)
+    expect(toolpath.passes[2].z).toBeCloseTo(-0.06)
+  })
 })

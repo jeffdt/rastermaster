@@ -140,7 +140,9 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
   }
 
   for (let i = 1; i <= depthPassCount; i++) {
-    const z = -Math.min(i * params.depthPerPass, params.totalDepth)
+    const z = params.passMode === 'numPasses'
+      ? -(i * params.depthPerPass)
+      : -Math.min(i * params.depthPerPass, params.totalDepth)
     passDescriptors.push({ z, type: 'depth' })
   }
 
