@@ -99,6 +99,7 @@ describe('generateGCode', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.02,
       depthPerPass: 0.01,
       pauseInterval: 1, // pause every pass
@@ -136,6 +137,7 @@ describe('generateGCode', () => {
       stepoverPercent: 50,
       rasterDirection: 'x',
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.01,
       depthPerPass: 0.01,
     })
@@ -156,6 +158,7 @@ describe('generateGCode', () => {
       stepoverPercent: 50,
       rasterDirection: 'y',
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.01,
       depthPerPass: 0.01,
     })

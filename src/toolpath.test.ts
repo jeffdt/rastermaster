@@ -1,6 +1,6 @@
 // src/toolpath.test.ts
 import { describe, expect, test } from 'bun:test'
-import { calculateToolpath } from './toolpath'
+import { calculateToolpath, resolveDepthPassCount } from './toolpath'
 import { mergeWithDefaults } from './defaults'
 
 describe('calculateToolpath', () => {
@@ -10,6 +10,7 @@ describe('calculateToolpath', () => {
       stockHeight: 5,
       bitDiameter: 1,
       stepoverPercent: 50,
+      passMode: 'totalDepth',
       totalDepth: 0.01,
       depthPerPass: 0.01,
       skimPass: false,
@@ -54,6 +55,7 @@ describe('skim pass', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: true,
+      passMode: 'totalDepth',
       totalDepth: 0.02,
       depthPerPass: 0.01,
     })
@@ -74,6 +76,7 @@ describe('skim pass', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.02,
       depthPerPass: 0.01,
     })
@@ -121,6 +124,7 @@ describe('totalDepth pass calculation', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.1,
       depthPerPass: 0.03,
     })
@@ -140,6 +144,7 @@ describe('totalDepth pass calculation', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.1,
       depthPerPass: 0.05,
     })
@@ -157,6 +162,7 @@ describe('totalDepth pass calculation', () => {
       stockWidth: 10,
       stockHeight: 5,
       skimPass: true,
+      passMode: 'totalDepth',
       totalDepth: 0.1,
       depthPerPass: 0.03,
     })
@@ -179,6 +185,7 @@ describe('pause intervals', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
+      passMode: 'totalDepth',
       totalDepth: 0.06,
       depthPerPass: 0.01,
       skimPass: false,
@@ -200,6 +207,7 @@ describe('pause intervals', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
       stockHeight: 5,
+      passMode: 'totalDepth',
       totalDepth: 0.03,
       depthPerPass: 0.01,
       skimPass: false,
@@ -242,6 +250,7 @@ describe('overhang coverage', () => {
       rasterDirection: 'x',
       fudgeFactor: 0,
       skimPass: false,
+      passMode: 'totalDepth',
       totalDepth: 0.01,
       depthPerPass: 0.01,
     })
@@ -291,6 +300,7 @@ describe('overhang coverage', () => {
         rasterDirection: 'x',
         fudgeFactor: 0,
         skimPass: false,
+        passMode: 'totalDepth',
         totalDepth: 0.01,
         depthPerPass: 0.01,
       })
@@ -483,5 +493,71 @@ describe('regular stepover spacing', () => {
     // Verify final line extends beyond stock
     const finalY = yPositions[yPositions.length - 1]
     expect(finalY).toBeGreaterThan(3.9)
+  })
+})
+
+describe('resolveDepthPassCount', () => {
+  test('numPasses mode returns numPasses directly', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'numPasses',
+      numPasses: 5,
+    })
+    expect(resolveDepthPassCount(params)).toBe(5)
+  })
+
+  test('numPasses mode with 0 passes returns 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'numPasses',
+      numPasses: 0,
+    })
+    expect(resolveDepthPassCount(params)).toBe(0)
+  })
+
+  test('totalDepth mode computes ceil(totalDepth / depthPerPass)', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'totalDepth',
+      totalDepth: 0.1,
+      depthPerPass: 0.03,
+    })
+    expect(resolveDepthPassCount(params)).toBe(4) // ceil(0.1/0.03) = ceil(3.333) = 4
+  })
+
+  test('totalDepth mode with exact division returns exact count', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'totalDepth',
+      totalDepth: 0.1,
+      depthPerPass: 0.05,
+    })
+    expect(resolveDepthPassCount(params)).toBe(2)
+  })
+
+  test('totalDepth mode with totalDepth 0 returns 0', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'totalDepth',
+      totalDepth: 0,
+      depthPerPass: 0.01,
+    })
+    expect(resolveDepthPassCount(params)).toBe(0)
+  })
+
+  test('numPasses mode ignores totalDepth', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 10,
+      stockHeight: 5,
+      passMode: 'numPasses',
+      numPasses: 3,
+      totalDepth: 0.5,
+    })
+    expect(resolveDepthPassCount(params)).toBe(3)
   })
 })
