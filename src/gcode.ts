@@ -14,8 +14,9 @@ export function generateGCode(toolpath: Toolpath): string {
   lines.push('G90 ; Absolute positioning')
   lines.push('G20 ; Inches')
   lines.push(`M3 S${params.spindleRpm} ; Spindle on`)
+  lines.push(`G0 Z${fmt(params.retractHeight)} ; Retract to safe Z`)
 
-  // Move XY to start first (at current Z), then descend to retract height
+  // Move to start position
   const firstLine = toolpath.passes[0]?.lines[0]
   const startX = params.rasterDirection === 'x'
     ? (firstLine?.xStart ?? toolpath.bounds.xMin)
@@ -24,7 +25,6 @@ export function generateGCode(toolpath: Toolpath): string {
     ? (firstLine?.y ?? toolpath.bounds.yMin)
     : (firstLine?.yStart ?? toolpath.bounds.yMin)
   lines.push(`G0 X${fmt(startX)} Y${fmt(startY)} ; Move to start`)
-  lines.push(`G0 Z${fmt(params.retractHeight)} ; Rapid to retract height`)
   lines.push('')
 
   // Generate passes
@@ -74,8 +74,9 @@ function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plun
     if (direction === 'x') {
       // X-axis raster
       if (lineIndex === 0) {
-        // First line: diagonal rapid to start, plunge, cut
-        lines.push(`G0 X${fmt(line.xStart!)} Y${fmt(line.y!)} ; Rapid to start`)
+        // First line: rapid to start, plunge, cut
+        lines.push(`G0 Y${fmt(line.y!)}`)
+        lines.push(`G0 X${fmt(line.xStart!)}`)
         lines.push(`G1 Z${fmt(pass.z)} F${plungeRate} ; Plunge`)
         lines.push(`G1 X${fmt(line.xEnd!)} F${feedRate} ; Cut`)
       } else {
@@ -86,8 +87,9 @@ function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plun
     } else {
       // Y-axis raster
       if (lineIndex === 0) {
-        // First line: diagonal rapid to start, plunge, cut
-        lines.push(`G0 X${fmt(line.x!)} Y${fmt(line.yStart!)} ; Rapid to start`)
+        // First line: rapid to start, plunge, cut
+        lines.push(`G0 X${fmt(line.x!)}`)
+        lines.push(`G0 Y${fmt(line.yStart!)}`)
         lines.push(`G1 Z${fmt(pass.z)} F${plungeRate} ; Plunge`)
         lines.push(`G1 Y${fmt(line.yEnd!)} F${feedRate} ; Cut`)
       } else {
@@ -97,8 +99,6 @@ function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plun
       }
     }
   })
-
-  lines.push(`G0 Z${fmt(retractHeight)} ; Retract`)
 
   return lines
 }

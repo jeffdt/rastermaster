@@ -1,5 +1,10 @@
 import { Window } from 'happy-dom';
 
+// happy-dom 20.x bug: querySelectorAll internally calls `new this.window.SyntaxError`
+// but the Window class doesn't expose SyntaxError. Patch the prototype so every
+// Window instance (including ones created in individual test files) gets it.
+;(Window.prototype as any).SyntaxError = globalThis.SyntaxError;
+
 // Create a happy-dom window and set up global browser APIs
 const window = new Window();
 const document = window.document;

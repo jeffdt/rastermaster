@@ -23,9 +23,9 @@ function verifySnakingPattern(
   const finalRetractIdx = lines.findIndex(l => l.includes('Final retract'))
   const passLines = lines.slice(firstPlungeIdx, finalRetractIdx)
 
-  // Count retracts in the pass (should be 1 - only at the end of the pass)
+  // Count retracts in the pass (should be 0)
   const retractCount = passLines.filter(l => l.includes('G0 Z')).length
-  expect(retractCount).toBe(1)
+  expect(retractCount).toBe(0)
 
   // Verify stepover moves use G1 (feed rate)
   const stepoverLines = passLines.filter(l => l.includes('Stepover'))
@@ -79,24 +79,6 @@ describe('generateGCode', () => {
     expect(gcode).toContain('G90')
     expect(gcode).toContain('G20')
     expect(gcode).toContain('M3 S18000')
-  })
-
-  test('preamble travels XY to start before descending Z', () => {
-    const params = mergeWithDefaults({
-      stockWidth: 10,
-      stockHeight: 5,
-      retractHeight: 0.125,
-    })
-    const toolpath = calculateToolpath(params)
-    const gcode = generateGCode(toolpath)
-    const lines = gcode.split('\n')
-
-    const xyMoveIdx = lines.findIndex(l => l.includes('Move to start'))
-    const zDescentIdx = lines.findIndex(l => l.includes('Rapid to retract height'))
-
-    expect(xyMoveIdx).toBeGreaterThan(-1)
-    expect(zDescentIdx).toBeGreaterThan(-1)
-    expect(xyMoveIdx).toBeLessThan(zDescentIdx)
   })
 
   test('generates correct postamble', () => {
@@ -181,62 +163,5 @@ describe('generateGCode', () => {
     const gcode = generateGCode(toolpath)
 
     verifySnakingPattern(gcode, 'y')
-  })
-
-  test('retracts to safe height at end of each pass before repositioning', () => {
-    const params = mergeWithDefaults({
-      stockWidth: 2,
-      stockHeight: 2,
-      bitDiameter: 1,
-      stepoverPercent: 50,
-      rasterDirection: 'x',
-      retractHeight: 0.125,
-      skimPass: false,
-      totalDepth: 0.02,
-      depthPerPass: 0.01,
-    })
-    const toolpath = calculateToolpath(params)
-    const gcode = generateGCode(toolpath)
-    const lines = gcode.split('\n')
-
-    const plungeIndices = lines.reduce<number[]>((acc, line, i) => {
-      if (line.includes('G1 Z-') && line.includes('Plunge')) acc.push(i)
-      return acc
-    }, [])
-
-    expect(plungeIndices.length).toBe(2)
-
-    // Between pass 1's plunge and pass 2's plunge there must be a retract
-    const betweenPasses = lines.slice(plungeIndices[0], plungeIndices[1])
-    const retracts = betweenPasses.filter(l => /^G0 Z/.test(l))
-    expect(retracts.length).toBe(1)
-    expect(retracts[0]).toContain('0.125')
-  })
-
-  test('repositions with a single diagonal G0 XY command between passes', () => {
-    const params = mergeWithDefaults({
-      stockWidth: 2,
-      stockHeight: 2,
-      bitDiameter: 1,
-      stepoverPercent: 50,
-      rasterDirection: 'x',
-      retractHeight: 0.125,
-      skimPass: false,
-      totalDepth: 0.02,
-      depthPerPass: 0.01,
-    })
-    const toolpath = calculateToolpath(params)
-    const gcode = generateGCode(toolpath)
-    const lines = gcode.split('\n')
-
-    const plungeIndices = lines.reduce<number[]>((acc, line, i) => {
-      if (line.includes('G1 Z-') && line.includes('Plunge')) acc.push(i)
-      return acc
-    }, [])
-
-    // The rapid immediately before the second plunge must contain both X and Y (diagonal move)
-    const lineBeforePlunge2 = lines[plungeIndices[1] - 1]
-    expect(lineBeforePlunge2).toMatch(/^G0 X/)
-    expect(lineBeforePlunge2).toContain('Y')
   })
 })
