@@ -37,6 +37,12 @@ export interface Toolpath {
   params: SurfacingParams
 }
 
+export function resolveDepthPassCount(params: SurfacingParams): number {
+  if (params.passMode === 'numPasses') return params.numPasses
+  if (params.totalDepth <= 0) return 0
+  return Math.ceil(params.totalDepth / params.depthPerPass - 1e-9)
+}
+
 /**
  * Calculates the toolpath for a CNC surfacing operation.
  *
@@ -125,9 +131,7 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
   })
 
   // Build pass descriptors (z and type)
-  const depthPassCount = params.totalDepth > 0
-    ? Math.ceil(params.totalDepth / params.depthPerPass - 1e-9)
-    : 0
+  const depthPassCount = resolveDepthPassCount(params)
 
   const passDescriptors: { z: number; type: 'skim' | 'depth' }[] = []
 
@@ -136,7 +140,9 @@ export function calculateToolpath(params: SurfacingParams): Toolpath {
   }
 
   for (let i = 1; i <= depthPassCount; i++) {
-    const z = -Math.min(i * params.depthPerPass, params.totalDepth)
+    const z = params.passMode === 'numPasses'
+      ? -(i * params.depthPerPass)
+      : -Math.min(i * params.depthPerPass, params.totalDepth)
     passDescriptors.push({ z, type: 'depth' })
   }
 

@@ -631,6 +631,39 @@
       font-weight: bold;
     }
 
+    /* Pass mode pill (replaces label on depth row) */
+    .pass-mode-pill {
+      display: flex;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      overflow: hidden;
+      min-width: 100px;
+    }
+
+    .pass-mode-btn {
+      flex: 1;
+      padding: 5px 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .pass-mode-btn.active {
+      background: var(--color-accent-amber);
+      color: var(--color-bg);
+    }
+
+    .pass-mode-btn:hover:not(.active) {
+      background: var(--color-surface-elevated);
+      color: var(--color-text-secondary);
+    }
+
     /* Custom Number Control */
     .number-control {
       display: flex;

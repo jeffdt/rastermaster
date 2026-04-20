@@ -4,3 +4,5 @@ dist/
 .DS_Store
 *.log
 .worktrees/
+docs/superpowers/plans/
+docs/superpowers/specs/
