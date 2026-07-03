@@ -4,6 +4,11 @@ A single-page web application that generates GRBL-compatible GCode for CNC surfa
 
 **Try it now:** [rastermaster.jeffdt.com](https://rastermaster.jeffdt.com)
 
+![TypeScript](https://img.shields.io/badge/TypeScript-Bun-3178c6?logo=typescript&logoColor=white)
+![Offline](https://img.shields.io/badge/offline-single--file-1f6feb)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Vibe coded](https://img.shields.io/badge/vibe%20coded-100%25-ff69b4)
+
 ## Why
 
 Surfacing warped or rough wood was always one of the most common operations on my CNC, but my CAD/CAM software required way too much setup to do it. RasterMaster is a minimalist tool that does exactly one thing well: turns stock measurements into a surfacing job you can run immediately. Open the webpage, enter your stock size, grab the GCode, run the job, and toss the file when you're done. Making another takes seconds, so don't waste any time organizing project files.
