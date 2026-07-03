@@ -2,24 +2,35 @@
 
 A single-page web application that generates GRBL-compatible GCode for CNC surfacing operations. Built specifically for the Shapeoko 5, it bundles into a single, self-contained HTML file that runs entirely offline in the browser.
 
+**Try it now:** [rastermaster.jeffdt.com](https://rastermaster.jeffdt.com)
+
+## Why
+
+Surfacing warped or rough wood was always one of the most common operations on my CNC, but my CAD/CAM software required way too much setup to do it. RasterMaster is a minimalist tool that does exactly one thing well: turns stock measurements into a surfacing job you can run immediately. Open the webpage, enter your stock size, grab the GCode, run the job, and toss the file when you're done. Making another takes seconds, so don't waste any time organizing project files.
+
 ## Features
 
 - Generate raster toolpaths for surfacing operations
 - Support for both X-axis and Y-axis raster directions
 - Configurable parameters (bit diameter, stepover, depth per pass, etc.)
-- Live SVG preview of toolpath
+- Live toolpath preview
 - Multi-pass support with optional skim pass
-- Configurable pause intervals between passes
+- Optional pauses between passes
 - Completely offline (no internet required)
 - Single-file HTML output
 
 ## Usage
 
-1. Build the project: `bun run build`
-2. Open `dist/index.html` in your browser
-3. Enter your stock dimensions and surfacing parameters
-4. Preview the toolpath
-5. Download the generated GCode
+1. Open the app (see below for options to access it)
+2. Enter your stock dimensions and surfacing parameters
+3. Preview the toolpath
+4. Download the generated GCode
+
+### Accessing the app
+
+- **Online:** use it live at [rastermaster.jeffdt.com](https://rastermaster.jeffdt.com) right now. It's free and does not require an account or installation of any kind.
+- **Offline:** since the app is a single self-contained HTML file, you can save it for use without an internet connection (e.g. in a workshop with no wifi access): open the live site, save the page (File > Save Page As, or Ctrl/Cmd+S), and open the saved file directly in a browser any time. All functionality works fully offline.
+- **From source:** for the nerds. Only needed if you want to modify the app. Clone the repo, run `bun run build`, and open `dist/index.html` in your browser.
 
 ## Development
 
@@ -35,13 +46,7 @@ A single-page web application that generates GRBL-compatible GCode for CNC surfa
 - `bun run preview` - Preview production build locally
 - `bun test` - Run all tests
 
-## Architecture
-
-The app follows a unidirectional data flow:
-
-```
-User Input → SurfacingParams → Toolpath Calculation → SVG Preview + GCode Generation
-```
+### Architecture
 
 Built with:
 - **Vite** with `vite-plugin-singlefile` for bundling

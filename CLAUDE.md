@@ -24,7 +24,9 @@ RasterMaster is a single-page web application that generates GRBL-compatible GCo
   - Site is live at `rastermaster.jeffdt.com`
 - **Manual**: Trigger deployment from GitHub Actions tab if needed
 - **Branch**: `gh-pages` branch contains only the built `index.html` (auto-managed by workflow)
-- **DNS**: CNAME record points `rastermaster.jeffdt.com` to `jeffdt.github.io`
+- **DNS**: `jeffdt.com` is on Cloudflare (nameservers `eoin.ns.cloudflare.com` / `maya.ns.cloudflare.com`). A CNAME record `rastermaster` → `jeffdt.github.io` (proxied) lives in that Cloudflare zone and points the GitHub Pages custom domain at GitHub. GitHub Pages config (`cname`, HTTPS cert) is separate from and independent of this DNS record — if the site is down, check both sides:
+  - GitHub Pages side: `gh api repos/jeffdt/rastermaster/pages` (expect `"status":"built"`, `"cname":"rastermaster.jeffdt.com"`, cert `"state":"approved"`)
+  - DNS side: `dig @1.1.1.1 rastermaster.jeffdt.com` (expect Cloudflare proxy IPs; NXDOMAIN means the Cloudflare DNS record itself is missing, not a GitHub Pages problem)
 
 ## Project Management
 
