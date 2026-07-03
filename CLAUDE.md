@@ -30,7 +30,7 @@ RasterMaster is a single-page web application that generates GRBL-compatible GCo
 
 ## Project Management
 
-Tasks are tracked in `docs/todo.md`.
+Tasks are tracked exclusively in GitHub Issues (`gh issue list`).
 
 ## Architecture
 
