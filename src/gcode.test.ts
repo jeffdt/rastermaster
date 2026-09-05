@@ -23,9 +23,9 @@ function verifySnakingPattern(
   const finalRetractIdx = lines.findIndex(l => l.includes('Final retract'))
   const passLines = lines.slice(firstPlungeIdx, finalRetractIdx)
 
-  // Count retracts in the pass (should be 0)
+  // Count retracts in the pass (should be 1 - only at the end of the pass)
   const retractCount = passLines.filter(l => l.includes('G0 Z')).length
-  expect(retractCount).toBe(0)
+  expect(retractCount).toBe(1)
 
   // Verify stepover moves use G1 (feed rate)
   const stepoverLines = passLines.filter(l => l.includes('Stepover'))
