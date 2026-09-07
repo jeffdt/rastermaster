@@ -9,6 +9,8 @@ A single-page web application that generates GRBL-compatible GCode for CNC surfa
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Vibe coded](https://img.shields.io/badge/vibe%20coded-100%25-ff69b4)
 
+![RasterMaster demo](docs/demo.gif)
+
 ## Why
 
 Surfacing warped or rough wood was always one of the most common operations on my CNC, but my CAD/CAM software required way too much setup to do it. RasterMaster is a minimalist tool that does exactly one thing well: turns stock measurements into a surfacing job you can run immediately. Open the webpage, enter your stock size, grab the GCode, run the job, and toss the file when you're done. Making another takes seconds, so don't waste any time organizing project files.
@@ -50,6 +52,18 @@ Surfacing warped or rough wood was always one of the most common operations on m
 - `bun run build` - Build production bundle to `dist/index.html`
 - `bun run preview` - Preview production build locally
 - `bun test` - Run all tests
+- `bun run demo:gif` - Re-record the README demo GIF (requires `ffmpeg` and `bunx playwright install chromium`)
+- `bun run demo:check` - Verify the demo GIF matches the current UI
+
+### Demo GIF
+
+`docs/demo.gif` is recorded by driving the built single-file app in headless Chromium
+(`scripts/demo-gif.ts`), so it always shows exactly what a user gets.
+
+It must be re-recorded whenever the UI changes. `demo:check` enforces this by hashing
+`index.html`, `src/main.ts`, `src/preview.ts` and `src/ui.ts` against the digest in
+`docs/demo.gif.hash`; it runs in CI and in the local pre-commit hook. Changes to the
+toolpath or GCode modules don't trigger it, since they don't alter what the demo shows.
 
 ### Architecture
 

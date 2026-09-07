@@ -21,3 +21,6 @@ jobs:
 
       - name: Run tests
         run: bun test
+
+      - name: Check README demo GIF is current
+        run: bun run demo:check

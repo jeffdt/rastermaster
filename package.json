@@ -6,11 +6,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "bun test"
+    "test": "bun test",
+    "demo:gif": "bun run scripts/demo-gif.ts",
+    "demo:check": "bun run scripts/check-demo-gif.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "happy-dom": "^20.9.0",
+    "playwright": "^1.63.0",
     "vite": "^7.3.1",
     "vite-plugin-singlefile": "^2.3.0"
   },
