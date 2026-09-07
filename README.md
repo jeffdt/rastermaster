@@ -52,13 +52,19 @@ Surfacing warped or rough wood was always one of the most common operations on m
 - `bun run build` - Build production bundle to `dist/index.html`
 - `bun run preview` - Preview production build locally
 - `bun test` - Run all tests
-- `bun run demo:gif` - Re-record the README demo GIF (requires `ffmpeg` and `bunx playwright install chromium`)
+- `bun run demo:gif` - Re-record the README demo GIF (requires `ffmpeg` and `bunx playwright install ffmpeg`)
 - `bun run demo:check` - Verify the demo GIF matches the current UI
 
 ### Demo GIF
 
-`docs/demo.gif` is recorded by driving the built single-file app in headless Chromium
+`docs/demo.gif` is recorded by driving the built single-file app in a headless browser
 (`scripts/demo-gif.ts`), so it always shows exactly what a user gets.
+
+It drives the Google Chrome already installed on your machine via `playwright-core`,
+which avoids Playwright's ~550MB bundled-browser download; it falls back to a bundled
+Chromium (`bunx playwright install chromium`) if Chrome isn't present. Two small
+prerequisites either way: `ffmpeg` on your PATH for GIF encoding, and Playwright's own
+2.5MB video helper from `bunx playwright install ffmpeg`.
 
 It must be re-recorded whenever the UI changes. `demo:check` enforces this by hashing
 `index.html`, `src/main.ts`, `src/preview.ts` and `src/ui.ts` against the digest in

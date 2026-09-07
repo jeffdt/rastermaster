@@ -1,7 +1,7 @@
 import { mkdir, rm, writeFile, readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { chromium, type Page } from 'playwright'
+import { chromium, type Browser, type Page } from 'playwright-core'
 import { computeUiHash, GIF_PATH, HASH_PATH, WATCHED_FILES, type WatchedFile } from './demo-hash'
 
 const repoRoot = resolve(import.meta.dir, '..')
@@ -93,8 +93,29 @@ async function recordStoryboard(page: Page): Promise<void> {
   await page.waitForTimeout(1600)
 }
 
+/**
+ * Prefers the Chrome already installed on the machine, which keeps this script off
+ * Playwright's ~550MB bundled-browser download. Falls back to a bundled Chromium for
+ * contributors without Chrome.
+ */
+async function launchBrowser(): Promise<Browser> {
+  try {
+    return await chromium.launch({ channel: 'chrome' })
+  } catch {
+    console.log('ℹ️  System Chrome not found, falling back to bundled Chromium')
+  }
+
+  try {
+    return await chromium.launch()
+  } catch {
+    console.error('❌ No usable browser. Install Google Chrome, or run:')
+    console.error('   bunx playwright install chromium')
+    process.exit(1)
+  }
+}
+
 async function capture(): Promise<string> {
-  const browser = await chromium.launch()
+  const browser = await launchBrowser()
   const context = await browser.newContext({
     viewport: VIEWPORT,
     deviceScaleFactor: 1,
