@@ -23,7 +23,7 @@ function verifySnakingPattern(
   const finalRetractIdx = lines.findIndex(l => l.includes('Final retract'))
   const passLines = lines.slice(firstPlungeIdx, finalRetractIdx)
 
-  // Count retracts in the pass (should be 0)
+  // The cutter stays at one Z level until the pass is complete.
   const retractCount = passLines.filter(l => l.includes('G0 Z')).length
   expect(retractCount).toBe(0)
 
@@ -112,6 +112,40 @@ describe('generateGCode', () => {
     expect(m0Count).toBe(1)
   })
 
+  test('retracts before initial XY travel and after every pass', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 2,
+      stockHeight: 2,
+      fudgeFactor: 0,
+      bitDiameter: 1,
+      stepoverPercent: 50,
+      retractHeight: 0.125,
+      skimPass: false,
+      passMode: 'numPasses',
+      numPasses: 2,
+      depthPerPass: 0.01,
+      pauseInterval: 1,
+    })
+    const toolpath = calculateToolpath(params)
+    const gcode = generateGCode(toolpath)
+    const safetySequence = gcode.split('\n').filter(line =>
+      line.startsWith('G0 Z') ||
+      line.includes('Move to start') ||
+      line.includes('Rapid to start') ||
+      line.startsWith('M0')
+    )
+
+    expect(safetySequence).toEqual([
+      'G0 Z0.125 ; Retract to safe Z',
+      'G0 X-0.5 Y0 ; Move to start',
+      'G0 X-0.5 Y0 ; Rapid to start',
+      'G0 Z0.125 ; Retract after pass',
+      'M0 ; Pause - press resume to continue or stop to end',
+      'G0 X-0.5 Y0 ; Rapid to start',
+      'G0 Z0.125 ; Final retract',
+    ])
+  })
+
   test('uses correct feed rates', () => {
     const params = mergeWithDefaults({
       stockWidth: 10,
@@ -126,7 +160,7 @@ describe('generateGCode', () => {
     expect(gcode).toContain('F12')
   })
 
-  test('X-axis raster uses snaking pattern with single retract per pass', () => {
+  test('X-axis raster uses a continuous snaking pattern', () => {
     // Test scenario: 2"x2" stock with 1" bit at 50% stepover
     // This produces 6 raster lines (Y positions: -0.25, 0.25, 0.75, 1.25, 1.75, 2.25)
     // With snaking, lines should alternate: left-to-right, right-to-left, left-to-right, etc.
@@ -147,7 +181,7 @@ describe('generateGCode', () => {
     verifySnakingPattern(gcode, 'x')
   })
 
-  test('Y-axis raster uses snaking pattern with single retract per pass', () => {
+  test('Y-axis raster uses a continuous snaking pattern', () => {
     // Test scenario: 2"x2" stock with 1" bit at 50% stepover
     // This produces 6 raster lines (X positions: -0.25, 0.25, 0.75, 1.25, 1.75, 2.25)
     // With snaking, lines should alternate: bottom-to-top, top-to-bottom, bottom-to-top, etc.
