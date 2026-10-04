@@ -73,6 +73,13 @@ describe('updateFormVisibility', () => {
 })
 
 describe('createForm', () => {
+  test('labels the per-pass depth control clearly', () => {
+    const formElement = createForm(() => {})
+    const label = formElement.querySelector('label[for="depthPerPass"]')
+
+    expect(label?.textContent).toBe('Depth / Pass')
+  })
+
   test('form includes fudgeFactor input with correct attributes', () => {
     // Use global document set up by happy-dom
     ; (global as any).document = document

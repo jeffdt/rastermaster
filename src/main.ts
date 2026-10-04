@@ -1,8 +1,8 @@
 // src/main.ts
-import { createForm, getFormValues, isFormValid, resetForm, setFormValues } from './ui'
+import { createForm, getFormValues, isFormValid, resetForm, setFormValues, validateParams } from './ui'
 import { calculateToolpath } from './toolpath'
 import { generateGCode } from './gcode'
-import { generatePreviewSVG, generatePassScheduleHTML } from './preview'
+import { generatePreviewSVG, generateJobSummaryHTML, generatePassScheduleHTML } from './preview'
 import { mergeWithDefaults } from './defaults'
 import type { SurfacingParams } from './types'
 import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
@@ -73,10 +73,15 @@ function init() {
       </div>
       <div class="container">
         <div id="form-container"></div>
+        <div class="preview-actions">
+          <div class="preview-actions-main">
+            <div id="job-summary"></div>
+            <button class="generate-btn" id="generateBtn" disabled>Download G-code</button>
+          </div>
+          <div id="pass-list"></div>
+        </div>
         <div class="preview-container">
           <div id="preview"></div>
-          <div id="pass-list"></div>
-          <button class="generate-btn" id="generateBtn" disabled>Generate GCode</button>
         </div>
       </div>
     </div>
@@ -110,6 +115,7 @@ function init() {
 
   const formContainer = app.querySelector('#form-container')!
   const previewContainer = app.querySelector('#preview')!
+  const jobSummaryContainer = app.querySelector('#job-summary')!
   const passListContainer = app.querySelector('#pass-list')!
   const generateBtn = app.querySelector('#generateBtn') as HTMLButtonElement
   const menuTrigger = app.querySelector('#menuTrigger') as HTMLButtonElement
@@ -123,6 +129,10 @@ function init() {
   const paletteSwatches = app.querySelectorAll('.palette-swatch') as NodeListOf<HTMLButtonElement>
 
   let currentParams: Partial<SurfacingParams> = {}
+
+  function showJobPrompt(message: string) {
+    jobSummaryContainer.innerHTML = `<div class="job-summary job-summary-prompt">${message}</div>`
+  }
 
   // Update active swatch based on current theme
   function updateActiveSwatch() {
@@ -140,18 +150,29 @@ function init() {
   function updatePreview() {
     if (!isFormValid(currentParams)) {
       previewContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Enter stock dimensions to see preview</p>'
+      showJobPrompt('Enter stock dimensions to preview and download G-code.')
       passListContainer.innerHTML = ''
       generateBtn.disabled = true
       return
     }
 
+    const scheduleWasOpen = (passListContainer.querySelector('.pass-schedule') as HTMLDetailsElement | null)?.open ?? false
     const params = mergeWithDefaults(currentParams as { stockWidth: number; stockHeight: number } & Partial<SurfacingParams>)
     const toolpath = calculateToolpath(params)
     const rect = previewContainer.getBoundingClientRect()
     const svg = generatePreviewSVG(toolpath, rect.width || 500, rect.height || 375)
     previewContainer.innerHTML = svg
+    if (toolpath.passes.length === 0) {
+      showJobPrompt('Enable Skim pass or add at least 1 depth pass.')
+    } else {
+      jobSummaryContainer.innerHTML = generateJobSummaryHTML(toolpath)
+    }
     passListContainer.innerHTML = generatePassScheduleHTML(toolpath)
-    generateBtn.disabled = false
+    if (scheduleWasOpen) {
+      const schedule = passListContainer.querySelector('.pass-schedule') as HTMLDetailsElement | null
+      if (schedule) schedule.open = true
+    }
+    generateBtn.disabled = validateParams(params).length > 0
   }
 
   // Debounced auto-save for tool settings
@@ -320,6 +341,8 @@ function init() {
     if (!isFormValid(currentParams)) return
 
     const params = mergeWithDefaults(currentParams as { stockWidth: number; stockHeight: number } & Partial<SurfacingParams>)
+    if (validateParams(params).length > 0) return
+
     const toolpath = calculateToolpath(params)
     const gcode = generateGCode(toolpath)
 
@@ -331,6 +354,14 @@ function init() {
     a.download = `rastermaster-${params.stockWidth}x${params.stockHeight}.gcode`
     a.click()
     URL.revokeObjectURL(url)
+  })
+
+  // Give the hover shine a full quiet interval before the idle shine repeats.
+  generateBtn.addEventListener('mouseleave', () => {
+    if (generateBtn.disabled) return
+    generateBtn.classList.add('shine-reset')
+    void generateBtn.offsetWidth
+    generateBtn.classList.remove('shine-reset')
   })
 
   // Initial preview
