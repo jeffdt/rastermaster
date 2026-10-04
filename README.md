@@ -1,5 +1,11 @@
 # RasterMaster
 
+<p align="center">
+  <a href="https://rastermaster.jeffdt.com">
+    <img src=".github/assets/rastermaster-logo.png" width="480" alt="RasterMaster animated raster logo">
+  </a>
+</p>
+
 A single-page web application that generates GRBL-compatible GCode for CNC surfacing operations. Built specifically for the Shapeoko 5, it bundles into a single, self-contained HTML file that runs entirely offline in the browser.
 
 **Try it now:** [rastermaster.jeffdt.com](https://rastermaster.jeffdt.com)
@@ -48,6 +54,7 @@ Surfacing warped or rough wood was always one of the most common operations on m
 - `bun install` - Install dependencies
 - `bun run dev` - Start development server with hot reload
 - `bun run build` - Build production bundle to `dist/index.html`
+- `bun run build:readme-logo` - Regenerate the animated README logo (requires Chrome/Chromium and ffmpeg)
 - `bun run preview` - Preview production build locally
 - `bun test` - Run all tests
 
