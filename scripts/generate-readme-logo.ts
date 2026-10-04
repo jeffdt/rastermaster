@@ -5,8 +5,8 @@ import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { chromium } from 'playwright-core'
 
-const WIDTH = 480
-const HEIGHT = 120
+const WIDTH = 360
+const HEIGHT = 88
 const FRAMES_PER_SECOND = 30
 const OUTPUT_PATH = resolve('.github/assets/rastermaster-logo.png')
 

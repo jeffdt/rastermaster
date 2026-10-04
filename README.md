@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://rastermaster.jeffdt.com">
-    <img src=".github/assets/rastermaster-logo.png" width="480" alt="RasterMaster animated raster logo">
+    <img src=".github/assets/rastermaster-logo.png" width="420" alt="RasterMaster animated raster logo">
   </a>
 </p>
 
