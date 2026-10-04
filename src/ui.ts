@@ -60,7 +60,7 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           <input type="hidden" id="passMode" value="numPasses">
         </div>
         <div class="form-row">
-          <label for="depthPerPass">Max Depth/Pass</label>
+          <label for="depthPerPass">Depth / Pass</label>
           <div class="input-stack">
             <input type="text" id="depthPerPass" value="${DEFAULT_PARAMS.depthPerPass}" inputmode="text">
             <div class="resolved-value" id="depthPerPass-hint"></div>

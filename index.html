@@ -704,7 +704,7 @@
       border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 24px;
-      flex: 1;
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
       min-height: 400px;
@@ -738,18 +738,66 @@
     }
 
     #preview svg {
+      display: block;
       width: 100%;
       height: 100%;
-      position: relative;
+      position: absolute;
+      inset: 0;
       z-index: 1;
     }
 
-    /* Generate Button */
+    /* Preview actions */
+    .preview-actions {
+      width: min(100%, 720px);
+      margin: 0 auto;
+      flex-shrink: 0;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .preview-actions-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 20px;
+      padding: 14px;
+    }
+
+    .job-summary {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 6px 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--color-text-primary);
+    }
+
+    .job-summary-item {
+      white-space: nowrap;
+    }
+
+    .job-summary-item:not(:first-child)::before {
+      content: '\2022';
+      margin: 0 8px;
+      color: var(--color-text-muted);
+    }
+
+    .job-summary-prompt {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    /* Download Button */
     .generate-btn {
       display: block;
-      width: 100%;
+      min-width: 210px;
       padding: 16px;
-      margin-top: 20px;
       background: linear-gradient(135deg, var(--color-accent-amber), #fb923c);
       color: var(--color-bg);
       border: none;
@@ -771,15 +819,24 @@
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
+      left: 0;
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: left 0.5s ease;
+      transform: translateX(-120%);
     }
 
-    .generate-btn:hover::before {
-      left: 100%;
+    .generate-btn:not(:disabled)::before {
+      animation: downloadShine 4.8s ease-in-out infinite;
+    }
+
+    .generate-btn:not(:disabled):hover::before {
+      animation: downloadShineHover 0.55s ease-out forwards;
+    }
+
+    .generate-btn.shine-reset::before {
+      animation: none;
+      transform: translateX(-120%);
     }
 
     .generate-btn:hover {
@@ -802,6 +859,26 @@
       display: none;
     }
 
+    @keyframes downloadShine {
+      0%, 82% {
+        transform: translateX(-120%);
+      }
+
+      93%, 100% {
+        transform: translateX(120%);
+      }
+    }
+
+    @keyframes downloadShineHover {
+      from {
+        transform: translateX(-120%);
+      }
+
+      to {
+        transform: translateX(120%);
+      }
+    }
+
     input:invalid {
       border-color: var(--color-error);
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
@@ -816,20 +893,47 @@
 
     /* Pass Schedule */
     .pass-schedule {
-      margin-top: 16px;
+      width: 100%;
       background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
+      border-top: 1px solid var(--color-border);
       overflow: hidden;
+    }
+
+    #pass-list:empty {
+      display: none;
     }
 
     .pass-schedule-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      padding: 10px 14px;
+      gap: 9px;
+      padding: 8px 14px;
       background: var(--color-surface-elevated);
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+
+    .pass-schedule-header::-webkit-details-marker {
+      display: none;
+    }
+
+    .pass-schedule[open] .pass-schedule-header {
       border-bottom: 1px solid var(--color-border);
+    }
+
+    .pass-schedule-chevron {
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid var(--color-text-muted);
+      border-bottom: 1px solid var(--color-text-muted);
+      transform: rotate(45deg) translateY(-2px);
+      transition: transform 0.2s ease;
+    }
+
+    .pass-schedule[open] .pass-schedule-chevron {
+      transform: rotate(225deg) translate(-2px, -2px);
     }
 
     .pass-schedule-title {
@@ -841,12 +945,6 @@
       color: var(--color-text-secondary);
     }
 
-    .pass-schedule-subtitle {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--color-text-muted);
-    }
-
     .pass-table {
       width: 100%;
       border-collapse: collapse;
@@ -854,8 +952,19 @@
       font-size: 12px;
     }
 
+    .pass-table-scroll {
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
     .pass-table thead tr {
       background: var(--color-surface-elevated);
+    }
+
+    .pass-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
 
     .pass-table th {
@@ -893,6 +1002,10 @@
       color: var(--color-text-primary);
     }
 
+    .pass-after {
+      width: 88px;
+    }
+
     .pass-row-skim .pass-type {
       color: var(--color-accent-amber);
     }
@@ -905,12 +1018,11 @@
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.06em;
-      color: var(--color-text-muted);
-      background: var(--color-surface-elevated);
-      border: 1px solid var(--color-border);
+      color: var(--color-accent-amber);
+      background: var(--color-accent-amber-glow);
+      border: 1px solid var(--color-accent-amber);
       border-radius: 3px;
-      padding: 1px 4px;
-      margin-left: 6px;
+      padding: 2px 6px;
     }
 
     /* Settings Modal */
@@ -1199,14 +1311,36 @@
       }
 
       .generate-btn {
+        width: 100%;
+        min-width: 0;
         padding: 14px;
         font-size: 14px;
       }
 
-      /* Sticky preview on mobile for better UX */
-      .preview-container {
+      .preview-actions {
         position: sticky;
-        bottom: 0;
+        top: 12px;
+        bottom: auto;
+        z-index: 10;
+        width: 100%;
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+      }
+
+      .preview-actions-main {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .job-summary {
+        flex-wrap: wrap;
+      }
+
+      .preview-actions:has(.pass-schedule[open]) {
+        position: relative;
+        top: auto;
+      }
+
+      .preview-container {
         min-height: 350px;
         margin-top: auto;
       }
@@ -1547,6 +1681,16 @@
     @media (prefers-reduced-motion: reduce) {
       .brand-raster-scan {
         display: none;
+      }
+
+      .generate-btn,
+      .generate-btn::before {
+        animation: none !important;
+        transition: none;
+      }
+
+      .generate-btn:hover {
+        transform: none;
       }
     }
 
