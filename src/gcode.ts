@@ -1,5 +1,5 @@
 // src/gcode.ts
-import type { Toolpath, ZPass, RasterLine } from './toolpath'
+import type { Toolpath, ZPass } from './toolpath'
 
 export function generateGCode(toolpath: Toolpath): string {
   const { params } = toolpath
@@ -14,8 +14,9 @@ export function generateGCode(toolpath: Toolpath): string {
   lines.push('G90 ; Absolute positioning')
   lines.push('G20 ; Inches')
   lines.push(`M3 S${params.spindleRpm} ; Spindle on`)
+  lines.push(`G0 Z${fmt(params.retractHeight)} ; Retract to safe Z`)
 
-  // Move XY to start first (at current Z), then descend to retract height
+  // Move to the start only after the cutter is at a safe height
   const firstLine = toolpath.passes[0]?.lines[0]
   const startX = params.rasterDirection === 'x'
     ? (firstLine?.xStart ?? toolpath.bounds.xMin)
@@ -24,13 +25,17 @@ export function generateGCode(toolpath: Toolpath): string {
     ? (firstLine?.y ?? toolpath.bounds.yMin)
     : (firstLine?.yStart ?? toolpath.bounds.yMin)
   lines.push(`G0 X${fmt(startX)} Y${fmt(startY)} ; Move to start`)
-  lines.push(`G0 Z${fmt(params.retractHeight)} ; Rapid to retract height`)
   lines.push('')
 
   // Generate passes
   toolpath.passes.forEach((pass, passIndex) => {
     lines.push(`; Pass ${passIndex + 1} at Z=${fmt(pass.z)}`)
-    lines.push(...generatePass(pass, params.retractHeight, params.feedRate, params.plungeRate, params.rasterDirection))
+    lines.push(...generatePass(pass, params.feedRate, params.plungeRate, params.rasterDirection))
+
+    const retractComment = passIndex === toolpath.passes.length - 1
+      ? 'Final retract'
+      : 'Retract after pass'
+    lines.push(`G0 Z${fmt(params.retractHeight)} ; ${retractComment}`)
 
     if (pass.pauseAfter) {
       lines.push('M0 ; Pause - press resume to continue or stop to end')
@@ -39,7 +44,6 @@ export function generateGCode(toolpath: Toolpath): string {
   })
 
   // Postamble
-  lines.push(`G0 Z${fmt(params.retractHeight)} ; Final retract`)
   lines.push('M5 ; Spindle off')
   lines.push('M30 ; Program end')
 
@@ -61,13 +65,12 @@ export function generateGCode(toolpath: Toolpath): string {
  * it at a controlled speed rather than breaking on a rapid move.
  *
  * @param pass - The Z pass with raster lines
- * @param retractHeight - Safe retract height
  * @param feedRate - Cutting feed rate (in/min)
  * @param plungeRate - Z-axis plunge rate (in/min)
  * @param direction - Raster direction ('x' or 'y')
  * @returns Array of GCode command strings
  */
-function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plungeRate: number, direction: 'x' | 'y'): string[] {
+function generatePass(pass: ZPass, feedRate: number, plungeRate: number, direction: 'x' | 'y'): string[] {
   const lines: string[] = []
 
   pass.lines.forEach((line, lineIndex) => {
@@ -97,8 +100,6 @@ function generatePass(pass: ZPass, retractHeight: number, feedRate: number, plun
       }
     }
   })
-
-  lines.push(`G0 Z${fmt(retractHeight)} ; Retract`)
 
   return lines
 }

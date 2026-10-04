@@ -2,8 +2,35 @@
 import type { Toolpath } from './toolpath'
 import { formatDimension } from './format'
 
+function formatDepth(value: number): string {
+  const formatted = value.toFixed(4).replace(/\.?0+$/, '')
+  return `${formatted === '-0' ? '0' : formatted}\"`
+}
+
+export function generateJobSummaryHTML(toolpath: Toolpath): string {
+  const { passes } = toolpath
+
+  if (passes.length === 0) {
+    return ''
+  }
+
+  const finalDepth = Math.abs(Math.min(...passes.map(pass => pass.z)))
+  const pauseCount = passes.filter(pass => pass.pauseAfter).length
+  const passLabel = `${passes.length} ${passes.length === 1 ? 'pass' : 'passes'}`
+  const depthLabel = finalDepth === 0 ? 'Skim only' : `${formatDepth(finalDepth)} total`
+  const finalZLabel = `Final Z ${formatDepth(passes[passes.length - 1].z)}`
+  const pauseLabel = pauseCount === 0 ? 'No pauses' : `${pauseCount} ${pauseCount === 1 ? 'pause' : 'pauses'}`
+
+  return `<div class="job-summary" aria-label="Job summary">
+  <span class="job-summary-item">${passLabel}</span>
+  <span class="job-summary-item">${depthLabel}</span>
+  <span class="job-summary-item">${finalZLabel}</span>
+  <span class="job-summary-item">${pauseLabel}</span>
+</div>`
+}
+
 export function generatePassScheduleHTML(toolpath: Toolpath): string {
-  const { passes, params } = toolpath
+  const { passes } = toolpath
 
   if (passes.length === 0) {
     return ''
@@ -12,36 +39,39 @@ export function generatePassScheduleHTML(toolpath: Toolpath): string {
   const rows = passes.map((pass, i) => {
     const rowClass = pass.type === 'skim' ? 'pass-row-skim' : 'pass-row-depth'
     const typeLabel = pass.type === 'skim' ? 'SKIM' : 'DEPTH'
-    const zLabel = pass.z === 0 ? 'Z 0' : `Z ${pass.z.toFixed(4).replace(/0+$/, '').replace(/\.$/, '"')}`
-    const pauseIndicator = pass.pauseAfter ? ' <span class="pass-pause-mark" title="Pause after this pass">M0</span>' : ''
+    const zLabel = `Z ${formatDepth(pass.z)}`
+    const pauseIndicator = pass.pauseAfter
+      ? '<span class="pass-pause-mark" title="Machine pauses after this pass (M0)">PAUSE</span>'
+      : ''
     return `<tr class="pass-row ${rowClass}">
       <td class="pass-num">${i + 1}</td>
       <td class="pass-type">${typeLabel}</td>
-      <td class="pass-z">${zLabel}"${pauseIndicator}</td>
+      <td class="pass-z">${zLabel}</td>
+      <td class="pass-after">${pauseIndicator}</td>
     </tr>`
   }).join('\n')
 
-  const depthTotal = params.totalDepth > 0 ? `${params.totalDepth}"` : ''
-  const subtitle = depthTotal ? `${passes.length} passes &mdash; ${depthTotal} total` : `${passes.length} pass`
-
-  return `<div class="pass-schedule">
-  <div class="pass-schedule-header">
-    <span class="pass-schedule-title">Pass Schedule</span>
-    <span class="pass-schedule-subtitle">${subtitle}</span>
-  </div>
-  <table class="pass-table">
+  return `<details class="pass-schedule">
+  <summary class="pass-schedule-header">
+    <span class="pass-schedule-title">Details</span>
+    <span class="pass-schedule-chevron" aria-hidden="true"></span>
+  </summary>
+  <div class="pass-table-scroll">
+    <table class="pass-table">
     <thead>
       <tr>
         <th>#</th>
         <th>TYPE</th>
         <th>Z DEPTH</th>
+        <th>AFTER</th>
       </tr>
     </thead>
     <tbody>
       ${rows}
     </tbody>
-  </table>
-</div>`
+    </table>
+  </div>
+</details>`
 }
 
 export function generatePreviewSVG(toolpath: Toolpath, width: number, height: number): string {

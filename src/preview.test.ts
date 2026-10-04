@@ -1,6 +1,6 @@
 // src/preview.test.ts
 import { describe, expect, test } from 'bun:test'
-import { generatePreviewSVG } from './preview'
+import { generateJobSummaryHTML, generatePassScheduleHTML, generatePreviewSVG } from './preview'
 import { calculateToolpath } from './toolpath'
 import { mergeWithDefaults } from './defaults'
 import { formatDimension } from './format'
@@ -40,6 +40,92 @@ describe('generatePreviewSVG', () => {
 
     expect(svg).toContain('<line')
     expect(svg).toContain('class="raster"')
+  })
+})
+
+describe('pass schedule presentation', () => {
+  test('summarizes passes, total depth, final Z, and pauses', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 12,
+      stockHeight: 18,
+      numPasses: 25,
+      depthPerPass: 0.01,
+      pauseInterval: 5,
+    })
+    const toolpath = calculateToolpath(params)
+    const summary = generateJobSummaryHTML(toolpath)
+
+    expect(summary).toContain('26 passes')
+    expect(summary).toContain('0.25" total')
+    expect(summary).toContain('Final Z -0.25"')
+    expect(summary).toContain('5 pauses')
+  })
+
+  test('uses singular labels for a skim-only job', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 12,
+      stockHeight: 18,
+    })
+    const toolpath = calculateToolpath(params)
+    const summary = generateJobSummaryHTML(toolpath)
+    const schedule = generatePassScheduleHTML(toolpath)
+
+    expect(summary).toContain('1 pass')
+    expect(summary).toContain('Skim only')
+    expect(summary).toContain('Final Z 0"')
+    expect(summary).toContain('No pauses')
+    expect(schedule).toContain('<span class="pass-schedule-title">Details</span>')
+  })
+
+  test('renders the detailed schedule as a closed disclosure with exact pass values', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 12,
+      stockHeight: 18,
+      numPasses: 2,
+      depthPerPass: 0.02,
+    })
+    const toolpath = calculateToolpath(params)
+    const schedule = generatePassScheduleHTML(toolpath)
+
+    expect(schedule).toStartWith('<details class="pass-schedule">')
+    expect(schedule).toContain('<span class="pass-schedule-title">Details</span>')
+    expect(schedule).not.toContain('View pass schedule')
+    expect(schedule).toContain('Z -0.02"')
+    expect(schedule).toContain('Z -0.04"')
+    expect(schedule).toContain('class="pass-table-scroll"')
+  })
+
+  test('preserves four-decimal precision for shallow depth passes', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 12,
+      stockHeight: 18,
+      skimPass: false,
+      numPasses: 1,
+      depthPerPass: 0.0015,
+    })
+    const toolpath = calculateToolpath(params)
+    const summary = generateJobSummaryHTML(toolpath)
+    const schedule = generatePassScheduleHTML(toolpath)
+
+    expect(summary).toContain('0.0015" total')
+    expect(summary).toContain('Final Z -0.0015"')
+    expect(schedule).toContain('Z -0.0015"')
+  })
+
+  test('labels machine pauses in a dedicated after column', () => {
+    const params = mergeWithDefaults({
+      stockWidth: 12,
+      stockHeight: 18,
+      numPasses: 2,
+      pauseInterval: 2,
+    })
+    const toolpath = calculateToolpath(params)
+    const schedule = generatePassScheduleHTML(toolpath)
+
+    expect(schedule).toContain('<th>AFTER</th>')
+    expect(schedule).toContain('<td class="pass-after"><span class="pass-pause-mark" title="Machine pauses after this pass (M0)">PAUSE</span></td>')
+    expect(schedule.match(/>PAUSE<\/span>/g)).toHaveLength(1)
+    expect(schedule).not.toContain('>M0</span>')
   })
 })
 
