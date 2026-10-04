@@ -7,6 +7,7 @@ import { mergeWithDefaults } from './defaults'
 import type { SurfacingParams } from './types'
 import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
 import { loadToolSettings, saveToolSettings, extractToolSettings, exportToURL, importFromURL } from './settings'
+import { createLogoMarkup } from './logo'
 
 function showToast(message: string, type: 'success' | 'error' = 'success') {
   const toast = document.createElement('div')
@@ -38,7 +39,7 @@ function init() {
   app.innerHTML = `
     <div class="app-content">
       <div class="header">
-        <h1 class="title">RasterMaster</h1>
+        ${createLogoMarkup()}
         <div class="menu-container">
           <a class="menu-trigger" href="https://github.com/jeffdt/rastermaster" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub">
             <svg class="gear-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">

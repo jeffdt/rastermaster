@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:readme-logo": "bun run build && bun scripts/generate-readme-logo.ts",
     "preview": "vite preview",
     "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "happy-dom": "^20.9.0",
+    "playwright-core": "1.63.0",
     "vite": "^7.3.1",
     "vite-plugin-singlefile": "^2.3.0"
   },

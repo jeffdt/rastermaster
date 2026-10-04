@@ -74,126 +74,6 @@
       z-index: 0;
     }
 
-    /* Animated raster tracer with trail */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 4px;
-      background: var(--color-accent-amber);
-      border-radius: 50%;
-      box-shadow:
-        0 0 12px 4px var(--color-accent-amber),
-        0 0 24px 8px var(--color-accent-amber-glow),
-        -8px 0 0 0 rgba(245, 158, 11, 0.5),
-        -8px 0 8px 3px rgba(245, 158, 11, 0.3),
-        -16px 0 0 0 rgba(245, 158, 11, 0.35),
-        -16px 0 6px 2px rgba(245, 158, 11, 0.2),
-        -24px 0 0 0 rgba(245, 158, 11, 0.25),
-        -24px 0 4px 2px rgba(245, 158, 11, 0.15),
-        -32px 0 0 0 rgba(245, 158, 11, 0.15),
-        -32px 0 3px 1px rgba(245, 158, 11, 0.1),
-        -40px 0 0 0 rgba(245, 158, 11, 0.1),
-        -48px 0 0 0 rgba(245, 158, 11, 0.07),
-        -56px 0 0 0 rgba(245, 158, 11, 0.05),
-        -64px 0 0 0 rgba(245, 158, 11, 0.03);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.6;
-      /* 6 horizontal passes + returns = longer duration needed for same speed
-         old full screen was 20s. old 4-lines was 8s.
-         This is 6 passes, so maybe 12s? */
-      animation: rasterTrace 12s linear infinite;
-    }
-
-    /* Dev mode: purple tracer trail */
-    body.is-dev::after {
-      box-shadow:
-        0 0 12px 4px var(--color-accent-amber),
-        0 0 24px 8px var(--color-accent-amber-glow),
-        -8px 0 0 0 rgba(168, 85, 247, 0.5),
-        -8px 0 8px 3px rgba(168, 85, 247, 0.3),
-        -16px 0 0 0 rgba(168, 85, 247, 0.35),
-        -16px 0 6px 2px rgba(168, 85, 247, 0.2),
-        -24px 0 0 0 rgba(168, 85, 247, 0.25),
-        -24px 0 4px 2px rgba(168, 85, 247, 0.15),
-        -32px 0 0 0 rgba(168, 85, 247, 0.15),
-        -32px 0 3px 1px rgba(168, 85, 247, 0.1),
-        -40px 0 0 0 rgba(168, 85, 247, 0.1),
-        -48px 0 0 0 rgba(168, 85, 247, 0.07),
-        -56px 0 0 0 rgba(168, 85, 247, 0.05),
-        -64px 0 0 0 rgba(168, 85, 247, 0.03);
-    }
-
-    @keyframes rasterTrace {
-
-      /* P1: Line 1 L->R */
-      0% {
-        transform: translate(-2px, -2px) scaleX(1);
-      }
-
-      15% {
-        transform: translate(calc(100vw - 2px), -2px) scaleX(1);
-      }
-
-      /* Drop to Line 2 */
-      16.6% {
-        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
-      }
-
-      /* P2: Line 2 R->L */
-      31.6% {
-        transform: translate(-2px, 30px) scaleX(-1);
-      }
-
-      /* Drop to Line 3 */
-      33.3% {
-        transform: translate(-2px, 62px) scaleX(1);
-      }
-
-      /* P3: Line 3 L->R */
-      48.3% {
-        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
-      }
-
-      /* Drop to Line 4 */
-      50% {
-        transform: translate(calc(100vw - 2px), 94px) scaleX(-1);
-      }
-
-      /* P4: Line 4 R->L (Bottom) */
-      65% {
-        transform: translate(-2px, 94px) scaleX(-1);
-      }
-
-      /* Rise to Line 3 */
-      66.6% {
-        transform: translate(-2px, 62px) scaleX(1);
-      }
-
-      /* P5: Line 3 L->R (Retrace) */
-      81.6% {
-        transform: translate(calc(100vw - 2px), 62px) scaleX(1);
-      }
-
-      /* Rise to Line 2 */
-      83.3% {
-        transform: translate(calc(100vw - 2px), 30px) scaleX(-1);
-      }
-
-      /* P6: Line 2 R->L (Retrace) */
-      98.3% {
-        transform: translate(-2px, 30px) scaleX(-1);
-      }
-
-      /* Rise to Line 1 (Start) */
-      100% {
-        transform: translate(-2px, -2px) scaleX(1);
-      }
-    }
-
     #app {
       display: flex;
       flex-direction: column;
@@ -224,7 +104,58 @@
       justify-content: space-between;
     }
 
-    h1 {
+    .brand {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      isolation: isolate;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .brand-raster {
+      position: absolute;
+      z-index: 0;
+      width: calc(100% + 40px);
+      height: 56px;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      overflow: visible;
+      pointer-events: none;
+      filter: drop-shadow(0 0 7px var(--color-accent-amber-glow));
+    }
+
+    .brand-raster-path,
+    .brand-raster-scan {
+      fill: none;
+      stroke: url(#brandRasterGradient);
+      stroke-width: 1.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .brand-raster-path {
+      opacity: 0.22;
+    }
+
+    .brand-raster-scan {
+      opacity: 0.75;
+      stroke-width: 2;
+    }
+
+    .brand-raster-stop-muted {
+      stop-color: var(--color-steel-blue);
+    }
+
+    .brand-raster-stop-accent {
+      stop-color: var(--color-accent-amber);
+    }
+
+    .brand h1 {
+      position: relative;
+      z-index: 1;
       margin: 0;
       font-family: 'Rajdhani', var(--font-sans);
       font-size: 28px;
@@ -237,6 +168,10 @@
       background-clip: text;
       flex-shrink: 0;
       text-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+    }
+
+    .brand h1 span:last-child {
+      -webkit-text-fill-color: var(--color-accent-amber);
     }
 
     /* Menu Container */
@@ -1171,9 +1106,8 @@
 
     /* Tablet breakpoint */
     @media (min-width: 768px) {
-      h1 {
+      .brand h1 {
         font-size: 36px;
-        padding: 24px;
       }
 
       .container {
@@ -1231,9 +1165,8 @@
 
     /* Mobile optimizations */
     @media (max-width: 767px) {
-      h1 {
+      .brand h1 {
         font-size: 24px;
-        padding: 16px;
       }
 
       .container {
@@ -1608,6 +1541,12 @@
 
       .form-column:first-child {
         z-index: 2;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand-raster-scan {
+        display: none;
       }
     }
 
