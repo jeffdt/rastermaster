@@ -4,5 +4,7 @@ dist/
 .DS_Store
 *.log
 .worktrees/
+.config/
+.claude/settings.local.json
 docs/superpowers/plans/
 docs/superpowers/specs/
