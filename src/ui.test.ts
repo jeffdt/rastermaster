@@ -97,6 +97,36 @@ describe('createForm', () => {
   })
 })
 
+describe('stepover stepper', () => {
+  test('uses a bounded number control with 5% increments', () => {
+    const form = createForm(() => {})
+    const input = form.querySelector<HTMLInputElement>('#stepoverPercent')
+    const control = input?.closest('.number-control')
+
+    expect(input?.type).toBe('number')
+    expect(input?.step).toBe('5')
+    expect(input?.min).toBe('10')
+    expect(input?.max).toBe('100')
+    expect(control?.querySelector('[data-action="decrement"]')).toBeTruthy()
+    expect(control?.querySelector('[data-action="increment"]')).toBeTruthy()
+  })
+
+  test('increments and decrements stepover by exactly 5%', () => {
+    const form = createForm(() => {})
+    const input = form.querySelector<HTMLInputElement>('#stepoverPercent')!
+    const decrement = input.parentElement?.querySelector<HTMLButtonElement>('[data-action="decrement"]')!
+    const increment = input.parentElement?.querySelector<HTMLButtonElement>('[data-action="increment"]')!
+
+    increment.click()
+    expect(input.value).toBe('55')
+    expect(getFormValues(form).stepoverPercent).toBe(55)
+
+    decrement.click()
+    expect(input.value).toBe('50')
+    expect(getFormValues(form).stepoverPercent).toBe(50)
+  })
+})
+
 describe('getFormValues', () => {
   test('parses decimal text inputs correctly', () => {
     const form = document.createElement('div')

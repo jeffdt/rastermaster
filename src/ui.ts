@@ -91,7 +91,11 @@ export function createForm(onUpdate: (params: Partial<SurfacingParams>) => void)
           </div>
           <div class="form-row">
             <label for="stepoverPercent">Stepover</label>
-            <input type="text" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" inputmode="decimal" pattern="[0-9]+(\.[0-9]+)?">
+            <div class="number-control">
+              <button type="button" class="stepper-btn" data-action="decrement" tabindex="-1">−</button>
+              <input type="number" id="stepoverPercent" value="${DEFAULT_PARAMS.stepoverPercent}" step="5" min="10" max="100">
+              <button type="button" class="stepper-btn" data-action="increment" tabindex="-1">+</button>
+            </div>
             <span class="unit">%</span>
           </div>
           <div class="form-row">
