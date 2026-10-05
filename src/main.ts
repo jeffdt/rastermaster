@@ -8,6 +8,7 @@ import type { SurfacingParams } from './types'
 import { type ColorName, PALETTES, applyTheme, saveTheme, loadTheme, getCurrentTheme } from './theme'
 import { loadToolSettings, saveToolSettings, extractToolSettings, exportToURL, importFromURL } from './settings'
 import { createLogoMarkup } from './logo'
+import { createResponsivePreviewUpdater } from './preview-resize'
 
 function showToast(message: string, type: 'success' | 'error' = 'success') {
   const toast = document.createElement('div')
@@ -175,6 +176,8 @@ function init() {
     generateBtn.disabled = validateParams(params).length > 0
   }
 
+  const previewUpdater = createResponsivePreviewUpdater(previewContainer, updatePreview)
+
   // Debounced auto-save for tool settings
   let saveTimeout: number | undefined
   function debouncedSave(params: Partial<SurfacingParams>) {
@@ -190,7 +193,7 @@ function init() {
 
   const form = createForm((params) => {
     currentParams = params
-    updatePreview()
+    previewUpdater.requestUpdate()
     debouncedSave(params)
   })
   formContainer.appendChild(form)
@@ -202,7 +205,7 @@ function init() {
       saveToolSettings(imported)
       setFormValues(form, imported)
       currentParams = getFormValues(form)
-      updatePreview()
+      previewUpdater.requestUpdate()
       // Clear hash after import to avoid re-importing on reload
       window.history.replaceState(null, '', window.location.pathname)
       console.log('Tool settings imported from URL')
@@ -216,7 +219,7 @@ function init() {
       setFormValues(form, savedSettings)
       // Trigger update to apply loaded values
       currentParams = getFormValues(form)
-      updatePreview()
+      previewUpdater.requestUpdate()
     }
   }
 
@@ -242,14 +245,14 @@ function init() {
   newMenuItem.addEventListener('click', () => {
     resetForm(form, (params) => {
       currentParams = params
-      updatePreview()
+      previewUpdater.requestUpdate()
     })
     // Restore saved tool settings after reset
     const savedSettings = loadToolSettings()
     if (savedSettings) {
       setFormValues(form, savedSettings)
       currentParams = getFormValues(form)
-      updatePreview()
+      previewUpdater.requestUpdate()
     }
     menuDropdown.classList.remove('open')
     menuTrigger.classList.remove('active')
@@ -284,7 +287,7 @@ function init() {
         saveToolSettings(imported)
         setFormValues(form, imported)
         currentParams = getFormValues(form)
-        updatePreview()
+        previewUpdater.requestUpdate()
         showToast('Tool settings imported successfully')
       } catch (e) {
         console.error('Failed to import URL:', e)
@@ -365,7 +368,7 @@ function init() {
   })
 
   // Initial preview
-  updatePreview()
+  previewUpdater.requestUpdate()
 }
 
 init()
